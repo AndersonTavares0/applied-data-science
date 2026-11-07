@@ -25,6 +25,50 @@
     "late_share_pct": 29.66,
     "min_tokens": 2
   },
+  "groups": [
+    {
+      "group": "Delivery and non-receipt",
+      "late_n": 1780,
+      "on_time_n": 1186,
+      "late_share_pct": 65.6584,
+      "on_time_share_pct": 18.4505,
+      "diff_pp": 47.2079,
+      "ci_low_pp": 45.1845,
+      "ci_high_pp": 49.2313,
+      "late_weight_share_pct": 58.8886,
+      "on_time_weight_share_pct": 22.806,
+      "p_value": 0.0,
+      "q_value": 0.0
+    },
+    {
+      "group": "Product",
+      "late_n": 492,
+      "on_time_n": 4430,
+      "late_share_pct": 18.1483,
+      "on_time_share_pct": 68.9172,
+      "diff_pp": -50.769,
+      "ci_low_pp": -52.6088,
+      "ci_high_pp": -48.9291,
+      "late_weight_share_pct": 24.8691,
+      "on_time_weight_share_pct": 63.0737,
+      "p_value": 0.0,
+      "q_value": 0.0
+    },
+    {
+      "group": "Mixed or general",
+      "late_n": 439,
+      "on_time_n": 812,
+      "late_share_pct": 16.1933,
+      "on_time_share_pct": 12.6322,
+      "diff_pp": 3.5611,
+      "ci_low_pp": 1.954,
+      "ci_high_pp": 5.1681,
+      "late_weight_share_pct": 16.2423,
+      "on_time_weight_share_pct": 14.1203,
+      "p_value": 0.0,
+      "q_value": 0.0
+    }
+  ],
   "model": {
     "method": "Latent Dirichlet Allocation",
     "topics": 6,
@@ -49,43 +93,68 @@
         -2.6545
       ]
     },
-    "selection": [
-      {
-        "topics": 4,
-        "mean_coherence": -2.6986,
-        "perplexity": 333.0509
-      },
-      {
-        "topics": 5,
-        "mean_coherence": -2.6993,
-        "perplexity": 332.3916
-      },
-      {
-        "topics": 6,
-        "mean_coherence": -2.6766,
-        "perplexity": 332.9202
-      },
-      {
-        "topics": 7,
-        "mean_coherence": -2.6912,
-        "perplexity": 329.9575
-      },
-      {
-        "topics": 8,
-        "mean_coherence": -2.745,
-        "perplexity": 329.038
-      },
-      {
-        "topics": 9,
-        "mean_coherence": -2.8495,
-        "perplexity": 330.6914
-      },
-      {
-        "topics": 10,
-        "mean_coherence": -2.8326,
-        "perplexity": 330.4323
-      }
-    ],
+    "selection": {
+      "seeds": [
+        0,
+        1,
+        2
+      ],
+      "seed0_best": 6,
+      "mean_best": 4,
+      "selected": 6,
+      "note": "k=6 is a prespecified interpretability choice, not the coherence-optimal count; k=4 has the highest seed-averaged coherence but merges product and return complaints.",
+      "rows": [
+        {
+          "topics": 4,
+          "seed0_coherence": -2.6986,
+          "mean_coherence": -2.6279,
+          "sd_coherence": 0.0668,
+          "perplexity": 340.0868
+        },
+        {
+          "topics": 5,
+          "seed0_coherence": -2.6993,
+          "mean_coherence": -2.6916,
+          "sd_coherence": 0.0256,
+          "perplexity": 343.6812
+        },
+        {
+          "topics": 6,
+          "seed0_coherence": -2.6766,
+          "mean_coherence": -2.7386,
+          "sd_coherence": 0.0558,
+          "perplexity": 342.6913
+        },
+        {
+          "topics": 7,
+          "seed0_coherence": -2.6912,
+          "mean_coherence": -2.7549,
+          "sd_coherence": 0.1185,
+          "perplexity": 340.1667
+        },
+        {
+          "topics": 8,
+          "seed0_coherence": -2.745,
+          "mean_coherence": -2.752,
+          "sd_coherence": 0.0232,
+          "perplexity": 336.7343
+        },
+        {
+          "topics": 9,
+          "seed0_coherence": -2.8495,
+          "mean_coherence": -2.8453,
+          "sd_coherence": 0.1002,
+          "perplexity": 341.8941
+        },
+        {
+          "topics": 10,
+          "seed0_coherence": -2.8326,
+          "mean_coherence": -2.8714,
+          "sd_coherence": 0.0433,
+          "perplexity": 338.8974
+        }
+      ]
+    },
     "stability": {
       "reference_seed": 0,
       "seeds": [

@@ -1,0 +1,4 @@
+group,late_n,on_time_n,late_share_pct,on_time_share_pct,diff_pp,ci_low_pp,ci_high_pp,late_weight_share_pct,on_time_weight_share_pct,p_value,q_value
+Delivery and non-receipt,1780,1186,65.6584,18.4505,47.2079,45.1845,49.2313,58.8886,22.806,0,0
+Product,492,4430,18.1483,68.9172,-50.769,-52.6088,-48.9291,24.8691,63.0737,0,0
+Mixed or general,439,812,16.1933,12.6322,3.56105,1.95402,5.16809,16.2423,14.1203,6.06945e-06,6.06945e-06

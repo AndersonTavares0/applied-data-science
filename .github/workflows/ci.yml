@@ -37,6 +37,10 @@ jobs:
       - name: Tests
         run: uv run pytest
 
+      - name: Parse dbt project
+        working-directory: projects/01-retail-analytics/dbt_project
+        run: uv run dbt parse --profiles-dir . --no-partial-parse
+
   # ---------------------------------------------------------------------------
   # Data pipeline job.
   #

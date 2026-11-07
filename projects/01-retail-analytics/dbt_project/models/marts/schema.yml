@@ -126,8 +126,9 @@ models:
     description: >
       One row per person with recency in days, frequency, monetary value, R/F/M
       scores from 1-5 and a segment label. `r_score = 5` is the MOST recent
-      customer. `f_score` barely discriminates here because 96.9% of customers
-      ordered exactly once.
+      customer. `f_score` is the order count capped at five, not an ntile: 96.9%
+      of customers ordered once, so a quintile split would invent high-frequency
+      customers out of a tied mass.
     columns:
       - name: customer_unique_id
         data_tests:
@@ -160,8 +161,10 @@ models:
 
   - name: mart_cohort_retention
     description: >
-      Monthly cohort retention. One row per cohort month and month offset.
-      Offset 0 is the acquisition month and is always 100%.
+      Monthly cohort retention. One row per cohort month and month offset,
+      including zero-activity offsets. Offset 0 is the acquisition month and is
+      always 100%. Cohorts in later months have fewer eligible offsets because
+      the snapshot ends, so long offsets are estimated from older cohorts only.
     columns:
       - name: cohort_offset_key
         data_tests:

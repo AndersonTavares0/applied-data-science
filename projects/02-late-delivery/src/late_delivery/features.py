@@ -311,6 +311,51 @@ def bootstrap_metrics(
     }
 
 
+def paired_bootstrap_difference(
+    y_true: Iterable[int],
+    scores_a: Iterable[float],
+    scores_b: Iterable[float],
+    *,
+    metric: str = "average_precision",
+    n_resamples: int = 1_000,
+    seed: int = 0,
+) -> dict:
+    """Bootstrap the paired difference between two scores on the same rows.
+
+    Comparing two point estimates ignores that both models were scored on the
+    same orders. Resampling rows and recomputing both metrics together gives an
+    interval for the difference, which is the quantity the model choice depends
+    on. A positive difference means model A is better.
+    """
+    truth = np.asarray(list(y_true), dtype=int)
+    a = np.asarray(list(scores_a), dtype=float)
+    b = np.asarray(list(scores_b), dtype=float)
+    functions = {
+        "average_precision": average_precision_score,
+        "roc_auc": roc_auc_score,
+    }
+    if metric not in functions:
+        raise ValueError(f"unsupported metric: {metric!r}")
+    score = functions[metric]
+    point = float(score(truth, a) - score(truth, b))
+    generator = np.random.default_rng(seed)
+    draws = []
+    for _ in range(n_resamples):
+        index = generator.integers(0, len(truth), len(truth))
+        sample_y = truth[index]
+        if sample_y.min() == sample_y.max():
+            continue
+        draws.append(float(score(sample_y, a[index]) - score(sample_y, b[index])))
+    return {
+        "metric": metric,
+        "n_resamples": len(draws),
+        "difference": point,
+        "ci_low": float(np.percentile(draws, 2.5)),
+        "ci_high": float(np.percentile(draws, 97.5)),
+        "share_a_better": float(np.mean(np.asarray(draws) > 0)),
+    }
+
+
 def calibration_summary(y_true: Iterable[int], scores: Iterable[float]) -> dict:
     """Logistic intercept and slope of observed outcome on predicted logit.
 
@@ -365,12 +410,15 @@ def rolling_origin(
     *,
     kind: str = "logistic",
     horizon_months: int = 3,
+    maturity_months: int = 3,
 ) -> list[dict]:
     """Refit on data observable at each cutoff and score the next horizon.
 
     Each origin is a separate, honest simulation of deploying on that date.
-    The same fixed model family is used throughout; this is a stability check,
-    not another selection round.
+    Test orders are those purchased in the horizon; their labels are required to
+    have matured within a further `maturity_months`, so late orders that arrive
+    after the horizon are not silently excluded. The same fixed model family is
+    used throughout; this is a stability check, not another selection round.
     """
     purchased_at = pd.to_datetime(frame["purchased_at"])
     delivered_at = pd.to_datetime(frame["delivered_to_customer_at"])
@@ -378,8 +426,14 @@ def rolling_origin(
     for raw_cutoff in cutoffs:
         cutoff = pd.Timestamp(raw_cutoff)
         end = cutoff + pd.DateOffset(months=horizon_months)
+        label_end = end + pd.DateOffset(months=maturity_months)
         train = frame.loc[(purchased_at < cutoff) & (delivered_at < cutoff) & frame[TARGET].notna()]
-        test = frame.loc[(purchased_at >= cutoff) & (purchased_at < end) & frame[TARGET].notna()]
+        test = frame.loc[
+            (purchased_at >= cutoff)
+            & (purchased_at < end)
+            & (delivered_at < label_end)
+            & frame[TARGET].notna()
+        ]
         if train.empty or test.empty:
             continue
         model = build_model(kind).fit(prepare_features(train), train[TARGET].astype(int))
@@ -389,6 +443,8 @@ def rolling_origin(
             {
                 "cutoff": str(cutoff.date()),
                 "horizon_months": horizon_months,
+                "maturity_months": maturity_months,
+                "label_end": str(label_end.date()),
                 "train_n": len(train),
                 "train_late_rate": float(train[TARGET].mean()),
                 "test_n": len(test),

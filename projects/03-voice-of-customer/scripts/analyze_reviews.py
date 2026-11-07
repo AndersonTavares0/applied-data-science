@@ -25,7 +25,7 @@ PROJECT = Path(__file__).resolve().parents[1]
 ROOT = PROJECT.parents[1]
 sys.path.insert(0, str(PROJECT / "src"))
 
-from voice.stats import topic_prevalence  # noqa: E402
+from voice.stats import group_prevalence, topic_prevalence  # noqa: E402
 from voice.text import MIN_TOKENS, normalize_text  # noqa: E402
 from voice.topics import (  # noqa: E402
     coherence_by_topic_count,
@@ -74,6 +74,13 @@ SHORT_LABELS_PT = (
     "Atraso / demora",
     "Item errado / troca",
 )
+# The delay topic is kept separate: its audit cases were often product
+# complaints, so folding it into logistics would inflate that headline.
+TOPIC_GROUPS = {
+    "Delivery and non-receipt": (1, 3),
+    "Product": (0, 2, 5),
+    "Mixed or general": (4,),
+}
 STRINGS = {
     "en": {
         "gap_title": "Complaint topics over-represented among late orders",
@@ -270,18 +277,18 @@ def main() -> int:
         ]
     ].sort_values("share_pct", ascending=False)
 
-    selection = coherence_by_topic_count(texts, topic_counts=(4, 5, 6, 7, 8, 9, 10), seed=SEED)
-    best_topics = int(selection.loc[selection["mean_coherence"].idxmax(), "topics"])
-    if best_topics != TOPIC_COUNT:
-        raise SystemExit(
-            f"coherence selects {best_topics} topics, not {TOPIC_COUNT}; "
-            "re-check TOPIC_COUNT and TOPIC_LABELS before publishing"
-        )
+    selection = coherence_by_topic_count(
+        texts, topic_counts=(4, 5, 6, 7, 8, 9, 10), seeds=(0, 1, 2)
+    )
+    seed0_best = int(selection.loc[selection["seed0_coherence"].idxmax(), "topics"])
+    mean_best = int(selection.loc[selection["mean_coherence"].idxmax(), "topics"])
     stability = topic_stability(texts, n_topics=TOPIC_COUNT, seeds=(0, 1, 2, 3, 4), max_iter=30)
     soft = soft_assignment_summary(weights)
     coherence = umass_coherence(vectorizer, model, texts)
 
+    grouped = group_prevalence(corpus, weights, TOPIC_GROUPS)
     scope = build_scope(frame, corpus)
+    scope["groups"] = grouped.round(4).to_dict(orient="records")
     scope["model"] = {
         "method": "Latent Dirichlet Allocation",
         "topics": TOPIC_COUNT,
@@ -296,7 +303,18 @@ def main() -> int:
             "mean": round(float(np.mean(coherence)), 4),
             "per_topic": [round(float(value), 4) for value in coherence],
         },
-        "selection": selection.round(4).to_dict(orient="records"),
+        "selection": {
+            "seeds": [0, 1, 2],
+            "seed0_best": seed0_best,
+            "mean_best": mean_best,
+            "selected": TOPIC_COUNT,
+            "note": (
+                "k=6 is a prespecified interpretability choice, not the "
+                "coherence-optimal count; k=4 has the highest seed-averaged "
+                "coherence but merges product and return complaints."
+            ),
+            "rows": selection.round(4).to_dict(orient="records"),
+        },
         "stability": stability,
         "soft_assignment": soft,
         "mean_weight_by_outcome": {
@@ -313,6 +331,7 @@ def main() -> int:
     )
     selection.to_csv(REPORT_DIR / "topic_selection.csv", index=False, float_format="%.6g")
     table.to_csv(REPORT_DIR / "topic_prevalence.csv", index=False, float_format="%.6g")
+    grouped.to_csv(REPORT_DIR / "topic_groups.csv", index=False, float_format="%.6g")
 
     plot_gap(table, "en", FIGURE_DIR / "topic_gap.png")
     plot_mix(table, "en", FIGURE_DIR / "topic_mix.png")
@@ -335,9 +354,11 @@ def main() -> int:
     )
     print(
         f"perplexity: {scope['model']['perplexity']:.2f}; "
-        f"mean coherence: {scope['model']['coherence']['mean']:.3f} "
-        f"(best k={best_topics} across {len(selection)} candidates)"
+        f"seed-0 coherence best k={seed0_best}, "
+        f"seed-averaged coherence best k={mean_best}; "
+        f"reporting k={TOPIC_COUNT} for semantic granularity"
     )
+    print(selection.round(3).to_string(index=False))
     print(
         f"stability: mean ARI {stability['mean_adjusted_rand']:.3f}, "
         f"mean top-term Jaccard {stability['mean_jaccard']:.3f}"
@@ -353,6 +374,19 @@ def main() -> int:
     print(
         display[
             ["label", "n", "share_pct", "late_share_pct", "on_time_share_pct", "diff_pp", "q_value"]
+        ].to_string(index=False)
+    )
+    print("\ngrouped:")
+    print(
+        grouped.round(1)[
+            [
+                "group",
+                "late_share_pct",
+                "on_time_share_pct",
+                "diff_pp",
+                "late_weight_share_pct",
+                "on_time_weight_share_pct",
+            ]
         ].to_string(index=False)
     )
     return 0

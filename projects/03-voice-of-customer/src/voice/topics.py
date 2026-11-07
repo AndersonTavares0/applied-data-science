@@ -103,26 +103,35 @@ def coherence_by_topic_count(
     texts: Sequence[str],
     *,
     topic_counts: Sequence[int] = (4, 5, 6, 7, 8, 9, 10),
-    seed: int = 0,
+    seeds: Sequence[int] = (0, 1, 2),
     max_iter: int = 30,
     n_terms: int = 10,
 ) -> pd.DataFrame:
-    """Fit each candidate k and report coherence and perplexity.
+    """Fit each candidate k across seeds and report coherence and perplexity.
 
-    The model is fitted on complaint text only, so the outcome cannot influence
-    which k looks best.
+    A single seed can make one k look best by initialisation luck. Repeating the
+    fit and reporting the spread keeps k selection from being an artefact of the
+    seed. The model is fitted on complaint text only, so the outcome cannot
+    influence which k looks best.
     """
     rows = []
     for n_topics in topic_counts:
-        vectorizer, model, _ = fit_topic_model(
-            texts, n_topics=n_topics, seed=seed, max_iter=max_iter
-        )
-        scores = umass_coherence(vectorizer, model, texts, n_terms=n_terms)
+        scores = []
+        perplexities = []
+        for seed in seeds:
+            vectorizer, model, _ = fit_topic_model(
+                texts, n_topics=n_topics, seed=seed, max_iter=max_iter
+            )
+            coherence = umass_coherence(vectorizer, model, texts, n_terms=n_terms)
+            scores.append(float(np.mean(coherence)))
+            perplexities.append(float(model.perplexity(vectorizer.transform(texts))))
         rows.append(
             {
                 "topics": n_topics,
+                "seed0_coherence": scores[0],
                 "mean_coherence": float(np.mean(scores)),
-                "perplexity": float(model.perplexity(vectorizer.transform(texts))),
+                "sd_coherence": float(np.std(scores, ddof=1)) if len(scores) > 1 else 0.0,
+                "perplexity": float(np.mean(perplexities)),
             }
         )
     return pd.DataFrame(rows)
