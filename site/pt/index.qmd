@@ -39,7 +39,7 @@ memorando de decisão de uma página e uma declaração do que os dados não sus
 <div class="project-seq">03<span class="project-status status-published">Publicado</span></div>
 <div class="project-detail">
 <h3>Do que 9.139 reclamações escritas reclamam?</h3>
-<p>Modelagem de tópicos de 9.139 reclamações escritas de 1–2 estrelas. As de pedidos atrasados são sobre o pacote: problema de entrega, não recebimento e demora são 81,9% delas. As de pedidos no prazo são sobre o produto: qualidade, completude e item errado são 68,9%. O relatório declara a seleção antes do resultado.</p>
+<p>Modelagem de tópicos de 9.139 reclamações escritas de 1–2 estrelas. As de pedidos atrasados são sobre o pacote: problema de entrega e não recebimento são 65,7% delas. As de pedidos no prazo são sobre o produto: qualidade, completude e item errado são 68,9%. Demora é um tópico misto e é contado separadamente. O relatório declara a seleção antes do resultado.</p>
 <p class="project-stack">Python, PLN, modelagem de tópicos</p>
 <p class="project-links"><a href="reports/03-voice-of-customer/03-voice-of-customer.qmd">Ler a análise</a> <a href="reports/03-voice-of-customer/00-executive-memo.qmd">Memorando de decisão</a></p>
 </div>

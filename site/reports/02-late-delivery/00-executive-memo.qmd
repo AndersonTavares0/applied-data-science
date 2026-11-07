@@ -31,12 +31,16 @@ periods. **Use the ranking; do not promise the percentage.**
   precision 0.091** against a **4.42%** base rate.
 - Flagging the **top 10% (3,215 orders)** captures **23.5% of all late orders**
   at **10.4% precision**, a **2.35× lift**. A customer-state baseline captures
-  10.8% at the same capacity. At 5% capacity, precision is 10.8% and recall
-  12.2%; at 20%, precision is 9.5% and recall 42.9%.
-- **The model class is not settled.** Logistic regression won an inner
-  validation period on average precision, but gradient boosting did slightly
-  better on the final holdout (AP 0.103, recall 28.6%). The gap is small, and one holdout cannot settle the choice.
-  Treat the model as a promising ranker, not a finished choice.
+  11.6% at the same capacity, only 1.16× the base rate. At 5% capacity,
+  precision is 10.8% and recall 12.2%; at 20%, precision is 9.5% and recall
+  42.9%.
+- **The model class is not settled.** Logistic regression won the rolling-origin
+  comparison (mean AP 0.138 vs 0.102), but gradient boosting did better on the
+  final holdout (AP 0.103 vs 0.091; recall 28.6% vs 23.5%). A paired bootstrap
+  over holdout rows puts the logistic-minus-boosting AP difference at −0.0125
+  (95% interval −0.0215 to −0.0035). That is a within-period comparison, not
+  evidence about future periods. Treat the model as a promising ranker, not a
+  finished choice.
 - **The level is not calibrated to the next period.** Mean predicted risk is
   6.38% against 4.42% observed, even though the calibration slope is close to
   one (1.02). The ranking is roughly right; the level is too high.
@@ -44,7 +48,7 @@ periods. **Use the ranking; do not promise the percentage.**
   state dominate. Basket value, freight, weight, payment
   and category add little.
 - **The signal is not stable enough to promise a fixed lift.** Monthly AUC in the
-  holdout ranges from 0.61 to 0.79, and rolling origins from 0.59 to 0.75.
+  holdout ranges from 0.61 to 0.79, and rolling origins from 0.59 to 0.67.
 
 ## What it is allowed to see
 
@@ -68,9 +72,9 @@ the training set is smaller than the naive date filter would suggest.
 2. **Do not expose the score as a customer-facing probability.** If one is
    needed, recalibrate on recent delivered orders and re-check monthly. The
    current score ranks adequately and predicts the level badly.
-3. **Run a rolling evaluation before committing.** The single holdout is not
-   enough: AUC ranges from 0.59 to 0.75 across origins, and July–August 2018 is
-   weaker than April. A queue that only works in one backlog is not a product.
+3. **Keep running the rolling evaluation.** Selection already uses three rolling
+   origins, where AUC ranges from 0.59 to 0.67, and July–August 2018 is weaker
+   than April. A queue that only works in one backlog is not a product.
 4. **Keep Project 01's operational question first.** The model confirms that
    promise length and the seller–customer state pair carry the signal. It does
    not say that changing the promise causes a better outcome; the corridor
@@ -91,5 +95,5 @@ the training set is smaller than the naive date filter would suggest.
 
 *All figures above come from `projects/02-late-delivery/reports/model_metrics.json`
 and are reproducible with `uv run python tasks.py train`. The 95% bootstrap
-interval for top-decile precision is 9.3–11.5%, for recall 21.6–25.6%, and for
-lift 2.16–2.56×.*
+interval for top-decile precision is 9.4–11.5%, for recall 21.5–25.6%, and for
+lift 2.15–2.56×.*

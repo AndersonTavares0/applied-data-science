@@ -50,12 +50,13 @@ vezes.**
 
 O Rio de Janeiro registrou 12,353 entregas e 1,495 pedidos atrasados, e 8,129
 dessas entregas vieram de vendedores de São Paulo. À taxa de atraso de São Paulo,
-de 4.49%, cerca de **940 dos 1,495 não teriam chegado atrasados**.
+de 4.49%, cerca de **940 dos 1,495 não teriam chegado atrasados ao longo dos 25
+meses do recorte**.
 
-Esperava-se que esses 940 pedidos produzissem cerca de **370 avaliações de uma e
-duas estrelas a menos**, aplicando o comportamento observado de avaliação dos
-pedidos atrasados (49.36% com nota ≤2) em contraste com os pedidos no prazo
-(9.27%).
+Esperava-se que esses 940 pedidos produzissem cerca de **377 avaliações de uma e
+duas estrelas a menos ao longo do recorte**, aplicando o comportamento observado
+de avaliação dos pedidos atrasados (49.36% com nota ≤2) em contraste com os
+pedidos no prazo (9.27%).
 
 Isto é uma associação, não uma estimativa causal. Não demonstrei que fazer a
 entrega no prazo *causa* a avaliação melhor, apenas que as duas coisas ocorrem

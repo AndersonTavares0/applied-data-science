@@ -49,11 +49,11 @@ which carries two thirds of Rio's orders and is late 14.2% of the time.**
 
 Rio de Janeiro recorded 12,353 deliveries and 1,495 late orders, and 8,129 of
 those deliveries came from São Paulo sellers. At São Paulo's 4.49% late rate,
-roughly **940 of the 1,495 would not have been late**.
+roughly **940 of the 1,495 would not have been late over the 25-month snapshot**.
 
-Those 940 orders would have been expected to produce about **370 fewer one- and
-two-star reviews**, applying the observed review behaviour of late orders
-(49.36% scoring ≤2) against on-time orders (9.27%).
+Those 940 orders would have been expected to produce about **377 fewer one- and
+two-star reviews over the snapshot**, applying the observed review behaviour of
+late orders (49.36% scoring ≤2) against on-time orders (9.27%).
 
 This is an association, not a causal estimate. I have not shown that making a
 delivery on time causes the better review, only that the two occur together, and

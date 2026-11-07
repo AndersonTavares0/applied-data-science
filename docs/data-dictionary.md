@@ -118,14 +118,16 @@ not sum to total revenue — see [Metrics](metrics.md#category-revenue).
 `customer_unique_id`, `last_order_date`, `recency_days`, `frequency`, `monetary`,
 `r_score`, `f_score`, `m_score`, `rfm_segment`.
 
-`r_score = 5` is the **most recent** customer. `f_score` is nearly
-non-discriminating because 96.9% of customers ordered once — see
-[Metrics](metrics.md#rfm).
+`r_score = 5` is the **most recent** customer. `f_score` is the order count
+capped at five, not an `ntile`; it is still nearly non-discriminating because
+96.9% of customers ordered once — see [Metrics](metrics.md#rfm).
 
 ### `mart_cohort_retention` — one row per (cohort, month offset)
 
 `cohort_month`, `month_offset`, `cohort_offset_key`, `cohort_customers`,
-`active_customers`, `retention_pct`. Offset 0 is 100% by construction.
+`active_customers`, `retention_pct`. Offset 0 is 100% by construction. The mart
+includes zero-activity offsets, so cohorts without a return stay in the
+denominator; long offsets use only cohorts old enough to be observed.
 
 ### `mart_delivery_performance` — one row per delivery outcome
 

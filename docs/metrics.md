@@ -201,7 +201,11 @@ not a finding, and it is asserted by a test, because an offset-0 that is *not*
 100% means the cohort logic is broken rather than that the business changed.
 
 **Offsets are counted on the calendar**, not in days, so a 30-day month cannot
-create an off-by-one.
+create an off-by-one; offset 1 can mean anything from 28 to 62 days after the
+first order. The table includes a zero-activity row for every cohort and offset
+the snapshot can observe, so a cohort with no returns stays in the denominator.
+Long offsets therefore use only older cohorts: offset 12 is estimated from
+31,243 eligible customers in 13 cohorts, not all 96,096.
 
 **Counted in distinct people**: a customer who ordered twice in one month is one
 retained customer, not two.
@@ -210,8 +214,8 @@ retained customer, not two.
 
 ## RFM
 
-**Definition.** Each customer scored 1–5 on Recency, Frequency and Monetary with
-`ntile(5)`, plus a segment label. In `mart_rfm`.
+**Definition.** Each customer scored 1–5 on Recency and Monetary with `ntile(5)`,
+plus a count-based Frequency score and a segment label. In `mart_rfm`.
 
 **Direction of the scores, which is the trap.** Recency is *days since* the last
 order, so smaller is better and the scores are ordered descending — `r_score = 5`
@@ -222,10 +226,12 @@ message that quietly ranks the best customers as the worst.
 **The snapshot date is the day after the last order in the data**, so no customer
 can have a negative recency.
 
-**`f_score` is close to meaningless here and is labelled as such.** 96.9% of
-customers ordered exactly once, so nearly everyone ties, and `ntile` splits a tied
-mass arbitrarily. It is kept because that flatness *is* the finding — but no
-segment chart should be presented as though Frequency discriminated.
+**`f_score` is the order count capped at five**, not an `ntile`: 1 order scores
+1, 2 scores 2, and 5+ scores 5. 96.9% of customers ordered exactly once, so an
+`ntile` would split that tied mass arbitrarily and invent high-frequency
+customers. The capped count keeps the score monotone and makes the segment rule
+interpretable; it is still close to uninformative here, and that flatness *is*
+the finding.
 
 ---
 
@@ -267,12 +273,17 @@ an observable label on the deployment date, so it cannot train a model deployed
 then. That rule excludes 3,852 in-flight orders and leaves **60,474 mature
 training orders, 5.97% late**.
 
-**Model selection.** The mature training period is split at **2018-01-01**:
-41,202 orders before it fit the models, 16,783 in January–March validate them
-(6.91% late). Average precision selects logistic regression (0.127 vs 0.101).
-The selected model is refitted on all 60,474 training orders and evaluated once
-on the April–August holdout. Both models are still reported on the holdout as a
-sensitivity check; they are not used to re-select.
+**Model selection.** Rolling origin at **2017-07-01, 2017-10-01 and
+2018-01-01**. At each origin the model is fitted only on labels matured before
+that date and scored on the next three months; test labels must also mature
+within three months after the horizon, so a late order is not silently excluded
+from its own evaluation. Mean average precision selects logistic regression
+(**0.138 vs 0.102**). The earlier single validation period (41,202 fit orders,
+16,783 January–March orders, 6.91% late, AP 0.127 vs 0.101) is descriptive only
+and is not the selection criterion. The selected model is refitted on all 60,474
+training orders and evaluated once on the April–August holdout. Both models are
+still reported on the holdout as a sensitivity check; they are not used to
+re-select.
 
 **Feature policy.** The model uses an explicit allow-list in
 `late_delivery.features.FEATURES`: purchase timing, promised days, customer and
@@ -304,15 +315,22 @@ purpose.
 - **Calibration intercept and slope** — a logistic regression of the outcome on
   the predicted logit. Slope measures whether the ranking is stretched; intercept
   measures whether the level is shifted.
-- **Rolling origin** — refit at 2017-07, 2017-10, 2018-01 and 2018-04 using only
-  labels matured before each origin, then score the next three months. This is
-  the stability check a single holdout cannot provide.
+- **Paired bootstrap difference** — resample test rows with replacement, compute
+  the metric for two scores on the same rows, and report the percentile interval
+  of the difference. It answers whether one model beats another *within this
+  holdout*; it does not describe period-to-period variation.
+- **Rolling origin** — refit at 2017-07, 2017-10 and 2018-01 using only labels
+  matured before each origin, then score the next three months with labels
+  matured by three months after the horizon. This is the stability check a
+  single holdout cannot provide.
 
-**Results on the holdout.** Selected logistic: AUC 0.708 (0.695–0.720), AP 0.091
-(0.083–0.101), Brier 0.0420, top-decile precision 10.4% (9.3–11.5%), recall
-23.5% (21.6–25.6%) and lift 2.35× (2.16–2.56×). Gradient boosting scores AP
+**Results on the holdout.** Selected logistic: AUC 0.708 (0.695–0.722), AP 0.091
+(0.083–0.100), Brier 0.0420, top-decile precision 10.4% (9.4–11.5%), recall
+23.5% (21.5–25.6%) and lift 2.35× (2.15–2.56×). Gradient boosting scores AP
 0.103 and top-decile recall 28.6%, so the model class is not settled by this
-holdout.
+holdout. The paired bootstrap difference in AP is −0.0125 (95% interval −0.0215
+to −0.0035) in favour of boosting on this holdout; logistic won the rolling
+origins. Treat the class as open rather than declaring the holdout winner.
 
 **Calibration is a level shift, not a broken ranking.** Mean prediction is 6.38%
 against 4.42% observed; calibration slope is 1.02 and intercept −0.35. The
@@ -355,17 +373,20 @@ unigrams and bigrams, `min_df=20`, `max_df=0.5`, `random_state=0`,
 `learning_method="batch"`, `max_iter=30`, a conservative Portuguese stopword
 list, and tokens of at least three letters. Each complaint is assigned to the
 topic with the largest weight (hard assignment). UMass coherence (top 10 terms)
-is **−2.677** at k=6, higher than k=4–5 and k=7–10 on the same corpus, so six is
-the best of those candidates by a small margin. Perplexity is **332.92** and is
-reported only as a descriptive fit statistic; it is not used to choose k. Refits
-with seeds 1–4 give a mean adjusted Rand index of **0.258** and mean top-term
-Jaccard of **0.413** against the seed-0 partition, so the exact topic boundaries
-are not stable even though the broad logistics/product grouping is. Hard
-assignment is also a summary: **22.7%** of complaints have a largest topic weight
-below 0.5, and **31.7%** have a second topic at or above 0.3. Aggregating the full
-weights instead of the hard assignment gives the same direction: logistics topics
-carry **75.1%** of late complaint weight against **36.9%** of on-time weight, and
-product topics **24.9%** against **63.1%**.
+is **−2.677** at seed 0, the best of k=4–10 at that seed, but seed-averaged
+coherence is highest at k=4 (**−2.628** vs **−2.739** at k=6). Six is therefore
+a prespecified semantic choice, not a coherence optimum: k=4 merges product
+quality with returns, while six preserves the distinction the question needs.
+Perplexity is **332.92** and is descriptive only; it is not used to choose k.
+Refits with seeds 1–4 give a mean adjusted Rand index of **0.258** and mean
+top-term Jaccard of **0.413** against the seed-0 partition, so the exact topic
+boundaries are not stable even though the broad delivery/product grouping is.
+Hard assignment is also a summary: **22.7%** of complaints have a largest topic
+weight below 0.5, and **31.7%** have a second topic at or above 0.3. Aggregating
+the full weights instead of the hard assignment gives the same direction:
+delivery and non-receipt carry **58.9%** of late complaint weight against
+**22.8%** of on-time weight; product topics carry **24.9%** against **63.1%**;
+the mixed delay topic carries 16.2% against 14.1%.
 
 **Label audit.** A stratified random sample of five complaints per topic (30 in
 total, seed 20261107) was read against the assigned label: **20 clearly matched**
@@ -375,6 +396,13 @@ product quality or wrong items. This is one analyst's audit, not independent
 human coding, and 30 cases cannot estimate per-complaint accuracy with useful
 precision. It supports the readability of the broad topics, not the reliability
 of an individual assignment.
+
+**Grouping.** The reported three-way grouping is analyst-defined and written to
+`topic_groups.csv`: *delivery and non-receipt* = delivery problem + not received;
+*product* = quality + incomplete + wrong/return; *mixed or general* = delay. The
+delay topic is kept separate because its manual audit was the weakest (3/5
+sampled complaints were mainly product/wrong-item complaints), so counting it as
+logistics overstated the logistics share.
 
 **Topic share.** `share_pct` = complaints assigned to a topic ÷ all 9,139
 complaints. `late_share_pct` and `on_time_share_pct` use a different denominator

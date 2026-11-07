@@ -25,8 +25,8 @@ são, e `uv run python tasks.py train` as reconstrói.
 
 - **O ranking tem sinal, mas é moderado e instável entre períodos.** Em uma
   amostra temporal de 32.150 pedidos entregues, o modelo logístico selecionado
-  alcança **ROC AUC 0,708** (intervalo bootstrap de 95%: 0,695–0,720) e
-  **precisão média 0,091** (0,083–0,101) contra uma taxa de atraso de 4,42%.
+  alcança **ROC AUC 0,708** (intervalo bootstrap de 95%: 0,695–0,722) e
+  **precisão média 0,091** (0,083–0,100) contra uma taxa de atraso de 4,42%.
   Sinalizar os 10% de maior risco captura **23,5% dos atrasos** com
   **precisão de 10,4% — 2,35× a taxa base**.
 - **A classe do modelo não está decidida por esta evidência.** A regressão
@@ -107,13 +107,17 @@ entregues depois contribuiriam com rótulos que não existiam na data de
 implantação. O conjunto de treino maduro tem **60.474 pedidos e taxa de atraso de
 5,97%**.
 
-**Seleção de modelo:** o período de treino é dividido novamente em
-**2018-01-01**. Os modelos são ajustados antes dessa data (41.202 pedidos) e
-comparados em janeiro–março de 2018 (16.783 pedidos, 6,91% atrasados). A
-precisão média seleciona a regressão logística (0,127 contra 0,101 do boosting).
-O modelo selecionado é reajustado em todo o treino maduro e avaliado uma única
-vez na amostra de abril–agosto. Os dois modelos são reportados no teste como
-checagem de sensibilidade, não para re-selecionar.
+**Seleção de modelo:** origem móvel. Em 2017-07-01, 2017-10-01 e 2018-01-01,
+cada modelo é ajustado com rótulos maduros antes da origem e avaliado nos três
+meses seguintes. O rótulo de teste precisa ter amadurecido até três meses depois
+do horizonte, para que um pedido que chega atrasado não seja silenciosamente
+excluído da avaliação. A precisão média nas três origens seleciona a regressão
+logística (**0,138 contra 0,102** do boosting). Um período interno único de
+validação (ajuste antes de 2018-01, validação em janeiro–março de 2018, 16.783
+pedidos, 6,91% atrasados) continua reportado apenas para descrição; não é o
+critério de seleção. O modelo selecionado é reajustado em todo o treino maduro e
+avaliado uma única vez na amostra de abril–agosto. Os dois modelos são reportados
+no teste como checagem de sensibilidade, não para re-selecionar.
 
 **Métricas:** ROC AUC e precisão média para ranking; Brier e resumo de
 calibração para probabilidades; precisão, recall e lift em capacidades de 5%, 10%
@@ -128,19 +132,20 @@ atrasado” para todo pedido acerta 95,6%.
 |---|---:|---:|---:|---:|---:|---:|
 | Regressão logística (selecionada) | 0,708 | 0,091 | 0,0420 | 10,4% | 23,5% | 2,35× |
 | Gradient boosting | 0,708 | 0,103 | 0,0413 | 12,6% | 28,6% | 2,86× |
-| Constante (prevalência de treino) | — | — | 0,0425 | 4,1%* | 9,2%* | 0,92×* |
-| Taxa por estado do cliente | — | — | 0,0427 | 4,8% | 10,8% | 1,08× |
+| Constante (prevalência de treino) | — | — | 0,0425 | — | — | — |
+| Taxa por estado do cliente | — | — | 0,0427 | 5,1% | 11,6% | 1,16× |
 
-\* Um score constante não ordena; os números do decil superior são uma fatia
-arbitrária de um empate e aparecem apenas para tornar a comparação explícita.
+Um score constante não ordena, então não tem métricas de decil superior com
+sentido; a versão anterior reportava uma fatia arbitrária de um empate, o que
+fazia a baseline parecer melhor do que era. O Brier continua válido como
+verificação do nível da probabilidade.
 
-Os dois modelos são próximos o suficiente para que a amostra não os distinga. A
-regressão logística selecionada tem Brier levemente melhor que a constante
-(0,0420 contra 0,0425), mas sua vantagem no ranking é o resultado real. O
-gradient boosting é melhor no topo da fila; a regressão logística é mais fácil de
-interpretar e foi escolhida sem olhar o teste. Uma equipe de produção deveria
-tratar a classe do modelo como uma escolha aberta e decidi-la com avaliação
-móvel, não com este único período.
+Os dois modelos são próximos em AUC, mas a diferença pareada em precisão média é
+real dentro desta amostra: o boosting é melhor no topo da fila. A regressão
+logística é mais fácil de interpretar e venceu a comparação com origem móvel sem
+olhar o teste de abril–agosto. Essa discordância é o resultado honesto: uma
+equipe de produção deveria tratar a classe do modelo como uma escolha aberta e
+decidi-la com uma avaliação móvel mais longa, não com este único período.
 
 ![Curva de precisão–recall dos dois modelos na amostra temporal. A linha pontilhada é a taxa base de 4,42%.](../../../reports/02-late-delivery/figures/pt/precision_recall.png){#fig-pr fig-alt="Curvas de precisão-recall da regressão logística e do gradient boosting na amostra temporal de 32.150 pedidos. Ambas ficam acima da linha de taxa base de 4,42 por cento, com o gradient boosting levemente acima no topo do ranking." fig-align="center"}
 
@@ -156,8 +161,8 @@ A fila degrada de forma suave: dobrar o orçamento de 10% para 20% encontra mais
 276 atrasos, mas a precisão cai de 10,4% para 9,5%. A capacidade certa é uma
 decisão de custo que o conjunto não permite tomar.
 
-Intervalos bootstrap (500 reamostragens) colocam o ponto de 10% em 9,3–11,5% de
-precisão, 21,6–25,6% de recall e 2,16–2,56× de lift. Esses intervalos descrevem
+Intervalos bootstrap (500 reamostragens) colocam o ponto de 10% em 9,4–11,5% de
+precisão, 21,5–25,6% de recall e 2,15–2,56× de lift. Esses intervalos descrevem
 o ruído amostral dentro desta amostra; não cobrem a mudança de regime entre
 períodos.
 
@@ -208,14 +213,15 @@ avaliado nos três meses seguintes:
 
 | Origem | Pedidos de treino | Pedidos de teste | Taxa de atraso no teste | ROC AUC | Precisão média | Recall topo 10% |
 |---|---:|---:|---:|---:|---:|---:|
-| 2017-07 | 13.111 | 12.215 | 3,37% | 0,615 | 0,059 | 20,1% |
-| 2017-10 | 24.833 | 17.279 | 8,69% | 0,586 | 0,111 | 14,2% |
-| 2018-01 | 41.202 | 20.628 | 12,89% | 0,675 | 0,245 | 25,0% |
-| 2018-04 | 60.474 | 19.643 | 4,17% | 0,752 | 0,119 | 35,1% |
+| 2017-07 | 13.111 | 12.214 | 3,37% | 0,614 | 0,059 | 20,1% |
+| 2017-10 | 24.833 | 17.272 | 8,66% | 0,586 | 0,110 | 14,2% |
+| 2018-01 | 41.202 | 20.624 | 12,87% | 0,674 | 0,245 | 25,0% |
 
 O ranking é positivo em todas as janelas, mas varia de fraco (AUC 0,59) a útil
-(AUC 0,75). Essa é a incerteza honesta em torno de um número de manchete, e
-argumenta por monitoramento em vez de uma alegação única de implantação.
+(AUC 0,67). Essas populações de teste exigem rótulos maduros até três meses após
+o horizonte, então não são idênticas à amostra de manchete. Essa é a incerteza
+honesta em torno de um número de manchete, e argumenta por monitoramento em vez
+de uma alegação única de implantação.
 
 ---
 
@@ -257,7 +263,7 @@ tanto.
 
 - **Uma amostra, e um regime em movimento.** O período de teste contém o backlog
   de fevereiro/março de 2018 e a melhora abrupta depois dele. Os resultados
-  mensais e de origem móvel mostram AUC de 0,59 a 0,75. Uma decisão de produção
+  mensais e de origem móvel mostram AUC de 0,59 a 0,67. As populações de origem móvel são subconjuntos com rótulos maduros, não idênticos à amostra de manchete. Uma decisão de produção
   precisa de uma avaliação móvel mais longa, não desta única divisão.
 - **Os pedidos excluídos não são uma amostra aleatória.** 2.965 pedidos não têm
   rótulo de atraso observável. A maioria está em trânsito ou cancelada no fim do

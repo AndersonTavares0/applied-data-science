@@ -39,10 +39,11 @@ e figuras usadas nesta página.
   contra **5,6%** das de atrasados (**−21,1 pp**). Pedido incompleto é **22,8%**
   contra **4,2%** (**−18,6 pp**), e item errado, defeito ou troca é **19,4%**
   contra **8,3%** (**−11,1 pp**).
-- **Agrupando os tópicos à mão, a separação fica mais nítida.** Os três tópicos de
-  logística somam **81,9%** das reclamações de atrasados e **31,1%** das de
+- **Agrupando os tópicos à mão, a separação fica mais nítida.** Entrega e não
+  recebimento somam **65,7%** das reclamações de atrasados e **18,5%** das de
   pedidos no prazo. Os três tópicos de produto somam **18,1%** das reclamações de
-  atrasados e **68,9%** das de pedidos no prazo. Esse agrupamento é um resumo do
+  atrasados e **68,9%** das de pedidos no prazo. O tópico misto de demora
+  (16,2% vs 12,6%) é reportado separadamente. Esse agrupamento é um resumo do
   analista, não uma saída do modelo.
 - **Isto descreve quem escreveu reclamações, não todos os compradores.** Pedidos
   atrasados são **6,8%** das entregas mas **29,7%** do corpus de reclamações,
@@ -113,28 +114,29 @@ O método é deliberadamente simples e fixado antes de olhar o desfecho.
 
 ### Por que seis tópicos
 
-Seis não foi escolhido pela perplexidade. A perplexidade cai à medida que tópicos
-são adicionados e é menor em k=8, enquanto a coerência UMass — se os termos
-principais de um tópico aparecem juntos no corpus — é maior em k=6 entre os sete
-candidatos testados. A coerência é o critério porque a perplexidade
-principalmente recompensa distribuir probabilidade sobre palavras frequentes; ela
-não diz se um tópico é legível.
+Seis é uma escolha semântica pré-especificada, não um ótimo de coerência. A
+coerência UMass — se os termos principais de um tópico aparecem juntos no corpus
+— depende da inicialização: no seed 0 é maior em k=6, mas a média entre seeds é
+maior em k=4. A tabela repete cada candidato nos seeds 0, 1 e 2:
 
-| Tópicos | Coerência UMass média (10 termos) | Perplexidade |
-|---:|---:|---:|
-| 4 | −2,699 | 333,05 |
-| 5 | −2,699 | 332,39 |
-| **6** | **−2,677** | **332,92** |
-| 7 | −2,691 | 329,96 |
-| 8 | −2,745 | 329,04 |
-| 9 | −2,850 | 330,69 |
-| 10 | −2,833 | 330,43 |
+| Tópicos | Coerência seed 0 | Coerência média | DP entre seeds | Perplexidade média |
+|---:|---:|---:|---:|---:|
+| 4 | −2,699 | **−2,628** | 0,067 | 340,09 |
+| 5 | −2,699 | −2,692 | 0,026 | 343,68 |
+| **6** | **−2,677** | −2,739 | 0,056 | 342,69 |
+| 7 | −2,691 | −2,755 | 0,118 | 340,17 |
+| 8 | −2,745 | −2,752 | 0,023 | 336,73 |
+| 9 | −2,850 | −2,845 | 0,100 | 341,89 |
+| 10 | −2,833 | −2,871 | 0,043 | 338,90 |
 
-A margem sobre k=4, k=5 e k=7 é pequena: a coerência sozinha não prova que seis é
-o número verdadeiro, apenas que é o melhor dos candidatos neste corpus e
-pré-processamento. Os rótulos continuam sendo uma interpretação humana dos
-termos, e dois pares se sobrepõem: "problema de entrega" e "demora" tratam de
-entrega, e "não recebido" e "demora" compartilham vocabulário.
+As diferenças são pequenas diante da variação entre seeds, e k=4 funde
+reclamações de produto e de troca em um só tópico. Seis preserva as distinções
+entre produto/troca e não recebimento/defeito que a pergunta de negócio precisa,
+então é o modelo reportado — mas não é o único melhor número. Quem pondera
+apenas coerência escolheria quatro. Os rótulos também continuam sendo uma
+interpretação humana dos termos, e dois pares se sobrepõem: "problema de entrega"
+e "demora" tratam de entrega, e "não recebido" e "demora" compartilham
+vocabulário.
 
 ### Quão estáveis são os tópicos?
 
@@ -154,9 +156,10 @@ que não sobrevive:
 | Atraso / longa espera | 0,292 |
 | Item errado / troca | 0,292 |
 
-O agrupamento logística/produto é mais robusto que as fronteiras exatas. Em cada
-semente alternativa, todo tópico de logística tem participação de atrasados entre
-27% e 67%, enquanto todo tópico de produto fica entre 6% e 25%. A conclusão
+O contraste entrega/produto é mais robusto que as fronteiras exatas. Em cada
+semente alternativa, todo tópico ligado à entrega (incluindo o tópico misto de
+demora) tem participação de atrasados entre 27% e 67%, enquanto todo tópico de
+produto fica entre 6% e 25%. A conclusão
 principal — reclamações de atrasados tratam da entrega, reclamações no prazo
 tratam do produto — sobrevive; os seis rótulos específicos e os percentuais exatos
 não devem ser lidos como categorias fixas.
@@ -200,11 +203,12 @@ dos rótulos com precisão útil. A auditoria sustenta a leitura ampla do corpus
 a atribuição exata de uma reclamação individual.
 
 Usar a distribuição completa de tópicos, e não apenas o maior peso, leva à mesma
-leitura. No corpus, os três tópicos de logística respondem por **75,1%** do peso
-médio das reclamações de pedidos atrasados contra **36,9%** das reclamações no
-prazo; os três tópicos de produto respondem por **24,9%** contra **63,1%**. As
-diferenças por atribuição dura na tabela são maiores, mas a direção não depende
-de forçar cada reclamação em um único tópico.
+leitura. No corpus, entrega e não recebimento respondem por **58,9%** do peso
+médio das reclamações de pedidos atrasados contra **22,8%** das reclamações no
+prazo; os três tópicos de produto respondem por **24,9%** contra **63,1%**. O
+tópico misto de demora responde por 16,2% contra 14,1%. As diferenças por
+atribuição dura na tabela são maiores, mas a direção não depende de forçar cada
+reclamação em um único tópico.
 
 ```{=html}
 <!-- Source: reports/topic_terms.csv -->
@@ -250,12 +254,14 @@ pedidos no prazo), e a diferença é em pontos percentuais.
 
 ![A mistura de reclamações dentro de cada desfecho. Reclamações de atrasados são majoritariamente de logística; as de pedidos no prazo, de produto.](../../../reports/03-voice-of-customer/figures/pt/topic_mix.png){#fig-mix fig-alt="Barras horizontais pareadas mostrando a participação de cada tópico nas reclamações de pedidos atrasados e no prazo. Problema de entrega, não recebido e demora dominam o grupo atrasado; qualidade, pedido incompleto e item errado dominam o grupo no prazo." fig-align="center"}
 
-**As reclamações de atrasados são sobre o pacote.** Problema de entrega, não
-recebimento e demora juntos são 81,9% das reclamações de atrasados, contra 31,1%
+**As reclamações de atrasados são sobre o pacote.** Problema de entrega e não
+recebimento juntos são **65,7%** das reclamações de atrasados, contra **18,5%**
 das de pedidos no prazo. A maior diferença isolada é "problema de entrega", com
-+28,8 pp. É o que o Projeto 01 encontrou nos carimbos de tempo de entrega, agora
-dito nas palavras dos próprios clientes: quando um pedido atrasa, a reclamação é
-sobre a entrega, não sobre a mercadoria.
++28,8 pp. O tópico de demora acrescenta apenas +3,6 pp e teve auditoria manual
+mista, então é reportado separadamente e não entra na logística. É o que o
+Projeto 01 encontrou nos carimbos de tempo de entrega, agora dito nas palavras
+dos próprios clientes: quando um pedido atrasa, a reclamação é sobre a entrega,
+não sobre a mercadoria.
 
 **As reclamações de pedidos no prazo são sobre o produto.** Só qualidade ou
 "diferente do anunciado" é 26,7% das reclamações no prazo. Pedido incompleto é
@@ -305,7 +311,7 @@ tópicos serem ajustados.
 
 ```bash
 uv run python tasks.py topics     # ajusta o modelo, escreve tabelas e figuras
-uv run pytest                     # 40 testes, sem banco de dados nem rede
+uv run pytest                     # 53 testes, sem banco de dados nem rede
 ```
 
 O script lê os modelos construídos, então a ordem no pipeline é
@@ -317,8 +323,12 @@ O script lê os modelos construídos, então a ordem no pipeline é
   principais de cada tópico.
 - `projects/03-voice-of-customer/reports/topic_prevalence.csv` — a tabela acima,
   com p-valores exatos e limites de confiança.
+- `projects/03-voice-of-customer/reports/topic_groups.csv` — o agrupamento em três
+  blocos, com participações por atribuição dura e pesos suaves.
 - `projects/03-voice-of-customer/reports/topic_selection.csv` — coerência e
-  perplexidade para k=4–10; o script para se a coerência deixar de escolher k=6.
+  perplexidade para k=4–10 nos seeds 0–2. Seis é pré-selecionado por
+  granularidade semântica; o script reporta o melhor k no seed 0 e na média, mas
+  não falha quando diferem.
 - `site/reports/03-voice-of-customer/figures/*.png` — as duas figuras, em inglês
   e português.
 
