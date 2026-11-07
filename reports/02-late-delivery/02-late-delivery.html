@@ -431,7 +431,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="executive-summary">Executive summary</h2>
 <ul>
 <li><strong>The ranking has signal, but it is moderate and unstable across periods.</strong> On a temporal holdout of 32,150 delivered orders, the selected logistic model reaches <strong>ROC AUC 0.708</strong> (95% bootstrap interval 0.695–0.720) and <strong>average precision 0.091</strong> (0.083–0.101) against a 4.42% late rate. Flagging the riskiest 10% captures <strong>23.5% of late orders</strong> at <strong>10.4% precision — 2.35× the base rate</strong>.</li>
-<li><strong>The model class is not settled by this evidence.</strong> Logistic regression won an inner validation period on average precision, but gradient boosting scored slightly better on the final holdout (AP 0.097 vs 0.091; top-decile recall 28.4% vs 23.5%). The difference is small, and a single holdout cannot establish a reliable ranking between them. The report shows both rather than declaring a winner from the test set.</li>
+<li><strong>The model class is not settled by this evidence.</strong> Logistic regression won an inner validation period on average precision, but gradient boosting scored slightly better on the final holdout (AP 0.103 vs 0.091; top-decile recall 28.6% vs 23.5%). The difference is small, and a single holdout cannot establish a reliable ranking between them. The report shows both rather than declaring a winner from the test set.</li>
 <li><strong>The score is a triage queue, not a probability.</strong> The holdout late rate is 4.42%, while the selected model’s mean prediction is 6.38%. Its calibration slope is near one (1.02) but its intercept is −0.35 on the logit scale: it ranks reasonably and overpredicts the level. A deployed probability would need recalibration on recent, matured orders.</li>
 <li><strong>Promise length and geography dominate.</strong> Permutation importance ranks <code>promise_days</code> first, then <code>customer_state</code> and <code>seller_state</code>. Basket value, freight, weight, payment method and category contribute little once those are known.</li>
 <li><strong>The result is not a causal lever.</strong> <code>promise_days</code> is the marketplace’s own expectation of difficulty. Shortening it would not mechanically reduce lateness; Project 01’s operational question about the São Paulo → Rio crossing remains the causal one.</li>
@@ -524,21 +524,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td>Gradient boosting</td>
-<td style="text-align: right;">0.705</td>
-<td style="text-align: right;">0.097</td>
-<td style="text-align: right;">0.0415</td>
-<td style="text-align: right;">12.5%</td>
-<td style="text-align: right;">28.4%</td>
-<td style="text-align: right;">2.84×</td>
+<td style="text-align: right;">0.708</td>
+<td style="text-align: right;">0.103</td>
+<td style="text-align: right;">0.0413</td>
+<td style="text-align: right;">12.6%</td>
+<td style="text-align: right;">28.6%</td>
+<td style="text-align: right;">2.86×</td>
 </tr>
 <tr class="odd">
 <td>Constant (training prevalence)</td>
 <td style="text-align: right;">—</td>
 <td style="text-align: right;">—</td>
 <td style="text-align: right;">0.0425</td>
-<td style="text-align: right;">4.0%*</td>
-<td style="text-align: right;">8.9%*</td>
-<td style="text-align: right;">0.89×*</td>
+<td style="text-align: right;">4.1%*</td>
+<td style="text-align: right;">9.2%*</td>
+<td style="text-align: right;">0.92×*</td>
 </tr>
 <tr class="even">
 <td>Customer-state rate</td>
@@ -546,8 +546,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">—</td>
 <td style="text-align: right;">0.0427</td>
 <td style="text-align: right;">4.8%</td>
-<td style="text-align: right;">10.9%</td>
-<td style="text-align: right;">1.09×</td>
+<td style="text-align: right;">10.8%</td>
+<td style="text-align: right;">1.08×</td>
 </tr>
 </tbody>
 </table>
@@ -775,22 +775,22 @@ Figure&nbsp;2: Calibration on the temporal holdout. The dashed diagonal is perfe
 <tbody>
 <tr class="odd">
 <td><code>promise_days</code></td>
-<td style="text-align: right;">0.032</td>
+<td style="text-align: right;">0.033</td>
 </tr>
 <tr class="even">
 <td><code>customer_state</code></td>
-<td style="text-align: right;">0.022</td>
+<td style="text-align: right;">0.021</td>
 </tr>
 <tr class="odd">
 <td><code>seller_state</code></td>
 <td style="text-align: right;">0.005</td>
 </tr>
 <tr class="even">
-<td><code>seller_count</code></td>
-<td style="text-align: right;">0.001</td>
+<td><code>same_state</code></td>
+<td style="text-align: right;">0.003</td>
 </tr>
 <tr class="odd">
-<td><code>avg_weight_grams</code></td>
+<td><code>seller_count</code></td>
 <td style="text-align: right;">0.001</td>
 </tr>
 <tr class="even">
