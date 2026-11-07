@@ -17,7 +17,7 @@ where the hard part is deciding what a number means.
 | Area | Tools |
 |---|---|
 | Querying & modelling | PostgreSQL, dbt, advanced SQL (window functions, CTEs) |
-| Analysis | Python (pandas, matplotlib, seaborn), statistical reasoning |
+| Analysis | Python (pandas, scikit-learn, matplotlib, seaborn), statistical reasoning, topic modelling |
 | Engineering | Git, Docker, pytest, GitHub Actions, `uv` |
 | Communication | Quarto, technical writing, decision memos |
 

@@ -133,8 +133,9 @@ non-discriminating because 96.9% of customers ordered once — see
 `avg_review_score`, `pct_review_score_le2`, `avg_delivery_days`.
 
 Buckets: `on time`, `late: up to 7 days`, `late: 8 to 14 days`,
-`late: more than 14 days`, `never delivered`. `bucket_order` exists so charts sort
-by severity instead of alphabetically.
+`late: more than 14 days`, `never delivered` (no delivery timestamp by the end of
+the snapshot). `bucket_order` exists so charts sort by severity instead of
+alphabetically.
 
 ### `mart_late_delivery_by_state` — one row per customer state
 

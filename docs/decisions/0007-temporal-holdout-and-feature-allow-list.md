@@ -72,8 +72,8 @@ excellent score.
   bounded rather than assumed.
 - **Model selection is itself uncertain.** Logistic regression won validation,
   but gradient boosting did slightly better on the holdout. The difference is
-  within noise; the report presents both rather than declaring a winner from the
-  test period.
+  small and a single holdout cannot settle it; the report presents both rather
+  than declaring a winner from the test period.
 - **The excluded population is not random.** The 2,965 orders without a delivery
   timestamp are mostly in flight or cancelled at the end of the dataset. The
   model is evaluated on delivered orders and does not describe cancelled orders.

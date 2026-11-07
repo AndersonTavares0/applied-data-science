@@ -1,13 +1,13 @@
 ---
 toc: false
-pagetitle: "Portfólio de Análise de Varejo"
+pagetitle: "Portfólio de Ciência de Dados Aplicada"
 ---
 
 # O atraso na entrega é o sinal mais forte de insatisfação do cliente neste marketplace. {.hero}
 
 Eu medi isso em 99,441 pedidos. Mais dois projetos vêm a seguir sobre o mesmo
 conjunto de dados da Olist: um modelo que prevê o atraso na entrega a partir do que
-se sabe no momento da compra, e uma leitura das 99,000 avaliações em português que
+se sabe no momento da compra, e uma leitura das 40.968 avaliações em português que
 os clientes escreveram sobre ela. Cada projeto entrega uma análise escrita, um
 memorando de decisão de uma página e uma declaração do que os dados não sustentam.
 
@@ -38,7 +38,7 @@ memorando de decisão de uma página e uma declaração do que os dados não sus
 <article class="project">
 <div class="project-seq">03<span class="project-status status-published">Publicado</span></div>
 <div class="project-detail">
-<h3>Do que 99.000 avaliações em português reclamam?</h3>
+<h3>Do que 9.139 reclamações escritas reclamam?</h3>
 <p>Modelagem de tópicos de 9.139 reclamações escritas de 1–2 estrelas. As de pedidos atrasados são sobre o pacote: problema de entrega, não recebimento e demora são 81,9% delas. As de pedidos no prazo são sobre o produto: qualidade, completude e item errado são 68,9%. O relatório declara a seleção antes do resultado.</p>
 <p class="project-stack">Python, PLN, modelagem de tópicos</p>
 <p class="project-links"><a href="reports/03-voice-of-customer/03-voice-of-customer.qmd">Ler a análise</a> <a href="reports/03-voice-of-customer/00-executive-memo.qmd">Memorando de decisão</a></p>

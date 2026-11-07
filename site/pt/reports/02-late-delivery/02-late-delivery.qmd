@@ -31,10 +31,11 @@ são, e `uv run python tasks.py train` as reconstrói.
   **precisão de 10,4% — 2,35× a taxa base**.
 - **A classe do modelo não está decidida por esta evidência.** A regressão
   logística venceu um período interno de validação por precisão média, mas o
-  gradient boosting foi levemente melhor na amostra final (precisão média 0,096
-  contra 0,091; recall no decil superior 27,5% contra 23,5%). A diferença está
-  dentro do ruído. O relatório mostra os dois em vez de declarar um vencedor a
-  partir do teste.
+  gradient boosting foi levemente melhor na amostra final (precisão média 0,097
+  contra 0,091; recall no decil superior 28,4% contra 23,5%). A diferença é
+  pequena e uma única amostra temporal não estabelece um ranking confiável entre
+  os dois. O relatório mostra ambos em vez de declarar um vencedor a partir do
+  teste.
 - **O score é uma fila de triagem, não uma probabilidade.** A taxa de atraso da
   amostra é 4,42%, enquanto a previsão média do modelo selecionado é 6,38%. A
   inclinação de calibração é próxima de um (1,02), mas o intercepto é −0,35 na
@@ -126,7 +127,7 @@ atrasado” para todo pedido acerta 95,6%.
 | Modelo | ROC AUC | Precisão média | Brier | Precisão topo 10% | Recall topo 10% | Lift |
 |---|---:|---:|---:|---:|---:|---:|
 | Regressão logística (selecionada) | 0,708 | 0,091 | 0,0420 | 10,4% | 23,5% | 2,35× |
-| Gradient boosting | 0,704 | 0,096 | 0,0414 | 12,2% | 27,5% | 2,75× |
+| Gradient boosting | 0,705 | 0,097 | 0,0415 | 12,5% | 28,4% | 2,84× |
 | Constante (prevalência de treino) | — | — | 0,0425 | 4,0%* | 8,9%* | 0,89×* |
 | Taxa por estado do cliente | — | — | 0,0427 | 4,8% | 10,9% | 1,09× |
 

@@ -32,8 +32,9 @@ figures are, and `uv run python tasks.py train` rebuilds them.
 - **The model class is not settled by this evidence.** Logistic regression won
   an inner validation period on average precision, but gradient boosting scored
   slightly better on the final holdout (AP 0.097 vs 0.091; top-decile recall
-  28.4% vs 23.5%). The difference is within noise. The report shows both rather
-  than declaring a winner from the test set.
+  28.4% vs 23.5%). The difference is small, and a single holdout cannot establish a
+  reliable ranking between them. The report shows both rather than declaring a
+  winner from the test set.
 - **The score is a triage queue, not a probability.** The holdout late rate is
   4.42%, while the selected model's mean prediction is 6.38%. Its calibration
   slope is near one (1.02) but its intercept is −0.35 on the logit scale: it

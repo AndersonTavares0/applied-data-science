@@ -15,8 +15,8 @@ the outcome it is meant to explain.
 Two smaller traps appeared while exploring the text. The Portuguese negation
 `não` is the difference between `recebi` and `não recebi`; removing it as a
 stopword merged "received" and "never received" into one topic. And 547 orders
-have more than one review row, so joining reviews directly to orders double-counts
-those orders and inflates every denominator.
+have more than one review row — 551 extra rows in total — so joining reviews
+directly to orders inflates every denominator.
 
 ## The decision
 
@@ -63,6 +63,13 @@ those orders and inflates every denominator.
   have a second topic at or above 0.3. Aggregating full weights preserves the
   direction: logistics topics are 75.1% of late complaint weight vs 36.9% of
   on-time; product topics are 24.9% vs 63.1%.
+- **Individual labels are unreliable.** A stratified random sample of five
+  complaints per topic (30 total, seed 20261107) was read by the analyst: 20
+  clearly matched the assigned topic, 5 partly matched, and 5 were dominated by
+  another theme. The delay topic was the weakest (three of five were mainly
+  product complaints). This is not independent human coding, and it means the
+  topic shares are usable as corpus-level description, not as a per-complaint
+  classifier.
 - **A bag of words does not understand a sentence.** Keeping `não` preserves the
   common `não recebi` bigram, but the model cannot represent scope, irony or
   which product a complaint refers to.
