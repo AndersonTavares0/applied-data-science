@@ -16,7 +16,7 @@ USAGE
 EXAMPLES
 --------
     uv run python tasks.py setup      # deps + database + data   (run once)
-    uv run python tasks.py pipeline   # load -> dbt build -> charts -> topics -> tests -> render
+    uv run python tasks.py pipeline   # load -> build -> charts -> train + topics -> tests -> render
 """
 
 from __future__ import annotations
@@ -33,7 +33,11 @@ SRC = PROJECT / "src"
 SCRIPTS = PROJECT / "scripts"
 DBT_DIR = PROJECT / "dbt_project"
 
-# Project 03 reads the built marts and fits the review topic model.
+# Projects 02 and 03 read the built marts: the model trains on them and the
+# topic model joins complaint text to their delivery labels.
+MODEL_PROJECT = ROOT / "projects" / "02-late-delivery"
+MODEL_SRC = MODEL_PROJECT / "src"
+MODEL_SCRIPTS = MODEL_PROJECT / "scripts"
 VOICE_PROJECT = ROOT / "projects" / "03-voice-of-customer"
 VOICE_SRC = VOICE_PROJECT / "src"
 VOICE_SCRIPTS = VOICE_PROJECT / "scripts"
@@ -67,9 +71,9 @@ def load_dotenv(path: Path = ROOT / ".env") -> None:
 
 
 def child_env() -> dict[str, str]:
-    """Environment for child processes: `.env` loaded, project packages importable."""
+    """Environment for child processes: `.env` loaded, every `src` importable."""
     env = dict(os.environ)
-    src_paths = [str(SRC), str(VOICE_SRC)]
+    src_paths = [str(SRC), str(MODEL_SRC), str(VOICE_SRC)]
     existing = env.get("PYTHONPATH")
     env["PYTHONPATH"] = os.pathsep.join(src_paths + ([existing] if existing else []))
     return env
@@ -152,6 +156,11 @@ def task_charts() -> None:
     writes are committed, so publishing the site never touches the database.
     """
     run([sys.executable, str(SCRIPTS / "make_charts.py")])
+
+
+def task_train() -> None:
+    """Train and evaluate the late-delivery model, writing metrics + figures."""
+    run([sys.executable, str(MODEL_SCRIPTS / "train_model.py")])
 
 
 def task_topics() -> None:
@@ -245,6 +254,7 @@ def task_pipeline() -> None:
     task_load()
     task_dbt_build()
     task_charts()
+    task_train()
     task_topics()
     task_test()
     task_render()
@@ -280,6 +290,7 @@ TASKS: dict[str, tuple[str, object]] = {
     "db-reset": ("Destroy the database volume and recreate it", task_db_reset),
     "load": ("Load raw CSVs into the `raw` schema", task_load),
     "charts": ("Regenerate the report charts from the marts", task_charts),
+    "train": ("Train and evaluate the late-delivery model", task_train),
     "topics": ("Fit the review topic model and regenerate its figures", task_topics),
     "dbt-build": ("Build and test all dbt models", task_dbt_build),
     "dbt-docs": ("Generate the dbt docs site", task_dbt_docs),
@@ -289,7 +300,10 @@ TASKS: dict[str, tuple[str, object]] = {
     "render": ("Render the Quarto website", task_render),
     "preview": ("Live-preview the Quarto website", task_preview),
     "publish": ("Publish the site to the `gh-pages` branch", task_publish),
-    "pipeline": ("load -> dbt build -> charts -> topics -> tests -> render", task_pipeline),
+    "pipeline": (
+        "load -> dbt build -> charts -> train + topics -> tests -> render",
+        task_pipeline,
+    ),
     "clean": ("Remove caches and build artefacts", task_clean),
 }
 

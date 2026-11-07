@@ -28,7 +28,7 @@ dependencies = [
   # Analysis + charts for the reports.
   "matplotlib>=3.9",
   "seaborn>=0.13",
-  # Topic modelling and evaluation for Projects 02 and 03.
+  # Late-delivery modelling and review topic modelling (Projects 02 and 03).
   "scikit-learn>=1.4",
   # Exploration.
   "jupyterlab>=4.2",
@@ -69,14 +69,16 @@ select = ["E", "F", "W", "I", "UP", "B", "SIM"]
 package = false
 
 [tool.pytest.ini_options]
-# Each project is a plain source tree, not an installed package. This makes the
-# local modules importable in tests without packaging them.
+# Each project keeps its own `src` tree and is imported via PYTHONPATH rather
+# than installed. Adding a project means adding its source root here.
 pythonpath = [
   "projects/01-retail-analytics/src",
+  "projects/02-late-delivery/src",
   "projects/03-voice-of-customer/src",
 ]
 testpaths = [
   "projects/01-retail-analytics/tests",
+  "projects/02-late-delivery/tests",
   "projects/03-voice-of-customer/tests",
 ]
 addopts = "-q"

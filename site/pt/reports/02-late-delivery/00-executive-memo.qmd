@@ -1,0 +1,100 @@
+---
+title: "Memorando de decisão — Risco de atraso"
+subtitle: "Uma página. O que o modelo faz, o que não faz e como usar."
+date: today
+date-format: "MMMM YYYY"
+body-classes: memo
+format:
+  html:
+    toc: false
+---
+
+::: {.memo-head}
+**Preparado para:** Diretoria de Operações<br>
+**Preparado por:** Anderson Tavares
+:::
+
+> Método, métricas e limitações estão no
+> [relatório 02 · Modelo de atraso na entrega](02-late-delivery.qmd).
+
+## Conclusão
+
+No checkout, um modelo consegue ordenar pedidos por risco de atraso bem o
+suficiente para focar uma fila de revisão: os 10% de maior risco concentram
+**2,35×** a participação esperada de atrasos. Ele ainda não produz uma
+probabilidade estável, porque a taxa de atraso muda entre períodos. **Use o
+ranking; não prometa o percentual.**
+
+## A descoberta
+
+- Treinado em **60.474 pedidos maduros** antes de abril de 2018 e testado em
+  **32.150** depois, o modelo logístico selecionado alcança **ROC AUC 0,708** e
+  **precisão média 0,091** contra uma taxa base de **4,42%**.
+- Sinalizar os **10% do topo (3.215 pedidos)** captura **23,5% de todos os
+  atrasos** com **precisão de 10,4%**, um **lift de 2,35×**. Uma baseline por
+  estado do cliente captura 10,9% na mesma capacidade. Com 5% de capacidade, a
+  precisão é 10,8% e o recall 12,2%; com 20%, a precisão é 9,5% e o recall 42,9%.
+- **A classe do modelo não está decidida.** A regressão logística venceu um
+  período interno de validação por precisão média, mas o gradient boosting foi
+  levemente melhor na amostra final (precisão média 0,096, recall 27,5%). A
+  diferença está dentro do ruído. Trate o modelo como um ranker promissor, não
+  como uma escolha final.
+- **O nível não está calibrado para o próximo período.** O risco médio previsto é
+  6,38% contra 4,42% observados, embora a inclinação de calibração seja próxima
+  de um (1,02). O ranking está aproximadamente certo; o nível está alto demais.
+- **Prazo e geografia fazem o trabalho.** `promise_days`, estado do cliente e
+  estado do vendedor dominam. Valor da cesta,
+  frete, peso, pagamento e categoria acrescentam pouco.
+- **O sinal não é estável o suficiente para prometer um lift fixo.** A AUC mensal
+  na amostra varia de 0,61 a 0,79, e as origens móveis de 0,59 a 0,75.
+
+## O que ele pode ver
+
+Apenas informação que existe quando o pedido é feito: momento da compra, data
+prometida, estados do cliente e do vendedor, composição do pedido e condições de
+pagamento. Aprovação, entrega à transportadora, data de entrega, dias de atraso,
+nota da avaliação e status do pedido ficam fora por uma lista explícita. Usar o
+tempo de chegada faria o modelo parecer excelente e ser inútil no único momento
+em que poderia ajudar.
+
+Os rótulos de treino também precisam ter amadurecido antes do corte. Um pedido
+comprado em março mas entregue em maio não pode ensinar um modelo implantado em
+1º de abril, porque seu resultado ainda não era conhecido. Essa regra exclui
+3.852 pedidos em trânsito e explica por que o treino é menor do que um filtro de
+data ingênuo sugeriria.
+
+## Recomendação
+
+1. **Pilote o ranking como fila de triagem.** A cada semana, pegue os pedidos
+   abertos de maior score até a capacidade da equipe e confira o status na
+   transportadora. Meça a taxa de atraso na fatia revisada contra a não revisada;
+   esse é o único teste que importa.
+2. **Não exponha o score como probabilidade para o cliente.** Se uma for
+   necessária, recalibre com pedidos entregues recentes e reveja mensalmente. O
+   score atual ordena adequadamente e prevê mal o nível.
+3. **Faça uma avaliação móvel antes de se comprometer.** A amostra única não
+   basta: a AUC varia de 0,59 a 0,75 entre origens, e julho–agosto de 2018 é mais
+   fraco que abril. Uma fila que só funciona em um backlog não é um produto.
+4. **Mantenha a pergunta operacional do Projeto 01 em primeiro lugar.** O modelo
+   confirma que o prazo e o par de estados vendedor–cliente carregam o sinal. Ele
+   não diz que mudar o prazo causa um resultado melhor; a pergunta do corredor
+   segue sendo a causal.
+
+## O que me faria mudar de ideia
+
+- **Se o lift do decil superior desabar em uma avaliação com origem móvel**, o
+  modelo está ajustando um backlog e não um padrão estável, e a fila não vale a
+  pena.
+- **Se os pedidos revisados atrasarem por razões que o modelo não vê** (alocação
+  de transportadora, backlog de armazém), o score é um proxy da rota e a
+  intervenção deve mirar a rota.
+- **Se um identificador de transportadora ou armazém ficar disponível**, ele deve
+  ser testado antes de qualquer nova engenharia de atributos; é a causa ausente
+  mais provável.
+
+---
+
+*Todos os números vêm de
+`projects/02-late-delivery/reports/model_metrics.json` e são reproduzíveis com
+`uv run python tasks.py train`. O intervalo bootstrap de 95% para a precisão no
+decil superior é 9,3–11,5%, para o recall 21,6–25,6% e para o lift 2,16–2,56×.*
