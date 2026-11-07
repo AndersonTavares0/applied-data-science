@@ -765,7 +765,7 @@ Figure&nbsp;2: The complaint mix within each outcome. Late complaints are mostly
 <section id="reproduce-it" class="level2">
 <h2 class="anchored" data-anchor-id="reproduce-it">5. Reproduce it</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python tasks.py topics     <span class="co"># fit the model, write tables and figures</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run pytest                     <span class="co"># 29 tests, no database or network needed</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run pytest                     <span class="co"># 40 tests, no database or network needed</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The script reads the built marts, so the pipeline order is <code>load → dbt-build → topics</code>. It writes:</p>
 <ul>
 <li><code>projects/03-voice-of-customer/reports/review_scope.json</code> — scope and model metadata, including perplexity and mean topic weight by outcome.</li>

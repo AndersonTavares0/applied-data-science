@@ -725,7 +725,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<div id="fig-gap" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Gráfico de barras horizontais da diferença na participação de cada tópico de reclamação entre pedidos atrasados e no prazo. Problema de entrega, não recebido e demora são positivos; qualidade, pedido incompleto e item errado são negativos. O intervalo de 95% de cada barra exclui zero." data-fig-align="center">
+<div id="fig-gap" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Gráfico de barras horizontais da diferença na participação de cada tópico de reclamação entre pedidos atrasados e no prazo. Problema de entrega, não recebido e demora são positivos; qualidade, pedido incompleto e item errado são negativos. O intervalo de 95% de cada barra exclui zero.">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-gap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="../../../reports/03-voice-of-customer/figures/pt/topic_gap.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Gráfico de barras horizontais da diferença na participação de cada tópico de reclamação entre pedidos atrasados e no prazo. Problema de entrega, não recebido e demora são positivos; qualidade, pedido incompleto e item errado são negativos. O intervalo de 95% de cada barra exclui zero.">
@@ -735,7 +735,7 @@ Figura&nbsp;1: Tópicos sobrerrepresentados e sub-representados nas reclamaçõe
 </figcaption>
 </figure>
 </div>
-<div id="fig-mix" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Barras horizontais pareadas mostrando a participação de cada tópico nas reclamações de pedidos atrasados e no prazo. Problema de entrega, não recebido e demora dominam o grupo atrasado; qualidade, pedido incompleto e item errado dominam o grupo no prazo." data-fig-align="center">
+<div id="fig-mix" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Barras horizontais pareadas mostrando a participação de cada tópico nas reclamações de pedidos atrasados e no prazo. Problema de entrega, não recebido e demora dominam o grupo atrasado; qualidade, pedido incompleto e item errado dominam o grupo no prazo.">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-mix-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="../../../reports/03-voice-of-customer/figures/pt/topic_mix.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Barras horizontais pareadas mostrando a participação de cada tópico nas reclamações de pedidos atrasados e no prazo. Problema de entrega, não recebido e demora dominam o grupo atrasado; qualidade, pedido incompleto e item errado dominam o grupo no prazo.">
@@ -765,7 +765,7 @@ Figura&nbsp;2: A mistura de reclamações dentro de cada desfecho. Reclamações
 <section id="reproduzir" class="level2">
 <h2 class="anchored" data-anchor-id="reproduzir">5. Reproduzir</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python tasks.py topics     <span class="co"># ajusta o modelo, escreve tabelas e figuras</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run pytest                     <span class="co"># 29 testes, sem banco de dados nem rede</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run pytest                     <span class="co"># 40 testes, sem banco de dados nem rede</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <p>O script lê os modelos construídos, então a ordem no pipeline é <code>load → dbt-build → topics</code>. Ele escreve:</p>
 <ul>
 <li><code>projects/03-voice-of-customer/reports/review_scope.json</code> — escopo e metadados do modelo, incluindo perplexidade e peso médio dos tópicos por desfecho.</li>
