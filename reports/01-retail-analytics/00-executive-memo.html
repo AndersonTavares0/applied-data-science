@@ -390,8 +390,8 @@ ul.task-list li input[type="checkbox"] {
 <li>A late order averages a review score of <strong>2.27</strong>; an on-time order averages <strong>4.29</strong>.</li>
 <li>Past a week late, <strong>~80% of customers give one or two stars</strong>, against 9.27% of on-time customers.</li>
 <li>São Paulo is late on <strong>4.49%</strong> of deliveries, Rio de Janeiro on <strong>12.10%</strong>, Bahia on <strong>12.16%</strong> and Ceará on <strong>13.76%</strong>.</li>
-<li><strong>The sellers are not the cause.</strong> Sellers dispatch in about three days on every lane. A Rio seller delivering inside Rio is late <strong>4.67%</strong> of the time, matching São Paulo’s <strong>4.63%</strong>, and 53 of the 65 sellers that ship to both states are worse into Rio.</li>
-<li><strong>The lane is the cause.</strong> São Paulo to Rio carries <strong>8,129</strong> of Rio’s 12,353 deliveries and is late <strong>14.17%</strong>. Every lane that stays inside one state sits at 4.8% or below.</li>
+<li><strong>The sellers are not the cause.</strong> Sellers dispatch in about three days on lanes with volume. A Rio seller delivering inside Rio is late <strong>4.76%</strong> of the time, close to São Paulo’s <strong>4.66%</strong>, and 53 of the 65 sellers that ship to both states are worse into Rio.</li>
+<li><strong>The lane is the cause.</strong> São Paulo to Rio carries <strong>8,129</strong> of Rio’s 12,353 deliveries and is late <strong>14.17%</strong>. Every intrastate lane with at least 250 deliveries sits at 4.8% or below.</li>
 </ul>
 <div id="fig-lane" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Horizontal bar chart of the late-delivery percentage for the busiest lanes between a seller state and a customer state, worst first. São Paulo to Rio de Janeiro is the worst by a clear margin, and the three lanes where seller and customer are in the same state are highlighted and sit at the bottom.">
 <figure class="quarto-float quarto-float-fig figure">
@@ -431,9 +431,9 @@ Figure&nbsp;2: Average review score by delivery outcome, and the share scoring o
 
 <pre class="mermaid mermaid-js">flowchart TB
   A["São Paulo to Rio&lt;br/&gt;8,129 deliveries, 14.17% late"] --&gt; B{"Do the sellers&lt;br/&gt;cause it?"}
-  B -- "no" --&gt; C["They dispatch in about three days&lt;br/&gt;on every lane"]
+  B -- "no" --&gt; C["They dispatch in about three days&lt;br/&gt;on lanes with volume"]
   C --&gt; D{"Is Rio hard to reach?"}
-  D -- "no" --&gt; E["Rio's own sellers deliver&lt;br/&gt;late 4.67% of the time"]
+  D -- "no" --&gt; E["Rio's own sellers deliver&lt;br/&gt;late 4.76% of the time"]
   E --&gt; F["The crossing is the problem,&lt;br/&gt;and its promise is the thinnest:&lt;br/&gt;27 days against 30.3 for the farther SP to RS lane"]
 </pre>
 </div>
@@ -442,14 +442,14 @@ Figure&nbsp;2: Average review score by delivery outcome, and the share scoring o
 </div>
 </div>
 <p><em>The seller question is answered by the data. The carrier question is not, and it is the one worth asking.</em></p>
-<p><strong>Second, widen the promise on that lane.</strong> The average parcel arrives <strong>11.18 days early</strong> and 14% of the lane is still late. Three more days on the promise would report <strong>11.60%</strong> instead of <strong>14.17%</strong>, and seven more would report <strong>8.37%</strong>. Widening a promise moves the measurement rather than the parcel, so it belongs alongside the operational question above, not instead of it.</p>
+<p><strong>Second, widen the promise on that lane.</strong> The average parcel arrives <strong>10.9 days early</strong> and 14% of the lane is still late. Three more days on the promise would report <strong>11.60%</strong> instead of <strong>14.17%</strong>, and seven more would report <strong>8.37%</strong>. Widening a promise moves the measurement rather than the parcel, so it belongs alongside the operational question above, not instead of it.</p>
 </section>
 <section id="what-would-change-my-mind" class="level2">
 <h2 class="anchored" data-anchor-id="what-would-change-my-mind">What would change my mind</h2>
 <ul>
 <li><strong>If the lateness on the São Paulo to Rio lane concentrated in a few carriers or a few warehouses</strong>, it would become a contract or a routing problem rather than a corridor problem. The dataset has no carrier identifier, so that test needs the operational side rather than another query.</li>
 <li><strong>If late-delivery customers differ systematically</strong> (different products, different basket sizes, different expectations), the review gap may partly reflect who they are rather than what happened to their parcel. Comparing review scores within the same product category and order value would test this.</li>
-<li><strong>If the “never delivered” group scores better than the “8–14 days late” group for a specific reason</strong> (refunds, communication, expectations), then expectation management may matter as much as speed. The data shows the pattern (1.747 against 1.672); I have not established why.</li>
+<li><strong>If the cancelled/unavailable group scores better than the “8–14 days late” group for a specific reason</strong> (refunds, communication, expectations), then expectation management may matter as much as speed. The data shows the pattern (1.662 against 1.672); I have not established why. The 1,729 orders still open at the snapshot are a separate, censored group and should not be folded into the same comparison.</li>
 </ul>
 
 

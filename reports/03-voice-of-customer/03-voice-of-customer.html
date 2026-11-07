@@ -570,6 +570,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p>The differences are small relative to the seed spread, and k=4 merges product and return complaints into one topic. Six keeps the product/return and non-receipt/defect distinctions that the business question needs, so it is the reported model — but it is not the unique best count. A reviewer who weights coherence alone would choose four. The labels also remain a human interpretation of the terms, and two pairs overlap: “delivery problem” and “delay” both concern delivery, and “not received” and “delay” share vocabulary.</p>
+<p>The four-topic alternative does not overturn the headline. At k=4, the two delivery/non-receipt topics contain <strong>83.3%</strong> of late complaints and <strong>29.3%</strong> of on-time complaints; the two product/order topics contain <strong>16.7%</strong> and <strong>70.7%</strong>. That is the same contrast as the six-topic model (65.7% / 18.5% and 18.1% / 68.9%), with coarser boundaries. Six is retained for granularity, not because it creates the result.</p>
 </section>
 <section id="how-stable-are-the-topics" class="level3">
 <h3 class="anchored" data-anchor-id="how-stable-are-the-topics">How stable are the topics?</h3>
@@ -850,13 +851,14 @@ Figure&nbsp;2: The complaint mix within each outcome. Late complaints are mostly
 <section id="reproduce-it" class="level2">
 <h2 class="anchored" data-anchor-id="reproduce-it">5. Reproduce it</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python tasks.py topics     <span class="co"># fit the model, write tables and figures</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run pytest                     <span class="co"># 53 tests, no database or network needed</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run pytest                     <span class="co"># 54 tests, no database or network needed</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The script reads the built marts, so the pipeline order is <code>load → dbt-build → topics</code>. It writes:</p>
 <ul>
 <li><code>projects/03-voice-of-customer/reports/review_scope.json</code> — scope and model metadata, including perplexity and mean topic weight by outcome.</li>
 <li><code>projects/03-voice-of-customer/reports/topic_terms.csv</code> — the twelve top terms for each topic.</li>
 <li><code>projects/03-voice-of-customer/reports/topic_prevalence.csv</code> — the table above, with exact p-values and confidence bounds.</li>
 <li><code>projects/03-voice-of-customer/reports/topic_groups.csv</code> — the three-way grouping, with hard-assignment shares and soft topic weights.</li>
+<li><code>projects/03-voice-of-customer/reports/topic_groups_k4.csv</code> — the four-topic sensitivity check quoted above.</li>
 <li><code>projects/03-voice-of-customer/reports/topic_selection.csv</code> — coherence and perplexity for k=4–10 at seeds 0–2. Six is preselected for semantic granularity; the script reports the seed-0 and seed-averaged best counts but does not fail when they differ.</li>
 <li><code>site/reports/03-voice-of-customer/figures/*.png</code> — the two figures, in English and Portuguese.</li>
 </ul>

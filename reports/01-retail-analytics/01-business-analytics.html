@@ -1109,19 +1109,35 @@ Figure&nbsp;5: Cohort retention. Month zero is omitted because it is 100% by con
 <td style="text-align: right;">54.62</td>
 </tr>
 <tr class="odd">
-<td>Never delivered</td>
-<td style="text-align: right;">2,965</td>
-<td style="text-align: right;">2.98%</td>
-<td style="text-align: right;">1.747</td>
-<td style="text-align: right;">78.05%</td>
+<td>Not delivered: cancelled or unavailable</td>
+<td style="text-align: right;">1,228</td>
+<td style="text-align: right;">1.23%</td>
+<td style="text-align: right;">1.662</td>
+<td style="text-align: right;">80.90%</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr class="even">
+<td>Not delivered: still open at snapshot</td>
+<td style="text-align: right;">1,729</td>
+<td style="text-align: right;">1.74%</td>
+<td style="text-align: right;">1.796</td>
+<td style="text-align: right;">76.29%</td>
+<td style="text-align: right;">—</td>
+</tr>
+<tr class="odd">
+<td>Delivered: missing timestamp</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">0.01%</td>
+<td style="text-align: right;">4.500</td>
+<td style="text-align: right;">12.50%</td>
 <td style="text-align: right;">—</td>
 </tr>
 </tbody>
 </table>
-<div id="fig-delivery" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Bar chart of the mean review score by delivery outcome, from the on-time group down to orders that arrived more than two weeks late and orders that never arrived. The share of each group scoring one or two is printed inside its bar and is several times higher for every late group.">
+<div id="fig-delivery" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Bar chart of the mean review score by delivery outcome, from the on-time group through late groups to cancelled or unavailable orders, orders still open at the snapshot, and eight delivered orders missing a timestamp. The share of each group scoring one or two is printed inside its bar and is several times higher for every late or undelivered group.">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-delivery-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
-<img src="figures/delivery-review.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Bar chart of the mean review score by delivery outcome, from the on-time group down to orders that arrived more than two weeks late and orders that never arrived. The share of each group scoring one or two is printed inside its bar and is several times higher for every late group.">
+<img src="figures/delivery-review.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Bar chart of the mean review score by delivery outcome, from the on-time group through late groups to cancelled or unavailable orders, orders still open at the snapshot, and eight delivered orders missing a timestamp. The share of each group scoring one or two is printed inside its bar and is several times higher for every late or undelivered group.">
 </div>
 <figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-delivery-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 Figure&nbsp;6: Average review score by delivery outcome, with the share scoring 1 or 2.
@@ -1129,8 +1145,7 @@ Figure&nbsp;6: Average review score by delivery outcome, with the share scoring 
 </figure>
 </div>
 <p>Aggregated, a late order averages <strong>2.27</strong> against <strong>4.29</strong> for an on-time one. That gap is the difference between a broadly satisfied customer and one who is not.</p>
-<p><strong>One result in that table surprised me.</strong> An order that never arrived scores <strong>1.747</strong>, which is <em>better</em> than an order that arrived eight to fourteen days late (<strong>1.672</strong>). The worst experience in the table is not the missing parcel.</p>
-<p>The likely explanation is that these are different situations rather than different severities. A cancelled or unavailable order is a <strong>closed</strong> event, usually refunded and often communicated. An order that turns up 35 days late is not closed: the customer waited, and then still had to deal with the product. I would want to test that before acting on it, and I have not, so I am reporting it as an observation rather than a finding.</p>
+<p><strong>One result in that table surprised me.</strong> The group without a delivery timestamp is not one experience: cancelled or unavailable orders average <strong>1.662</strong>, orders still open at the snapshot average <strong>1.796</strong>, and the eight orders marked delivered with no timestamp average <strong>4.500</strong> (a data-quality artefact, not a delivery outcome). The closed-event group is therefore essentially tied with the 8–14 day late group (<strong>1.662</strong> against <strong>1.672</strong>), while the still-open group scores slightly higher. The earlier version of this table collapsed all three into a single “never delivered” bucket and mixed a refund with a parcel still in transit. I would want to test the difference before acting on it, and I have not, so I am reporting it as an observation rather than a finding.</p>
 <section id="where-the-lateness-is" class="level3">
 <h3 class="anchored" data-anchor-id="where-the-lateness-is">Where the lateness is</h3>
 <!-- Source: mart_late_delivery_by_state -->
@@ -1269,7 +1284,7 @@ Figure&nbsp;7: Late delivery by state. Each bar is labelled with its number of d
 </table>
 <p>Sellers in both states dispatch at the same speed, within a fifth of a day, and the entire gap is in transit.</p>
 <p>That holds when the same seller ships to both states. Of the 65 sellers with at least 30 deliveries to Rio <em>and</em> at least 30 to São Paulo, <strong>53 are worse into Rio</strong>, and the mean late rate is <strong>12.45%</strong> there against <strong>4.80%</strong> into São Paulo. A bad seller would be bad in both directions.</p>
-<p>The reverse test settles the destination. A seller in Rio delivering in Rio is late <strong>4.67%</strong> of the time, which is what a São Paulo seller achieves inside São Paulo (<strong>4.63%</strong>). Rio is not a hard place to deliver to. A São Paulo seller sending the same kind of parcel to Rio is late <strong>14.07%</strong> of the time.</p>
+<p>The reverse test settles the destination. A seller in Rio delivering in Rio is late <strong>4.76%</strong> of the time, which is close to what a São Paulo seller achieves inside São Paulo (<strong>4.66%</strong>). Rio is not a hard place to deliver to. A São Paulo seller sending the same kind of parcel to Rio is late <strong>14.07%</strong> of the time.</p>
 <div id="fig-lane" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Horizontal bar chart of the late-delivery percentage for the busiest lanes between a seller state and a customer state, worst first. São Paulo to Rio de Janeiro is the worst by a clear margin, and the three lanes where seller and customer are in the same state are highlighted and sit at the bottom.">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-lane-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -1280,7 +1295,7 @@ Figure&nbsp;8: Late delivery by lane. Blue bars are lanes where the seller and t
 </figcaption>
 </figure>
 </div>
-<p>Two thirds of Rio’s deliveries, 8,129 of 12,353, ship from São Paulo sellers, and that lane is the worst in the table at <strong>14.17%</strong>. Every lane that stays inside one state sits at 4.8% or below. The difficulty is created in the crossing.</p>
+<p>Two thirds of Rio’s deliveries, 8,129 of 12,353, ship from São Paulo sellers, and that lane is the worst in the table at <strong>14.17%</strong>. Every intrastate lane with at least 250 deliveries sits at 4.8% or below; the two intrastate lanes above that are 14 and 7 orders, too small to support a rate. The difficulty is created in the crossing.</p>
 </section>
 <section id="the-promise-on-that-lane-is-the-thinnest" class="level3">
 <h3 class="anchored" data-anchor-id="the-promise-on-that-lane-is-the-thinnest">The promise on that lane is the thinnest</h3>
@@ -1294,8 +1309,8 @@ Figure&nbsp;8: Late delivery by lane. Blue bars are lanes where the seller and t
 <section id="what-i-would-do-next" class="level2">
 <h2 class="anchored" data-anchor-id="what-i-would-do-next">What I would do next</h2>
 <ol type="1">
-<li><strong>Fix the São Paulo to Rio lane, not the sellers on it.</strong> Sellers dispatch in about three days on every lane, Rio’s own sellers deliver on time inside Rio, and 53 of the 65 sellers who ship to both states are worse into Rio. The delay is created in the crossing: 8,129 deliveries, 14.17% late, and 379 of them more than two weeks late. The operational question is what happens during the 9 days of median transit and in the 31 days at the ninetieth percentile.</li>
-<li><strong>Then recalibrate the promise, lane by lane.</strong> The promise is uniform where the service is not. São Paulo to Rio gets 27 days against 30.3 for the farther São Paulo to Rio Grande do Sul lane, and three more days would report 11.60% instead of 14.17%. Since the average parcel arrives 11.18 days early and 93.2% are on time, a wider promise costs little operationally. What it changes for the customer cannot be measured here, because the promise and the delivery time move together, so I would run it as a deliberate experiment rather than infer it.</li>
+<li><strong>Fix the São Paulo to Rio lane, not the sellers on it.</strong> Sellers dispatch in about three days on every lane with volume, Rio’s own sellers deliver on time inside Rio, and 53 of the 65 sellers who ship to both states are worse into Rio. The delay is created in the crossing: 8,129 deliveries, 14.17% late, and 379 of them more than two weeks late. The operational question is what happens during the 9 days of median transit and in the 31 days at the ninetieth percentile.</li>
+<li><strong>Then recalibrate the promise, lane by lane.</strong> The promise is uniform where the service is not. São Paulo to Rio gets 27 days against 30.3 for the farther São Paulo to Rio Grande do Sul lane, and three more days would report 11.60% instead of 14.17%. Since the average parcel arrives 10.9 days early and 93.2% are on time, a wider promise costs little operationally. What it changes for the customer cannot be measured here, because the promise and the delivery time move together, so I would run it as a deliberate experiment rather than infer it.</li>
 <li><strong>Test the missing-parcel result.</strong> An order that never arrived scored better than one that arrived two weeks late. That is either a real difference in how the two failures are handled or an artefact of who chooses to review at all, and it is testable with the data already loaded. Until it is tested I am reporting it as an observation, not a finding.</li>
 <li><strong>Feed Project 02.</strong> The delivery buckets are the natural target for the late-delivery prediction model, and the constraint is already clear: only features knowable at purchase time may be used.</li>
 </ol>
@@ -1314,7 +1329,7 @@ Figure&nbsp;8: Late delivery by lane. Blue bars are lanes where the seller and t
 <li><strong>A lane is a pair of states, not a measured route.</strong> Seller and customer states are the finest geography the dataset carries, so “São Paulo to Rio” means a seller in one state and a customer in the other, not a distance or a particular road.</li>
 <li><strong>The dataset has no carrier identifier.</strong> The lane finding says where the delay is created. It cannot say who creates it, so narrowing it to a carrier or a warehouse needs the operational side rather than another query.</li>
 <li><strong>Lane figures cover 96,411 of the 96,476 delivered orders.</strong> An order whose items came from sellers in more than one state, 65 orders, has no single lane and is left out of the lane table. No other delivery figure is affected.</li>
-<li><strong>Where delivery timestamps are missing</strong> (2,965 orders), those orders are excluded from delivery statistics rather than imputed, and kept as their own bucket where the customer’s experience is the subject.</li>
+<li><strong>Where delivery timestamps are missing</strong> (2,965 orders), those orders are excluded from delivery statistics rather than imputed, and kept as separate buckets where the customer’s experience is the subject: cancelled or unavailable (1,228), still open at the snapshot (1,729), and delivered with a missing timestamp (8). They are not one outcome.</li>
 </ul>
 <hr>
 </section>
@@ -1400,7 +1415,7 @@ Figure&nbsp;8: Late delivery by lane. Blue bars are lanes where the seller and t
   CSV --&gt; L["load_raw.py&lt;br/&gt;every column TEXT"]
   L --&gt; DB[("PostgreSQL&lt;br/&gt;schema: raw")]
   DB --&gt; S["dbt staging&lt;br/&gt;views — cast and rename"]
-  S --&gt; F["dbt marts&lt;br/&gt;tables — 89 data tests"]
+  S --&gt; F["dbt marts&lt;br/&gt;tables — 91 data tests"]
   F --&gt; C["make_charts.py"]
   C --&gt; FIG["PNG figures"]
   F --&gt; REP["Quarto report"]
@@ -1414,7 +1429,7 @@ Figure&nbsp;8: Late delivery by lane. Blue bars are lanes where the seller and t
 <p><em>Only the three steps through <code>dbt marts</code> need a database. The report and the figures are committed, so the website builds without one.</em></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python tasks.py setup      <span class="co"># start the database and fetch the data</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python tasks.py pipeline   <span class="co"># load, build, charts, test, render</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p><code>dbt build</code> also runs 89 data tests, including one that asserts month-zero retention is exactly 100%, one that asserts the late flag and the lateness in days cannot disagree, and one that asserts a longer promise can never make more orders late. The first two exist because they were wrong once.</p>
+<p><code>dbt build</code> also runs 91 data tests, including one that asserts month-zero retention is exactly 100%, one that asserts the late flag and the lateness in days cannot disagree, and one that asserts a longer promise can never make more orders late. The first two exist because they were wrong once.</p>
 
 
 </section>

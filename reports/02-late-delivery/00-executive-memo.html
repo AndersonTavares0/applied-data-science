@@ -378,42 +378,43 @@ ul.task-list li input[type="checkbox"] {
 </blockquote>
 <section id="bottom-line" class="level2">
 <h2 class="anchored" data-anchor-id="bottom-line">Bottom line</h2>
-<p>At checkout, a model can rank orders by late-delivery risk well enough to focus a review queue: the riskiest 10% contains <strong>2.35×</strong> its share of late orders. It cannot yet produce a stable probability, because the late rate moves between periods. <strong>Use the ranking; do not promise the percentage.</strong></p>
+<p>The model ranks late risk better than a customer-state baseline, but the signal is modest and the capacity curve is irregular. The riskiest 10% contains <strong>1.97×</strong> its share of late orders; the riskiest 5% is <em>less</em> precise than the 10% slice. <strong>This is a research prototype, not a deployment-ready queue.</strong></p>
 </section>
 <section id="the-finding" class="level2">
 <h2 class="anchored" data-anchor-id="the-finding">The finding</h2>
 <ul>
-<li>Trained on <strong>60,474 mature orders</strong> before April 2018 and tested on <strong>32,150</strong> after it, the selected logistic model reaches <strong>ROC AUC 0.708</strong> and <strong>average precision 0.091</strong> against a <strong>4.42%</strong> base rate.</li>
-<li>Flagging the <strong>top 10% (3,215 orders)</strong> captures <strong>23.5% of all late orders</strong> at <strong>10.4% precision</strong>, a <strong>2.35× lift</strong>. A customer-state baseline captures 11.6% at the same capacity, only 1.16× the base rate. At 5% capacity, precision is 10.8% and recall 12.2%; at 20%, precision is 9.5% and recall 42.9%.</li>
-<li><strong>The model class is not settled.</strong> Logistic regression won the rolling-origin comparison (mean AP 0.138 vs 0.102), but gradient boosting did better on the final holdout (AP 0.103 vs 0.091; recall 28.6% vs 23.5%). A paired bootstrap over holdout rows puts the logistic-minus-boosting AP difference at −0.0125 (95% interval −0.0215 to −0.0035). That is a within-period comparison, not evidence about future periods. Treat the model as a promising ranker, not a finished choice.</li>
-<li><strong>The level is not calibrated to the next period.</strong> Mean predicted risk is 6.38% against 4.42% observed, even though the calibration slope is close to one (1.02). The ranking is roughly right; the level is too high.</li>
+<li>Trained on <strong>43,691 mature orders</strong> purchased before January 2018 and tested on <strong>32,150</strong> purchased from April 2018, the selected logistic model reaches <strong>ROC AUC 0.685</strong> and <strong>average precision 0.082</strong> against a <strong>4.42%</strong> base rate.</li>
+<li>Flagging the <strong>top 10% (3,215 orders)</strong> captures <strong>19.7% of all late orders</strong> at <strong>8.7% precision</strong>, a <strong>1.97× lift</strong>. A customer-state baseline captures 12.2% at the same capacity, 1.22× the base rate. At 5% capacity, precision is <strong>7.7%</strong> and recall 8.7%; at 20%, precision is 9.2% and recall 41.8%.</li>
+<li><strong>The earlier 2.35× lift was too high.</strong> The previous training rule kept only orders already delivered by the test cutoff. That removed 3,852 orders with a <strong>39.1% late rate</strong> — the slow orders the model is meant to find. Training now stops three months before the cutoff, and the honest lift is smaller.</li>
+<li><strong>The model class is not settled.</strong> Logistic regression won the rolling-origin comparison (mean AP 0.119 vs 0.108), while gradient boosting did slightly better on the final holdout (AP 0.087 vs 0.082; recall 21.8% vs 19.7%). A paired bootstrap puts the logistic-minus-boosting AP difference at <strong>−0.0048 (95% interval −0.0122 to +0.0036)</strong>. The interval includes zero.</li>
+<li><strong>The score is not a probability.</strong> Mean predicted risk is 4.26% against 4.42% observed, but the calibration slope is 0.82 and the intercept −0.47. The ranking is compressed; do not attach the percentage to an individual order.</li>
 <li><strong>Promise and geography do the work.</strong> <code>promise_days</code>, customer state and seller state dominate. Basket value, freight, weight, payment and category add little.</li>
-<li><strong>The signal is not stable enough to promise a fixed lift.</strong> Monthly AUC in the holdout ranges from 0.61 to 0.79, and rolling origins from 0.59 to 0.67.</li>
+<li><strong>The signal moves with the period.</strong> Monthly AUC in the holdout ranges from 0.60 to 0.79; rolling origins from 0.59 to 0.62.</li>
 </ul>
 </section>
 <section id="what-it-is-allowed-to-see" class="level2">
 <h2 class="anchored" data-anchor-id="what-it-is-allowed-to-see">What it is allowed to see</h2>
 <p>Only information that exists when the order is placed: purchase timing, the promised date, customer and seller state, order composition and payment terms. Approval, carrier hand-off, delivery date, days late, review score and order status are excluded by an explicit allow-list. Using arrival time would make the model look excellent and be useless at the only moment it could help.</p>
-<p>Training labels must also have matured before the cutoff. An order purchased in March but delivered in May cannot teach a model deployed on 1 April, because its outcome was not known yet. That rule excludes 3,852 in-flight orders and is why the training set is smaller than the naive date filter would suggest.</p>
+<p>Training labels must also have matured before the cutoff. An order purchased in March but delivered in May cannot teach a model deployed on 1 April, because its outcome was not known yet. The training window therefore stops three months before the test cutoff. A naive “purchase before April, keep delivered” rule would instead select on delivery speed and remove the late tail.</p>
 </section>
 <section id="recommendation" class="level2">
 <h2 class="anchored" data-anchor-id="recommendation">Recommendation</h2>
 <ol type="1">
-<li><strong>Pilot the ranking as a triage queue.</strong> Each week, take the highest-scoring open orders up to the team’s review capacity and check them against carrier status. Measure the late rate in the reviewed slice against the unreviewed one; that is the only test that matters.</li>
-<li><strong>Do not expose the score as a customer-facing probability.</strong> If one is needed, recalibrate on recent delivered orders and re-check monthly. The current score ranks adequately and predicts the level badly.</li>
-<li><strong>Keep running the rolling evaluation.</strong> Selection already uses three rolling origins, where AUC ranges from 0.59 to 0.67, and July–August 2018 is weaker than April. A queue that only works in one backlog is not a product.</li>
+<li><strong>Do not deploy this as a triage queue yet.</strong> The lift is modest, the top 5% is less precise than the top 10%, and there is no cost model. Run a prospective pilot only if the operation can measure the late rate in reviewed versus unreviewed orders.</li>
+<li><strong>Do not expose the score as a customer-facing probability.</strong> If one is needed, recalibrate on recent delivered orders and re-check monthly.</li>
+<li><strong>Keep the rolling evaluation and retrain as labels mature.</strong> A production system would not freeze the training window at one date; it would retrain monthly and monitor the late rate, the promise distribution and the state mix.</li>
 <li><strong>Keep Project 01’s operational question first.</strong> The model confirms that promise length and the seller–customer state pair carry the signal. It does not say that changing the promise causes a better outcome; the corridor question from Project 01 remains the causal one.</li>
 </ol>
 </section>
 <section id="what-would-change-my-mind" class="level2">
 <h2 class="anchored" data-anchor-id="what-would-change-my-mind">What would change my mind</h2>
 <ul>
-<li><strong>If the top-decile lift collapses in a rolling-origin evaluation</strong>, the model is fitting one backlog rather than a stable pattern, and the queue is not worth running.</li>
+<li><strong>If a prospective pilot shows a stable lift at a capacity the team can actually staff</strong>, the model becomes operationally interesting. The current evidence is retrospective.</li>
 <li><strong>If reviewed orders turn out to be late for reasons the model cannot see</strong> (carrier allocation, warehouse backlog), the score is a proxy for the lane and the intervention should target the lane instead.</li>
 <li><strong>If a carrier or warehouse identifier becomes available</strong>, it should be tested before any further feature engineering; it is the most likely missing cause.</li>
 </ul>
 <hr>
-<p><em>All figures above come from <code>projects/02-late-delivery/reports/model_metrics.json</code> and are reproducible with <code>uv run python tasks.py train</code>. The 95% bootstrap interval for top-decile precision is 9.4–11.5%, for recall 21.5–25.6%, and for lift 2.15–2.56×.</em></p>
+<p><em>All figures above come from <code>projects/02-late-delivery/reports/model_metrics.json</code> and are reproducible with <code>uv run python tasks.py train</code>. The 95% bootstrap interval for top-decile precision is 7.7–9.6%, for recall 17.7–21.7%, and for lift 1.77–2.17×.</em></p>
 
 
 </section>

@@ -378,42 +378,43 @@ ul.task-list li input[type="checkbox"] {
 </blockquote>
 <section id="conclusão" class="level2">
 <h2 class="anchored" data-anchor-id="conclusão">Conclusão</h2>
-<p>No checkout, um modelo consegue ordenar pedidos por risco de atraso bem o suficiente para focar uma fila de revisão: os 10% de maior risco concentram <strong>2,35×</strong> a participação esperada de atrasos. Ele ainda não produz uma probabilidade estável, porque a taxa de atraso muda entre períodos. <strong>Use o ranking; não prometa o percentual.</strong></p>
+<p>O modelo ordena o risco de atraso melhor que uma baseline por estado do cliente, mas o sinal é modesto e a curva de capacidade é irregular. Os 10% de maior risco concentram <strong>1,97×</strong> a participação esperada de atrasos; os 5% do topo são <em>menos</em> precisos que a fatia de 10%. <strong>Isto é um protótipo de pesquisa, não uma fila pronta para implantação.</strong></p>
 </section>
 <section id="a-descoberta" class="level2">
 <h2 class="anchored" data-anchor-id="a-descoberta">A descoberta</h2>
 <ul>
-<li>Treinado em <strong>60.474 pedidos maduros</strong> antes de abril de 2018 e testado em <strong>32.150</strong> depois, o modelo logístico selecionado alcança <strong>ROC AUC 0,708</strong> e <strong>precisão média 0,091</strong> contra uma taxa base de <strong>4,42%</strong>.</li>
-<li>Sinalizar os <strong>10% do topo (3.215 pedidos)</strong> captura <strong>23,5% de todos os atrasos</strong> com <strong>precisão de 10,4%</strong>, um <strong>lift de 2,35×</strong>. Uma baseline por estado do cliente captura 11,6% na mesma capacidade, apenas 1,16× a taxa base. Com 5% de capacidade, a precisão é 10,8% e o recall 12,2%; com 20%, a precisão é 9,5% e o recall 42,9%.</li>
-<li><strong>A classe do modelo não está decidida.</strong> A regressão logística venceu um período interno de validação por precisão média, mas o gradient boosting foi levemente melhor na amostra final (precisão média 0,103, recall 28,6%). A diferença é pequena e uma única amostra temporal não resolve a escolha. Trate o modelo como um ranker promissor, não como uma escolha final.</li>
-<li><strong>O nível não está calibrado para o próximo período.</strong> O risco médio previsto é 6,38% contra 4,42% observados, embora a inclinação de calibração seja próxima de um (1,02). O ranking está aproximadamente certo; o nível está alto demais.</li>
+<li>Treinado em <strong>43.691 pedidos maduros</strong> comprados antes de janeiro de 2018 e testado em <strong>32.150</strong> comprados a partir de abril de 2018, o modelo logístico selecionado alcança <strong>ROC AUC 0,685</strong> e <strong>precisão média 0,082</strong> contra uma taxa base de <strong>4,42%</strong>.</li>
+<li>Sinalizar os <strong>10% do topo (3.215 pedidos)</strong> captura <strong>19,7% de todos os atrasos</strong> com <strong>precisão de 8,7%</strong>, um <strong>lift de 1,97×</strong>. Uma baseline por estado do cliente captura 12,2% na mesma capacidade, 1,22× a taxa base. Com 5% de capacidade, a precisão é <strong>7,7%</strong> e o recall 8,7%; com 20%, a precisão é 9,2% e o recall 41,8%.</li>
+<li><strong>O lift anterior de 2,35× era alto demais.</strong> A regra de treino anterior mantinha apenas pedidos já entregues no corte do teste. Isso removia 3.852 pedidos com <strong>39,1% de atraso</strong> — os pedidos lentos que o modelo deveria encontrar. O treino agora termina três meses antes do corte, e o lift honesto é menor.</li>
+<li><strong>A classe do modelo não está decidida.</strong> A regressão logística venceu a comparação com origens móveis (precisão média 0,119 contra 0,108), enquanto o gradient boosting foi um pouco melhor na amostra final (0,087 contra 0,082; recall 21,8% contra 19,7%). Um bootstrap pareado coloca a diferença logística menos boosting em <strong>−0,0048 (intervalo de 95%: −0,0122 a +0,0036)</strong>. O intervalo inclui zero.</li>
+<li><strong>O score não é uma probabilidade.</strong> O risco médio previsto é 4,26% contra 4,42% observados, mas a inclinação de calibração é 0,82 e o intercepto −0,47. O ranking está comprimido; não anexe o percentual a um pedido individual.</li>
 <li><strong>Prazo e geografia fazem o trabalho.</strong> <code>promise_days</code>, estado do cliente e estado do vendedor dominam. Valor da cesta, frete, peso, pagamento e categoria acrescentam pouco.</li>
-<li><strong>O sinal não é estável o suficiente para prometer um lift fixo.</strong> A AUC mensal na amostra varia de 0,61 a 0,79, e as origens móveis de 0,59 a 0,67.</li>
+<li><strong>O sinal muda com o período.</strong> A AUC mensal na amostra varia de 0,60 a 0,79; as origens móveis, de 0,59 a 0,62.</li>
 </ul>
 </section>
 <section id="o-que-ele-pode-ver" class="level2">
 <h2 class="anchored" data-anchor-id="o-que-ele-pode-ver">O que ele pode ver</h2>
 <p>Apenas informação que existe quando o pedido é feito: momento da compra, data prometida, estados do cliente e do vendedor, composição do pedido e condições de pagamento. Aprovação, entrega à transportadora, data de entrega, dias de atraso, nota da avaliação e status do pedido ficam fora por uma lista explícita. Usar o tempo de chegada faria o modelo parecer excelente e ser inútil no único momento em que poderia ajudar.</p>
-<p>Os rótulos de treino também precisam ter amadurecido antes do corte. Um pedido comprado em março mas entregue em maio não pode ensinar um modelo implantado em 1º de abril, porque seu resultado ainda não era conhecido. Essa regra exclui 3.852 pedidos em trânsito e explica por que o treino é menor do que um filtro de data ingênuo sugeriria.</p>
+<p>Os rótulos de treino também precisam ter amadurecido antes do corte. Um pedido comprado em março mas entregue em maio não pode ensinar um modelo implantado em 1º de abril, porque seu resultado ainda não era conhecido. A janela de treino termina três meses antes do corte do teste. Uma regra ingênua — “compra antes de abril, manter entregues” — selecionaria por velocidade de entrega e removeria a cauda atrasada.</p>
 </section>
 <section id="recomendação" class="level2">
 <h2 class="anchored" data-anchor-id="recomendação">Recomendação</h2>
 <ol type="1">
-<li><strong>Pilote o ranking como fila de triagem.</strong> A cada semana, pegue os pedidos abertos de maior score até a capacidade da equipe e confira o status na transportadora. Meça a taxa de atraso na fatia revisada contra a não revisada; esse é o único teste que importa.</li>
-<li><strong>Não exponha o score como probabilidade para o cliente.</strong> Se uma for necessária, recalibre com pedidos entregues recentes e reveja mensalmente. O score atual ordena adequadamente e prevê mal o nível.</li>
-<li><strong>Faça uma avaliação móvel antes de se comprometer.</strong> A amostra única não basta: a AUC varia de 0,59 a 0,67 entre origens, e julho–agosto de 2018 é mais fraco que abril. Uma fila que só funciona em um backlog não é um produto.</li>
+<li><strong>Não implante isto como fila de triagem ainda.</strong> O lift é modesto, os 5% do topo são menos precisos que os 10% e não há modelo de custo. Faça um piloto prospectivo apenas se a operação conseguir medir a taxa de atraso nos pedidos revisados contra os não revisados.</li>
+<li><strong>Não exponha o score como probabilidade para o cliente.</strong> Se uma for necessária, recalibre com pedidos entregues recentes e reveja mensalmente.</li>
+<li><strong>Mantenha a avaliação móvel e retreine conforme os rótulos amadurecem.</strong> Um sistema de produção não congelaria a janela de treino em uma data; retreinaria mensalmente e monitoraria a taxa de atraso, a distribuição de prazos e a composição de estados.</li>
 <li><strong>Mantenha a pergunta operacional do Projeto 01 em primeiro lugar.</strong> O modelo confirma que o prazo e o par de estados vendedor–cliente carregam o sinal. Ele não diz que mudar o prazo causa um resultado melhor; a pergunta do corredor segue sendo a causal.</li>
 </ol>
 </section>
 <section id="o-que-me-faria-mudar-de-ideia" class="level2">
 <h2 class="anchored" data-anchor-id="o-que-me-faria-mudar-de-ideia">O que me faria mudar de ideia</h2>
 <ul>
-<li><strong>Se o lift do decil superior desabar em uma avaliação com origem móvel</strong>, o modelo está ajustando um backlog e não um padrão estável, e a fila não vale a pena.</li>
+<li><strong>Se um piloto prospectivo mostrar um lift estável em uma capacidade que a equipe consegue atender</strong>, o modelo fica operacionalmente interessante. A evidência atual é retrospectiva.</li>
 <li><strong>Se os pedidos revisados atrasarem por razões que o modelo não vê</strong> (alocação de transportadora, backlog de armazém), o score é um proxy da rota e a intervenção deve mirar a rota.</li>
 <li><strong>Se um identificador de transportadora ou armazém ficar disponível</strong>, ele deve ser testado antes de qualquer nova engenharia de atributos; é a causa ausente mais provável.</li>
 </ul>
 <hr>
-<p><em>Todos os números vêm de <code>projects/02-late-delivery/reports/model_metrics.json</code> e são reproduzíveis com <code>uv run python tasks.py train</code>. O intervalo bootstrap de 95% para a precisão no decil superior é 9,4–11,5%, para o recall 21,5–25,6% e para o lift 2,15–2,56×.</em></p>
+<p><em>Todos os números vêm de <code>projects/02-late-delivery/reports/model_metrics.json</code> e são reproduzíveis com <code>uv run python tasks.py train</code>. O intervalo bootstrap de 95% para a precisão no decil superior é 7,7–9,6%, para o recall 17,7–21,7% e para o lift 1,77–2,17×.</em></p>
 
 
 </section>

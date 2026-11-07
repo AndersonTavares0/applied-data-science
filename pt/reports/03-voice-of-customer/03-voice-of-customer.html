@@ -570,6 +570,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p>As diferenças são pequenas diante da variação entre seeds, e k=4 funde reclamações de produto e de troca em um só tópico. Seis preserva as distinções entre produto/troca e não recebimento/defeito que a pergunta de negócio precisa, então é o modelo reportado — mas não é o único melhor número. Quem pondera apenas coerência escolheria quatro. Os rótulos também continuam sendo uma interpretação humana dos termos, e dois pares se sobrepõem: “problema de entrega” e “demora” tratam de entrega, e “não recebido” e “demora” compartilham vocabulário.</p>
+<p>A alternativa de quatro tópicos não derruba a manchete. Com k=4, os dois tópicos de entrega/não recebimento contêm <strong>83,3%</strong> das reclamações de atrasados e <strong>29,3%</strong> das de pedidos no prazo; os dois tópicos de produto/pedido contêm <strong>16,7%</strong> e <strong>70,7%</strong>. É o mesmo contraste do modelo de seis tópicos (65,7% / 18,5% e 18,1% / 68,9%), com fronteiras mais grossas. Seis é mantido por granularidade, não porque cria o resultado.</p>
 </section>
 <section id="quão-estáveis-são-os-tópicos" class="level3">
 <h3 class="anchored" data-anchor-id="quão-estáveis-são-os-tópicos">Quão estáveis são os tópicos?</h3>
@@ -850,13 +851,14 @@ Figura&nbsp;2: A mistura de reclamações dentro de cada desfecho. Reclamações
 <section id="reproduzir" class="level2">
 <h2 class="anchored" data-anchor-id="reproduzir">5. Reproduzir</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python tasks.py topics     <span class="co"># ajusta o modelo, escreve tabelas e figuras</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run pytest                     <span class="co"># 53 testes, sem banco de dados nem rede</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run pytest                     <span class="co"># 54 testes, sem banco de dados nem rede</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <p>O script lê os modelos construídos, então a ordem no pipeline é <code>load → dbt-build → topics</code>. Ele escreve:</p>
 <ul>
 <li><code>projects/03-voice-of-customer/reports/review_scope.json</code> — escopo e metadados do modelo, incluindo perplexidade e peso médio dos tópicos por desfecho.</li>
 <li><code>projects/03-voice-of-customer/reports/topic_terms.csv</code> — os doze termos principais de cada tópico.</li>
 <li><code>projects/03-voice-of-customer/reports/topic_prevalence.csv</code> — a tabela acima, com p-valores exatos e limites de confiança.</li>
 <li><code>projects/03-voice-of-customer/reports/topic_groups.csv</code> — o agrupamento em três blocos, com participações por atribuição dura e pesos suaves.</li>
+<li><code>projects/03-voice-of-customer/reports/topic_groups_k4.csv</code> — a checagem de sensibilidade com quatro tópicos citada acima.</li>
 <li><code>projects/03-voice-of-customer/reports/topic_selection.csv</code> — coerência e perplexidade para k=4–10 nos seeds 0–2. Seis é pré-selecionado por granularidade semântica; o script reporta o melhor k no seed 0 e na média, mas não falha quando diferem.</li>
 <li><code>site/reports/03-voice-of-customer/figures/*.png</code> — as duas figuras, em inglês e português.</li>
 </ul>
