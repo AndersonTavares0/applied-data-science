@@ -16,7 +16,7 @@ USAGE
 EXAMPLES
 --------
     uv run python tasks.py setup      # deps + database + data   (run once)
-    uv run python tasks.py pipeline   # load -> dbt build -> tests -> render
+    uv run python tasks.py pipeline   # load -> dbt build -> charts -> train -> tests -> render
 """
 
 from __future__ import annotations
@@ -32,6 +32,10 @@ PROJECT = ROOT / "projects" / "01-retail-analytics"
 SRC = PROJECT / "src"
 SCRIPTS = PROJECT / "scripts"
 DBT_DIR = PROJECT / "dbt_project"
+
+MODEL_PROJECT = ROOT / "projects" / "02-late-delivery"
+MODEL_SRC = MODEL_PROJECT / "src"
+MODEL_SCRIPTS = MODEL_PROJECT / "scripts"
 
 # The website is its own Quarto project with its own root, so it can be rendered
 # and published without the rest of the repository in reach. Every Quarto
@@ -62,9 +66,9 @@ def load_dotenv(path: Path = ROOT / ".env") -> None:
 
 
 def child_env() -> dict[str, str]:
-    """Environment for child processes: `.env` loaded, `retail` importable."""
+    """Environment for child processes: `.env` loaded, every `src` importable."""
     env = dict(os.environ)
-    env["PYTHONPATH"] = str(SRC) + os.pathsep + env.get("PYTHONPATH", "")
+    env["PYTHONPATH"] = os.pathsep.join([str(SRC), str(MODEL_SRC), env.get("PYTHONPATH", "")])
     return env
 
 
@@ -145,6 +149,11 @@ def task_charts() -> None:
     writes are committed, so publishing the site never touches the database.
     """
     run([sys.executable, str(SCRIPTS / "make_charts.py")])
+
+
+def task_train() -> None:
+    """Train and evaluate the late-delivery model, writing metrics + figures."""
+    run([sys.executable, str(MODEL_SCRIPTS / "train_model.py")])
 
 
 def task_dbt_build() -> None:
@@ -229,6 +238,7 @@ def task_pipeline() -> None:
     task_load()
     task_dbt_build()
     task_charts()
+    task_train()
     task_test()
     task_render()
 
@@ -263,6 +273,7 @@ TASKS: dict[str, tuple[str, object]] = {
     "db-reset": ("Destroy the database volume and recreate it", task_db_reset),
     "load": ("Load raw CSVs into the `raw` schema", task_load),
     "charts": ("Regenerate the report charts from the marts", task_charts),
+    "train": ("Train and evaluate the late-delivery model", task_train),
     "dbt-build": ("Build and test all dbt models", task_dbt_build),
     "dbt-docs": ("Generate the dbt docs site", task_dbt_docs),
     "test": ("Run the Python test suite", task_test),
@@ -271,7 +282,7 @@ TASKS: dict[str, tuple[str, object]] = {
     "render": ("Render the Quarto website", task_render),
     "preview": ("Live-preview the Quarto website", task_preview),
     "publish": ("Publish the site to the `gh-pages` branch", task_publish),
-    "pipeline": ("load -> dbt build -> tests -> render", task_pipeline),
+    "pipeline": ("load -> dbt build -> charts -> train -> tests -> render", task_pipeline),
     "clean": ("Remove caches and build artefacts", task_clean),
 }
 
