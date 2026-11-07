@@ -12,7 +12,7 @@
 --     same seller is late far more often on one side of the country.
 --
 -- The report's answer is the lane. The evidence is in this table: handover to
--- the carrier takes about three days on every lane in the dataset
+-- the carrier takes about three days on lanes with volume in the dataset
 -- (`avg_handling_days`), so sellers are dispatching on schedule whatever the
 -- destination, while `avg_transit_days` ranges from under 4 days to nearly 20.
 --
@@ -22,7 +22,8 @@
 -- sorted first. That is 65 of 96,476 delivered orders.
 --
 -- `is_intrastate` is kept because it is the comparison that carries the point:
--- every lane inside a single state sits at or below 4.8%, including Rio's own.
+-- intrastate lanes with at least 250 deliveries sit at or below 4.8%, including
+-- Rio's own.
 --
 -- The two `late_pct_if_promise_plus*` columns are counterfactuals, not
 -- observations. They answer how many of these orders would still have missed the

@@ -68,9 +68,9 @@ The central table. Items, payments and reviews are aggregated to the order grain
 | `customer_city`, `customer_state` | Delivery address |
 | `order_status` | One of: delivered, shipped, canceled, unavailable, invoiced, processing, created, approved |
 | `purchased_at`, `approved_at`, `handed_to_carrier_at`, `delivered_to_customer_at`, `estimated_delivery_at` | The order's lifecycle. The delivered and estimated columns are NULL for undelivered orders |
-| `delivery_days` | Purchase to delivery, in days, **unrounded**. NULL when undelivered |
-| `days_late` | Delivery date minus promised date, in **whole days**. Negative is early, 0 is on the promised day. NULL when undelivered |
-| `is_late` | TRUE when `days_late > 0`. NULL when undelivered |
+| `delivery_days` | Purchase to delivery, in days, **unrounded**. NULL when no delivery timestamp exists |
+| `days_late` | Delivery date minus promised date, in **whole days**. Negative is early, 0 is on the promised day. NULL when no delivery timestamp exists |
+| `is_late` | TRUE when `days_late > 0`. NULL when no delivery timestamp exists |
 | `item_count`, `product_count`, `seller_count` | Distinct counts over the order's items |
 | `items_value` | Sum of item prices |
 | `freight_value` | Sum of freight on the order |
@@ -135,9 +135,11 @@ denominator; long offsets use only cohorts old enough to be observed.
 `avg_review_score`, `pct_review_score_le2`, `avg_delivery_days`.
 
 Buckets: `on time`, `late: up to 7 days`, `late: 8 to 14 days`,
-`late: more than 14 days`, `never delivered` (no delivery timestamp by the end of
-the snapshot). `bucket_order` exists so charts sort by severity instead of
-alphabetically.
+`late: more than 14 days`, `not delivered: cancelled or unavailable`,
+`not delivered: still open`, `delivered: missing timestamp`. `bucket_order`
+exists so charts sort by severity instead of alphabetically. The three
+no-timestamp buckets are deliberately separate: a refund and a parcel still in
+transit are not the same customer experience.
 
 ### `mart_late_delivery_by_state` — one row per customer state
 

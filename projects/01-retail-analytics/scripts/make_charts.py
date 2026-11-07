@@ -107,7 +107,9 @@ STRINGS = {
             "late: up to 7 days": "late\n0-7 days",
             "late: 8 to 14 days": "late\n8-14 days",
             "late: more than 14 days": "late\n>14 days",
-            "never delivered": "never\ndelivered",
+            "not delivered: cancelled or unavailable": "cancelled or\nunavailable",
+            "not delivered: still open": "still open\nat snapshot",
+            "delivered: missing timestamp": "delivered,\nno timestamp",
         },
         "state_title": "Late delivery by state (states with at least 1,000 deliveries)",
         "state_x": "Deliveries arriving after the promised date (%)",
@@ -144,7 +146,9 @@ STRINGS = {
             "late: up to 7 days": "atraso\n0-7 dias",
             "late: 8 to 14 days": "atraso\n8-14 dias",
             "late: more than 14 days": "atraso\n>14 dias",
-            "never delivered": "nunca\nentregue",
+            "not delivered: cancelled or unavailable": "cancelado ou\nindisponível",
+            "not delivered: still open": "em aberto\nno snapshot",
+            "delivered: missing timestamp": "entregue,\nsem data",
         },
         "state_title": "Atraso na entrega por estado (estados com ao menos 1,000 entregas)",
         "state_x": "Entregas após a data prometida (%)",
@@ -213,7 +217,7 @@ def load_data(engine) -> dict[str, pd.DataFrame]:
             """
             -- Ordered ascending so the worst lane lands at the top of a barh
             -- chart. `is_intrastate` drives the colour: it is the comparison that
-            -- makes the point, because every lane inside one state is fine.
+            -- makes the point, because intrastate lanes with volume are fine.
             -- 900 rather than 1,000 so RJ -> RJ (946 deliveries) survives the cut.
             -- It is the most useful bar on the chart: a Rio seller delivering in
             -- Rio is not late, which is what rules out the destination itself.

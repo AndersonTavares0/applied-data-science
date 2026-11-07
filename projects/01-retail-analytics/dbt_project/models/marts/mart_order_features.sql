@@ -9,7 +9,7 @@
 -- allow-list, and a Python test asserts that no forbidden column is in it.
 --
 -- The label is therefore present in the table but never selected as a feature.
--- Orders that were never delivered have no label (NULL) and no late flag: they
+-- Orders without an observed delivery timestamp have no label (NULL) and no late flag: they
 -- are excluded from training and evaluation, and that exclusion is stated in
 -- the report.
 

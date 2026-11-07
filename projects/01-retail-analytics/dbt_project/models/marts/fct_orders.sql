@@ -96,7 +96,7 @@ joined as (
         o.delivered_to_customer_at,
         o.estimated_delivery_at,
 
-        -- Delivery facts stay NULL when an order was never delivered. NULL is
+        -- Delivery facts stay NULL when no delivery timestamp exists. NULL is
         -- not the same as zero: it keeps undelivered orders out of the delivery
         -- averages instead of pretending they arrived instantly.
         --

@@ -9,10 +9,13 @@
 -- the source is stored as a date at midnight — so the promise never had a time
 -- of day to be late against.
 --
--- "never delivered" includes orders cancelled, unavailable, or still in transit
--- at the end of the snapshot. They are kept as their own bucket instead of being
--- filtered out, because for the customer they are the worst outcome of all —
--- dropping them would make the delivery record look better than it is.
+-- "no delivery timestamp" is not one experience. Cancelled and unavailable
+-- orders are closed events; shipped, invoiced and processing orders are still
+-- open at the end of the snapshot; a handful of orders are marked delivered but
+-- carry no delivery timestamp. They are kept as separate buckets instead of
+-- being filtered out, because for the customer they are not "on time" — but
+-- collapsing them into a single "never delivered" label would mix a refund with
+-- a parcel still in transit.
 --
 -- `bucket_order` exists so charts sort by severity rather than alphabetically.
 
@@ -20,7 +23,12 @@ with bucketed as (
 
     select
         case
-            when is_late is null     then 'never delivered'
+            when is_late is null and order_status in ('canceled', 'unavailable')
+                then 'not delivered: cancelled or unavailable'
+            when is_late is null and order_status = 'delivered'
+                then 'delivered: missing timestamp'
+            when is_late is null
+                then 'not delivered: still open'
             when not is_late         then 'on time'
             when days_late <= 7      then 'late: up to 7 days'
             when days_late <= 14     then 'late: 8 to 14 days'
@@ -28,7 +36,9 @@ with bucketed as (
         end as delivery_bucket,
 
         case
-            when is_late is null     then 4
+            when is_late is null and order_status in ('canceled', 'unavailable') then 4
+            when is_late is null and order_status = 'delivered' then 6
+            when is_late is null then 5
             when not is_late         then 0
             when days_late <= 7      then 1
             when days_late <= 14     then 2

@@ -50,8 +50,8 @@ The handling/transit split answered what the geographic framing could not. Handl
 is between 2.75 and 3.69 days on every lane with volume, so a seller dispatches on
 schedule whatever the destination, and the entire Rio gap is in transit. Paired
 against the same sellers shipping to both states, 53 of 65 are worse into Rio. A
-Rio seller delivering inside Rio is late 4.67% of the time, which is what a São
-Paulo seller achieves inside São Paulo at 4.63%.
+Rio seller delivering inside Rio is late 4.76% of the time, which is close to what
+a São Paulo seller achieves inside São Paulo at 4.66%.
 
 That moved the recommendation from "investigate Rio" to "work the São Paulo to Rio
 lane": 8,129 of Rio's 12,353 deliveries cross it, it is late 14.17% of the time,

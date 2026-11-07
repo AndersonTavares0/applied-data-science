@@ -18,9 +18,9 @@ from late_delivery.features import (
     paired_bootstrap_difference,
     prepare_features,
     rolling_origin,
-    split_train_validation,
     state_rate_baseline,
     temporal_split,
+    validation_slice,
 )
 
 
@@ -28,8 +28,8 @@ def synthetic_frame(rows: int = 480) -> pd.DataFrame:
     generator = np.random.default_rng(7)
     frame = pd.DataFrame(
         {
-            "purchased_at": pd.date_range("2018-01-01", periods=rows, freq="6h"),
-            "delivered_to_customer_at": pd.date_range("2018-01-03", periods=rows, freq="6h"),
+            "purchased_at": pd.date_range("2017-01-01", periods=rows, freq="1D"),
+            "delivered_to_customer_at": pd.date_range("2017-01-03", periods=rows, freq="1D"),
             "is_late": generator.integers(0, 2, rows),
         }
     )
@@ -57,7 +57,8 @@ def test_temporal_split_uses_cutoff_and_drops_inflight_or_unlabelled_orders() ->
     frame.loc[1, "delivered_to_customer_at"] = pd.Timestamp("2018-04-02")
     train, test = temporal_split(frame, cutoff="2018-04-01")
 
-    assert train["purchased_at"].max() < pd.Timestamp("2018-04-01")
+    train_end = pd.Timestamp("2018-01-01")
+    assert train["purchased_at"].max() < train_end
     assert (train["delivered_to_customer_at"] < pd.Timestamp("2018-04-01")).all()
     assert test["purchased_at"].min() >= pd.Timestamp("2018-04-01")
     assert len(train) + len(test) < frame[TARGET].notna().sum()
@@ -65,14 +66,16 @@ def test_temporal_split_uses_cutoff_and_drops_inflight_or_unlabelled_orders() ->
     assert frame.loc[1].name not in set(train.index) | set(test.index)
 
 
-def test_train_validation_uses_labels_observable_at_validation_cutoff() -> None:
+def test_validation_slice_covers_the_gap_with_eventual_labels() -> None:
     frame = synthetic_frame()
-    train, _ = temporal_split(frame, cutoff="2018-04-01")
-    fit, validation = split_train_validation(train, cutoff="2018-03-01")
+    train, test = temporal_split(frame, cutoff="2018-04-01")
+    validation = validation_slice(frame, cutoff="2018-04-01")
 
-    assert (fit["purchased_at"] < pd.Timestamp("2018-03-01")).all()
-    assert (fit["delivered_to_customer_at"] < pd.Timestamp("2018-03-01")).all()
-    assert validation["purchased_at"].min() >= pd.Timestamp("2018-03-01")
+    assert validation["purchased_at"].min() >= pd.Timestamp("2018-01-01")
+    assert validation["purchased_at"].max() < pd.Timestamp("2018-04-01")
+    assert validation[TARGET].notna().all()
+    assert set(validation.index).isdisjoint(train.index)
+    assert set(validation.index).isdisjoint(test.index)
 
 
 def test_capacity_metrics_capture_late_orders_when_ranking_is_perfect() -> None:
@@ -116,7 +119,7 @@ def test_paired_bootstrap_is_zero_for_identical_scores() -> None:
     assert result["share_a_better"] == 0.0
 
 
-def test_rolling_origin_matures_labels_beyond_the_horizon() -> None:
+def test_rolling_origin_matures_training_labels_before_the_origin() -> None:
     frame = synthetic_frame()
     rows = rolling_origin(
         frame,
@@ -128,9 +131,10 @@ def test_rolling_origin_matures_labels_beyond_the_horizon() -> None:
 
     assert len(rows) == 1
     row = rows[0]
-    assert row["label_end"] == "2018-04-01"
+    assert row["train_cutoff"] == "2018-01-01"
     assert row["test_n"] > 0
     assert row["maturity_months"] == 1
+    assert "label_end" not in row
 
 
 def test_calibration_summary_recovers_a_positive_slope() -> None:

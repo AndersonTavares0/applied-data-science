@@ -81,6 +81,13 @@ TOPIC_GROUPS = {
     "Product": (0, 2, 5),
     "Mixed or general": (4,),
 }
+# The four-topic alternative is a sensitivity check on the headline split.
+# Topics 1 and 3 carry delivery/non-receipt/defect vocabulary; topics 0 and 2
+# carry product and order-completeness complaints.
+K4_GROUPS = {
+    "Delivery and non-receipt": (1, 3),
+    "Product": (0, 2),
+}
 STRINGS = {
     "en": {
         "gap_title": "Complaint topics over-represented among late orders",
@@ -287,8 +294,18 @@ def main() -> int:
     coherence = umass_coherence(vectorizer, model, texts)
 
     grouped = group_prevalence(corpus, weights, TOPIC_GROUPS)
+
+    # A coarser fit, reported as a sensitivity check rather than as the model.
+    # If the product/delivery contrast vanished at k=4, the six-topic labels
+    # would be carrying the result rather than the complaints.
+    _, _, weights_k4 = fit_topic_model(texts, n_topics=4, seed=SEED, max_iter=30)
+    corpus_k4 = corpus.copy()
+    corpus_k4["topic"] = weights_k4.argmax(axis=1)
+    grouped_k4 = group_prevalence(corpus_k4, weights_k4, K4_GROUPS)
+
     scope = build_scope(frame, corpus)
     scope["groups"] = grouped.round(4).to_dict(orient="records")
+    scope["groups_k4"] = grouped_k4.round(4).to_dict(orient="records")
     scope["model"] = {
         "method": "Latent Dirichlet Allocation",
         "topics": TOPIC_COUNT,
@@ -332,6 +349,7 @@ def main() -> int:
     selection.to_csv(REPORT_DIR / "topic_selection.csv", index=False, float_format="%.6g")
     table.to_csv(REPORT_DIR / "topic_prevalence.csv", index=False, float_format="%.6g")
     grouped.to_csv(REPORT_DIR / "topic_groups.csv", index=False, float_format="%.6g")
+    grouped_k4.to_csv(REPORT_DIR / "topic_groups_k4.csv", index=False, float_format="%.6g")
 
     plot_gap(table, "en", FIGURE_DIR / "topic_gap.png")
     plot_mix(table, "en", FIGURE_DIR / "topic_mix.png")

@@ -28,7 +28,7 @@ of what the data cannot support.
 <div class="project-seq">02<span class="project-status status-published">Published</span></div>
 <div class="project-detail">
 <h3>At the moment of purchase, can we tell which orders will arrive late?</h3>
-<p>A classifier restricted to features available at checkout, evaluated on a temporal holdout. The riskiest 10% of orders carry 2.35× their share of late deliveries; rolling-origin checks show the signal is real but variable, and the score is a ranking rather than a calibrated probability.</p>
+<p>A classifier restricted to features available at checkout, evaluated on a temporal holdout. The riskiest 10% of orders carry 1.97× their share of late deliveries; the top 5% is less precise than the top 10%, and the score is a ranking rather than a calibrated probability. The honest result is a research prototype, not a deployment-ready queue.</p>
 <p class="project-stack">Python, pandas, scikit-learn</p>
 <p class="project-links"><a href="reports/02-late-delivery/02-late-delivery.qmd">Read the analysis</a> <a href="reports/02-late-delivery/00-executive-memo.qmd">One-page decision memo</a></p>
 </div>

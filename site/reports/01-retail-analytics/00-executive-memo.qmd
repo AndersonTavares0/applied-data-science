@@ -33,13 +33,12 @@ which carries two thirds of Rio's orders and is late 14.2% of the time.**
   of on-time customers.
 - São Paulo is late on **4.49%** of deliveries, Rio de Janeiro on **12.10%**,
   Bahia on **12.16%** and Ceará on **13.76%**.
-- **The sellers are not the cause.** Sellers dispatch in about three days on
-  every lane. A Rio seller delivering inside Rio is late **4.67%** of the time,
-  matching São Paulo's **4.63%**, and 53 of the 65 sellers that ship to both
+- **The sellers are not the cause.** Sellers dispatch in about three days on lanes with volume. A Rio seller delivering inside Rio is late **4.76%** of the time,
+  close to São Paulo's **4.66%**, and 53 of the 65 sellers that ship to both
   states are worse into Rio.
 - **The lane is the cause.** São Paulo to Rio carries **8,129** of Rio's 12,353
-  deliveries and is late **14.17%**. Every lane that stays inside one state sits
-  at 4.8% or below.
+  deliveries and is late **14.17%**. Every intrastate lane with at least 250
+  deliveries sits at 4.8% or below.
 
 ![Late delivery by lane. Blue bars are lanes where the seller and the customer are in the same state.](figures/lane-late.png){#fig-lane fig-alt="Horizontal bar chart of the late-delivery percentage for the busiest lanes between a seller state and a customer state, worst first. São Paulo to Rio de Janeiro is the worst by a clear margin, and the three lanes where seller and customer are in the same state are highlighted and sit at the bottom." fig-align="center"}
 
@@ -72,16 +71,16 @@ median is 12.8.
 ```{mermaid}
 flowchart TB
   A["São Paulo to Rio<br/>8,129 deliveries, 14.17% late"] --> B{"Do the sellers<br/>cause it?"}
-  B -- "no" --> C["They dispatch in about three days<br/>on every lane"]
+  B -- "no" --> C["They dispatch in about three days<br/>on lanes with volume"]
   C --> D{"Is Rio hard to reach?"}
-  D -- "no" --> E["Rio's own sellers deliver<br/>late 4.67% of the time"]
+  D -- "no" --> E["Rio's own sellers deliver<br/>late 4.76% of the time"]
   E --> F["The crossing is the problem,<br/>and its promise is the thinnest:<br/>27 days against 30.3 for the farther SP to RS lane"]
 ```
 
 *The seller question is answered by the data. The carrier question is not, and
 it is the one worth asking.*
 
-**Second, widen the promise on that lane.** The average parcel arrives **11.18
+**Second, widen the promise on that lane.** The average parcel arrives **10.9
 days early** and 14% of the lane is still late. Three more days on the promise
 would report **11.60%** instead of **14.17%**, and seven more would report
 **8.37%**. Widening a promise moves the measurement rather than the parcel, so
@@ -98,7 +97,9 @@ it belongs alongside the operational question above, not instead of it.
   reflect who they are rather than what happened to their parcel. Comparing
   review scores within the same product category and order value would test
   this.
-- **If the "never delivered" group scores better than the "8–14 days late"
+- **If the cancelled/unavailable group scores better than the "8–14 days late"
   group for a specific reason** (refunds, communication, expectations), then
   expectation management may matter as much as speed. The data shows the pattern
-  (1.747 against 1.672); I have not established why.
+  (1.662 against 1.672); I have not established why. The 1,729 orders still open
+  at the snapshot are a separate, censored group and should not be folded into
+  the same comparison.

@@ -35,16 +35,16 @@ vezes.**
 - São Paulo atrasa em **4.49%** das entregas, o Rio de Janeiro em **12.10%**, a
   Bahia em **12.16%** e o Ceará em **13.76%**.
 - **Os vendedores não são a causa.** Os vendedores despacham em cerca de três dias
-  em todos os corredores. Um vendedor do Rio entregando dentro do Rio atrasa
-  **4.67%** das vezes, igualando os **4.63%** de São Paulo, e 53 dos 65 vendedores
+  em corredores com volume. Um vendedor do Rio entregando dentro do Rio atrasa
+  **4.76%** das vezes, próximo dos **4.66%** de São Paulo, e 53 dos 65 vendedores
   que enviam para os dois estados vão pior para o Rio.
 - **O corredor é a causa.** De São Paulo ao Rio carrega **8,129** das 12,353
-  entregas do Rio e atrasa **14.17%**. Todo corredor que fica dentro de um único
-  estado fica em 4.8% ou menos.
+  entregas do Rio e atrasa **14.17%**. Todo corredor interno com pelo menos 250
+  entregas fica em 4.8% ou menos.
 
 ![Atraso de entrega por corredor. As barras azuis são corredores em que o vendedor e o cliente estão no mesmo estado.](../../../reports/01-retail-analytics/figures/pt/lane-late.png){#fig-lane fig-alt="Gráfico de barras horizontais do percentual de atraso nas rotas mais movimentadas entre o estado do vendedor e o do cliente, da pior para a melhor. São Paulo para o Rio de Janeiro é a pior com folga, e as três rotas em que vendedor e cliente estão no mesmo estado aparecem destacadas e no fim." fig-align="center"}
 
-![Nota média de avaliação por resultado da entrega, e a parcela que atribui uma ou duas estrelas.](../../../reports/01-retail-analytics/figures/pt/delivery-review.png){#fig-delivery fig-alt="Gráfico de barras da nota média de avaliação por desfecho de entrega, do grupo no prazo até os pedidos que chegaram mais de duas semanas atrasados e os que nunca chegaram. A parcela que deu nota um ou dois está impressa dentro de cada barra e é várias vezes maior em todo grupo atrasado." fig-align="center"}
+![Nota média de avaliação por resultado da entrega, e a parcela que atribui uma ou duas estrelas.](../../../reports/01-retail-analytics/figures/pt/delivery-review.png){#fig-delivery fig-alt="Gráfico de barras da nota média de avaliação por desfecho de entrega, do grupo no prazo até os grupos atrasados, pedidos cancelados ou indisponíveis, pedidos em aberto no snapshot e oito pedidos entregues sem data. A parcela que deu nota um ou dois está impressa dentro de cada barra e é várias vezes maior em todo grupo atrasado ou não entregue." fig-align="center"}
 
 ## Quanto custa
 
@@ -75,16 +75,16 @@ corredor cuja mediana é 12.8.
 ```{mermaid}
 flowchart TB
   A["São Paulo ao Rio<br/>8,129 entregas, 14.17% atrasadas"] --> B{"Os vendedores<br/>causam isso?"}
-  B -- "não" --> C["Eles despacham em cerca de três dias<br/>em todos os corredores"]
+  B -- "não" --> C["Eles despacham em cerca de três dias<br/>em corredores com volume"]
   C --> D{"É difícil chegar ao Rio?"}
-  D -- "não" --> E["Os próprios vendedores do Rio entregam<br/>com 4.67% de atraso"]
+  D -- "não" --> E["Os próprios vendedores do Rio entregam<br/>com 4.76% de atraso"]
   E --> F["A travessia é o problema,<br/>e sua promessa é a mais frágil:<br/>27 dias contra 30.3 para o corredor SP–RS, mais distante"]
 ```
 
 *A pergunta sobre os vendedores é respondida pelos dados. A pergunta sobre a
 transportadora não é, e é a que vale a pena fazer.*
 
-**Segundo, amplie a promessa nesse corredor.** O pacote médio chega **11.18 dias
+**Segundo, amplie a promessa nesse corredor.** O pacote médio chega **10.9 dias
 antes** e 14% do corredor ainda chega atrasado. Três dias a mais na promessa
 registrariam **11.60%** em vez de **14.17%**, e sete a mais registrariam
 **8.37%**. Ampliar uma promessa move a medição, e não o pacote, então ela pertence
@@ -102,7 +102,9 @@ ao lado da pergunta operacional acima, e não no lugar dela.
   nas avaliações poderia refletir em parte quem eles são, e não o que aconteceu
   com o pacote. Comparar notas de avaliação dentro da mesma categoria de produto
   e faixa de valor de pedido testaria isso.
-- **Se o grupo "nunca entregue" tivesse nota melhor do que o grupo "8–14 dias
-  de atraso" por um motivo específico** (reembolsos, comunicação, expectativas),
-  então a gestão de expectativas pode importar tanto quanto a velocidade. Os dados
-  mostram esse padrão (1.747 contra 1.672); eu não estabeleci por quê.
+- **Se o grupo cancelado/indisponível tivesse nota melhor do que o grupo "8–14
+  dias de atraso" por um motivo específico** (reembolsos, comunicação,
+  expectativas), então a gestão de expectativas pode importar tanto quanto a
+  velocidade. Os dados mostram esse padrão (1.662 contra 1.672); eu não
+  estabeleci por quê. Os 1.729 pedidos em aberto no snapshot são um grupo separado
+  e censurado, e não devem ser misturados nessa comparação.

@@ -66,6 +66,17 @@ def test_selection_records_seed_sensitivity() -> None:
     assert (table["perplexity"] > 0).all()
 
 
+def test_k4_sensitivity_keeps_the_same_contrast() -> None:
+    groups = pd.read_csv(REPORTS / "topic_groups_k4.csv")
+    corpus = _scope()["corpus"]
+    assert groups["late_n"].sum() == corpus["late_comments"]
+    assert groups["on_time_n"].sum() == corpus["usable_comments"] - corpus["late_comments"]
+    delivery = groups.set_index("group").loc["Delivery and non-receipt"]
+    product = groups.set_index("group").loc["Product"]
+    assert delivery["late_share_pct"] > 80
+    assert product["on_time_share_pct"] > 70
+
+
 def test_hard_assignment_denominators_match_scope() -> None:
     scope = _scope()
     late = scope["by_outcome"]["late"]
