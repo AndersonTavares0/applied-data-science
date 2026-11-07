@@ -16,7 +16,7 @@ USAGE
 EXAMPLES
 --------
     uv run python tasks.py setup      # deps + database + data   (run once)
-    uv run python tasks.py pipeline   # load -> dbt build -> tests -> render
+    uv run python tasks.py pipeline   # load -> dbt build -> charts -> topics -> tests -> render
 """
 
 from __future__ import annotations
@@ -32,6 +32,11 @@ PROJECT = ROOT / "projects" / "01-retail-analytics"
 SRC = PROJECT / "src"
 SCRIPTS = PROJECT / "scripts"
 DBT_DIR = PROJECT / "dbt_project"
+
+# Project 03 reads the built marts and fits the review topic model.
+VOICE_PROJECT = ROOT / "projects" / "03-voice-of-customer"
+VOICE_SRC = VOICE_PROJECT / "src"
+VOICE_SCRIPTS = VOICE_PROJECT / "scripts"
 
 # The website is its own Quarto project with its own root, so it can be rendered
 # and published without the rest of the repository in reach. Every Quarto
@@ -62,9 +67,11 @@ def load_dotenv(path: Path = ROOT / ".env") -> None:
 
 
 def child_env() -> dict[str, str]:
-    """Environment for child processes: `.env` loaded, `retail` importable."""
+    """Environment for child processes: `.env` loaded, project packages importable."""
     env = dict(os.environ)
-    env["PYTHONPATH"] = str(SRC) + os.pathsep + env.get("PYTHONPATH", "")
+    src_paths = [str(SRC), str(VOICE_SRC)]
+    existing = env.get("PYTHONPATH")
+    env["PYTHONPATH"] = os.pathsep.join(src_paths + ([existing] if existing else []))
     return env
 
 
@@ -145,6 +152,15 @@ def task_charts() -> None:
     writes are committed, so publishing the site never touches the database.
     """
     run([sys.executable, str(SCRIPTS / "make_charts.py")])
+
+
+def task_topics() -> None:
+    """Fit the complaint-topic model and regenerate its figures.
+
+    Reads the built marts, like `charts`, so it needs a loaded database. The
+    generated tables and PNGs are committed, so publishing never touches it.
+    """
+    run([sys.executable, str(VOICE_SCRIPTS / "analyze_reviews.py")])
 
 
 def task_dbt_build() -> None:
@@ -229,6 +245,7 @@ def task_pipeline() -> None:
     task_load()
     task_dbt_build()
     task_charts()
+    task_topics()
     task_test()
     task_render()
 
@@ -263,6 +280,7 @@ TASKS: dict[str, tuple[str, object]] = {
     "db-reset": ("Destroy the database volume and recreate it", task_db_reset),
     "load": ("Load raw CSVs into the `raw` schema", task_load),
     "charts": ("Regenerate the report charts from the marts", task_charts),
+    "topics": ("Fit the review topic model and regenerate its figures", task_topics),
     "dbt-build": ("Build and test all dbt models", task_dbt_build),
     "dbt-docs": ("Generate the dbt docs site", task_dbt_docs),
     "test": ("Run the Python test suite", task_test),
@@ -271,7 +289,7 @@ TASKS: dict[str, tuple[str, object]] = {
     "render": ("Render the Quarto website", task_render),
     "preview": ("Live-preview the Quarto website", task_preview),
     "publish": ("Publish the site to the `gh-pages` branch", task_publish),
-    "pipeline": ("load -> dbt build -> tests -> render", task_pipeline),
+    "pipeline": ("load -> dbt build -> charts -> topics -> tests -> render", task_pipeline),
     "clean": ("Remove caches and build artefacts", task_clean),
 }
 

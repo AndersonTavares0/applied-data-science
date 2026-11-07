@@ -1,0 +1,59 @@
+{
+  "delivered_orders": 96476,
+  "by_outcome": {
+    "on_time": {
+      "orders": 89941,
+      "with_comment": 35138,
+      "comment_rate_pct": 39.07,
+      "low_star_comments": 6490,
+      "low_star_comment_rate_pct": 7.22
+    },
+    "late": {
+      "orders": 6535,
+      "with_comment": 3762,
+      "comment_rate_pct": 57.57,
+      "low_star_comments": 2747,
+      "low_star_comment_rate_pct": 42.04
+    }
+  },
+  "corpus": {
+    "low_star_reviews": 12276,
+    "low_star_comments": 9237,
+    "usable_comments": 9139,
+    "dropped_short_comments": 98,
+    "late_comments": 2711,
+    "late_share_pct": 29.66,
+    "min_tokens": 2
+  },
+  "model": {
+    "method": "Latent Dirichlet Allocation",
+    "topics": 6,
+    "seed": 0,
+    "max_iter": 30,
+    "min_df": 20,
+    "max_df": 0.5,
+    "ngram_range": [
+      1,
+      2
+    ],
+    "perplexity": 332.92,
+    "mean_weight_by_outcome": {
+      "late": [
+        0.0705,
+        0.2517,
+        0.0767,
+        0.3371,
+        0.1624,
+        0.1015
+      ],
+      "on_time": [
+        0.2344,
+        0.1024,
+        0.2114,
+        0.1256,
+        0.1412,
+        0.185
+      ]
+    }
+  }
+}
