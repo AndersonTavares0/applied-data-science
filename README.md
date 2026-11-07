@@ -11,14 +11,15 @@ The thread through all three is one finding: **late delivery is the strongest si
 
 - [The report](https://AndersonTavares0.github.io/ds-portfolio/reports/01-retail-analytics/01-business-analytics.html) is the full analysis, with figures.
 - [The decision memo](https://AndersonTavares0.github.io/ds-portfolio/reports/01-retail-analytics/00-executive-memo.html) is the same argument on one page.
-- [Em português](https://AndersonTavares0.github.io/ds-portfolio/pt/) has both pages translated.
+- [Project 02](https://AndersonTavares0.github.io/ds-portfolio/reports/02-late-delivery/02-late-delivery.html) asks what can be known about lateness at checkout.
+- [Em português](https://AndersonTavares0.github.io/ds-portfolio/pt/) has every page translated.
 
 ## Projects
 
 | # | Project | Question it answers | Status |
 |---|---|---|---|
 | 01 | Retail analytics | Which levers actually move satisfaction and repeat purchase? | Published |
-| 02 | Late-delivery prediction | At purchase time, can we tell which orders will arrive late? | In progress |
+| 02 | Late-delivery prediction | At purchase time, can we tell which orders will arrive late? | Published |
 | 03 | Voice of the customer | What do 99,000 Portuguese reviews complain about? | Planned |
 
 ## What Project 01 found
@@ -30,6 +31,16 @@ The thread through all three is one finding: **late delivery is the strongest si
 
 The report recommends investigating Rio de Janeiro, where 12.10% of 12,353 deliveries are late against São Paulo's 4.49%. At São Paulo's rate, roughly 940 Rio orders a year would not be late, and the observed review behaviour implies about 370 fewer one- and two-star reviews. It labels that an association rather than a forecast, because the data holds states and not distances, and no cost or margin figures.
 
+## What Project 02 found
+
+A model restricted to what is known at checkout can rank orders by late-delivery risk, but it cannot yet produce a calibrated probability.
+
+- **The ranking works.** On 32,150 orders purchased after 2018-04-01, logistic regression reaches ROC AUC 0.724 and average precision 0.105 against a 4.42% base rate. The riskiest 10% captures 28% of all late orders at 12.4% precision — 2.8× the base rate.
+- **The probability does not.** The late rate fell from 7.95% before the split to 4.42% after it, so the model overpredicts (mean 9.0% against 4.4% observed) and its Brier score is slightly worse than a constant. The report presents the score as a triage queue, not a risk percentage.
+- **The signal is the promise and the geography.** Permutation importance ranks `promise_days` first, then customer state, seller state and the same-state flag. Basket value, freight, weight, payment and category add little.
+
+The full analysis is in [Project 02](https://AndersonTavares0.github.io/ds-portfolio/reports/02-late-delivery/02-late-delivery.html) and its [decision memo](https://AndersonTavares0.github.io/ds-portfolio/reports/02-late-delivery/00-executive-memo.html).
+
 ## How it is built
 
 Raw CSVs from a revision-pinned mirror, loaded into PostgreSQL with every column kept as text, modelled with dbt, tested at every layer, and written up in Quarto.
@@ -40,8 +51,9 @@ Hugging Face mirror, revision pinned
   -> load_raw.py            every column TEXT, chunked
   -> PostgreSQL             schema: raw
   -> dbt staging            analytics_staging, views: cast and rename
-  -> dbt marts              analytics_marts, tables: 80 data tests
+  -> dbt marts              analytics_marts, tables: tested keys and outcomes
   -> make_charts.py         figures, committed so publishing needs no database
+  -> train_model.py         model metrics + figures, committed
   -> Quarto                 site/
 ```
 
@@ -61,7 +73,7 @@ cd ds-portfolio
 cp .env.example .env
 uv run python tasks.py doctor      # check the toolchain
 uv run python tasks.py setup       # dependencies, database, dataset
-uv run python tasks.py pipeline    # load, build, charts, tests, render
+uv run python tasks.py pipeline    # load, build, charts, train, tests, render
 ```
 
 The website is then in `site/_site/`. Every command goes through [`tasks.py`](tasks.py), which is plain Python rather than a `Makefile` because `make` is not on Windows and this repository is written on Windows and run on Linux.
@@ -72,13 +84,19 @@ The dataset is 126 MB and is not committed. It comes from a Hugging Face mirror 
 
 ```
 projects/01-retail-analytics/   the analysis
-  dbt_project/                  staging models, mart models, 80 data tests, 7 singular tests
+  dbt_project/                  staging models, mart models, tested keys
   src/retail/                   the data layer: config, dataset manifest, download and load
   scripts/                      download_data.py, load_raw.py, make_charts.py
   tests/                        Python tests, no network and no database
+projects/02-late-delivery/      the prediction
+  src/late_delivery/            feature contract, temporal split, evaluation
+  scripts/train_model.py        trains both models, writes metrics and figures
+  reports/                      model_metrics.json, feature_importance.csv
+  tests/                        contract, split, metrics and pipeline tests
 site/                           what gets published, as its own Quarto project
   index.qmd, about.qmd          the landing pages
   reports/01-retail-analytics/  the report and the decision memo
+  reports/02-late-delivery/     the model report, decision memo and figures
   pt/                           the same pages in Portuguese
   theme/                        a light and a dark palette over one set of rules
 docs/                           how and why

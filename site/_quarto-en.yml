@@ -14,6 +14,7 @@ project:
     - index.qmd
     - about.qmd
     - reports/01-retail-analytics/*.qmd
+    - reports/02-late-delivery/*.qmd
 
 website:
   navbar:
@@ -28,6 +29,10 @@ website:
             text: "01 · Retail analytics"
           - href: reports/01-retail-analytics/00-executive-memo.qmd
             text: "01 · Decision memo"
+          - href: reports/02-late-delivery/02-late-delivery.qmd
+            text: "02 · Late-delivery model"
+          - href: reports/02-late-delivery/00-executive-memo.qmd
+            text: "02 · Decision memo"
       - href: about.qmd
         text: About
     right:

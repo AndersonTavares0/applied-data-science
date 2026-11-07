@@ -1,0 +1,220 @@
+---
+title: "02 · Late-Delivery Model"
+subtitle: "What can be known at checkout, and what only looks predictable afterwards"
+date: today
+date-format: "MMMM YYYY"
+format:
+  html:
+    toc: true
+---
+
+This is the second project on the Olist Brazilian e-commerce dataset. The
+[first](../01-retail-analytics/01-business-analytics.qmd) established that late
+delivery is the strongest signal of customer dissatisfaction in the marketplace
+and that the delay concentrates on the São Paulo → Rio lane. This project asks
+the forward-looking question: **at the moment the order is placed, can we rank
+orders by their risk of arriving late?**
+
+Every number below comes from `projects/02-late-delivery`, trained on the dbt
+mart `mart_order_features`. The trained model is not committed; the metrics and
+figures are, and `uv run python tasks.py train` rebuilds them.
+
+---
+
+## Executive summary
+
+- **The ranking has real signal, but the probability does not.** On a temporal
+  holdout of 32,150 delivered orders, logistic regression reaches **ROC AUC
+  0.724** and **average precision 0.105** against a 4.42% late rate. Flagging the
+  riskiest 10% of orders (3,215 orders) captures **28.0% of all late orders** at
+  **12.4% precision — 2.8× the base rate**.
+- **A simple state baseline is not enough.** Ranking by each customer state's
+  historical late rate lifts top-decile precision to 4.9%, only 1.1× the base
+  rate. The model's edge comes from combining geography with the promise and the
+  order itself, not from knowing which state is slow.
+- **The probabilities are not calibrated to the holdout period.** The logistic
+  model predicts a mean late probability of **9.0%** while the holdout observes
+  **4.4%**, and its Brier score (0.0444) is slightly worse than always predicting
+  the training prevalence (0.0435). The late rate fell from 7.95% before April
+  2018 to 4.42% after it; the model learned the earlier regime.
+- **Promise length and geography dominate.** Permutation importance ranks
+  `promise_days` first, then `customer_state`, `seller_state` and `same_state`.
+  Everything about the basket — value, freight, weight, payment, category —
+  contributes little once those are known.
+- **Use it as a triage queue, not as a probability.** Operating at a fixed
+  capacity is the decision the model supports; converting a score into a
+  probability would require recalibration on data from the current regime.
+
+---
+
+## 1. The feature contract
+
+The model may only use information that exists when the order is placed. That is
+enforced by an explicit allow-list in
+`projects/02-late-delivery/src/late_delivery/features.py`, not by dropping a few
+obvious columns: a new mart column fails closed until someone adds it on purpose.
+
+| Group | Features |
+|---|---|
+| Timing of the purchase | month, day of week, hour, weekend flag |
+| The promise | `promise_days` (promised date − purchase date) |
+| Geography | customer state, seller state, same-state flag |
+| Order composition | category, item / product / seller counts, item value, freight, order value, freight share, weight, volume, photos, missing dimensions |
+| Payment | payment count, maximum installments, credit card / boleto / voucher flags |
+
+Deliberately excluded: approval time, carrier hand-off, delivery date, delivery
+duration, days late, the label itself, and the review score. Every one of those
+is observed after checkout. Arrival time would predict lateness almost
+perfectly, which is exactly why including it would make the result worthless as
+a forecast and impossible to use at decision time.
+
+Two consequences are visible in the mart. `seller_state` is null for 1,285
+orders with more than one seller, because a multi-seller order has no single
+origin; `same_state` is null for the same rows. Both are imputed inside the
+pipeline rather than guessed.
+
+---
+
+## 2. Evaluation design
+
+**Target:** `is_late`, defined in Project 01 as the delivery date being strictly
+after the promised date. Orders that were never delivered have no label and are
+excluded — 96,476 of 99,441 orders remain.
+
+**Split:** purchases before **2018-04-01** train (64,326 delivered orders,
+7.95% late); purchases on or after that date test (32,150 orders, 4.42% late).
+A random split would put the same months on both sides and let the model learn a
+specific backlog instead of a pattern. The temporal split is the honest
+approximation of using the model forward. It also exposes the regime change that
+a random split would hide.
+
+**Models:** logistic regression and histogram gradient boosting, both with
+median/constant imputation and one-hot encoding inside a scikit-learn pipeline.
+No hyperparameter search: with one holdout, tuning on it would turn the reported
+score into a selection artefact. The comparison is between two defaults.
+
+**Metrics:** ROC AUC and average precision for ranking; Brier score and a
+calibration table for probabilities; precision, recall and lift in the top
+decile for the operational decision. The base rate is 4.42%, so accuracy is
+useless here — predicting “not late” for every order is 95.6% accurate.
+
+---
+
+## 3. Results
+
+| Model | ROC AUC | Avg. precision | Brier | Top-10% precision | Top-10% recall | Lift |
+|---|---:|---:|---:|---:|---:|---:|
+| Logistic regression | 0.724 | 0.105 | 0.0444 | 12.4% | 28.0% | 2.80× |
+| Gradient boosting | 0.695 | 0.090 | 0.0415 | 11.0% | 25.0% | 2.50× |
+| Constant (train prevalence) | — | — | 0.0435 | 4.0%* | 9.1%* | 0.91×* |
+| Customer-state rate | — | — | 0.0439 | 4.9% | 11.0% | 1.10× |
+
+\* A constant score cannot rank; the top-decile figures are an arbitrary slice of
+a tie and are shown only to make the comparison explicit.
+
+Logistic regression is the better ranker and the one used for interpretation.
+Boosting is better calibrated in the middle of the distribution but finds fewer
+late orders at the top, which is the operating point that matters here.
+
+![Precision–recall curve for both models on the temporal holdout. The dotted line is the 4.42% base rate.](figures/precision_recall.png){#fig-pr fig-alt="Precision-recall curves for logistic regression and gradient boosting on the 32,150-order temporal holdout. Logistic regression stays above gradient boosting for most recall values, and both sit well above the 4.42 percent base-rate line." fig-align="center"}
+
+At a capacity of 10%, the logistic model flags 3,215 orders, of which 398 are
+late. Reviewing those 3,215 orders captures 28% of the 1,421 late orders in the
+holdout. The state-rate baseline would capture 11% at the same capacity.
+
+---
+
+## 4. Calibration, and why the probability is not the product
+
+The ranking and the probability fail in different ways, and it is worth keeping
+them apart.
+
+![Calibration on the temporal holdout. The dashed diagonal is perfect calibration.](figures/calibration.png){#fig-cal fig-alt="Calibration plot comparing predicted and observed late-delivery rates in ten score bins. Both models predict higher late rates than are observed in the holdout, with the gap widening in the highest bin, where logistic regression predicts about 26 percent and observes about 12 percent." fig-align="center"}
+
+The holdout's late rate is 4.42%, but the model was trained where it was 7.95%.
+Every bin therefore overpredicts, and the highest bin is the worst: a predicted
+26% corresponds to an observed 12%. This is not a bug in the pipeline; it is the
+model faithfully carrying a base rate that no longer holds. Recalibrating on a
+slice of the training period would not fix it either, because January–March 2018
+was an unusually bad period (5.7%, 14.1% and 19.0% late) rather than a good
+estimate of what followed.
+
+The practical reading: **the score is a ranking, not a probability.** A team can
+use “the top 3,000 orders this month” without believing the percentage attached to
+any one order. If a probability is needed for a customer-facing decision, it has
+to be recalibrated on recent delivered orders and monitored as the regime moves.
+
+---
+
+## 5. What the model is using
+
+Permutation importance shuffles one raw feature at a time and measures the drop
+in average precision on the holdout. Shuffling at the raw-feature level keeps a
+categorical variable as one concept instead of the dozens of one-hot columns it
+becomes inside the pipeline.
+
+| Feature | Drop in average precision |
+|---|---:|
+| `promise_days` | 0.044 |
+| `customer_state` | 0.029 |
+| `seller_state` | 0.015 |
+| `same_state` | 0.010 |
+| `purchase_month` | 0.005 |
+| `item_count` | 0.002 |
+| `order_value` | 0.002 |
+| `seller_count` | 0.001 |
+
+The list is short and it matches Project 01's finding. The promise is the
+strongest single input, and the two state fields plus their interaction carry
+most of the rest. Basket value, freight, weight, payment method and category add
+almost nothing once those are known.
+
+That does **not** mean “widen the promise and lateness disappears”. Project 01
+showed the promise is set per lane and is shorter on the São Paulo → Rio corridor
+than on longer routes; `promise_days` is partly the marketplace's own expectation
+of difficulty. The model is exploiting that expectation, not identifying a lever
+that can be changed independently. The causal question remains the operational
+one from Project 01: why the crossing takes so long.
+
+---
+
+## 6. Limitations
+
+- **One holdout, one regime.** The test period is the last seven months of the
+  dataset. It contains the 2018-02/03 backlog and the abrupt improvement after
+  it. A second holdout, or rolling-origin evaluation, would say more about
+  stability than a single split can.
+- **No carrier or warehouse identifier.** The dataset stops at seller and state.
+  The most plausible operational cause of lateness is therefore not in the model.
+- **The label is the promise, not the customer's expectation.** An order can be
+  “late” against an aggressive promise and still arrive when the customer
+  expected it. Project 01 shows the review gap is real, but the label inherits
+  the promise's definition.
+- **Multi-seller orders lose their origin.** 1,285 orders have no single seller
+  state. Imputation keeps them in the evaluation but weakens geography for those
+  rows.
+- **No cost model.** The dataset has no intervention cost, refund value or
+  margin. The top-decile framing avoids inventing one; a real deployment would
+  choose capacity by comparing the cost of reviewing an order with the cost of a
+  late delivery.
+- **No deployment or monitoring.** This is an offline evaluation. A production
+  score would need drift checks on the late rate, the promise distribution and
+  the state mix, plus a recalibration step.
+
+---
+
+## 7. Reproducing it
+
+```bash
+uv run python tasks.py db-up
+uv run python tasks.py data
+uv run python tasks.py load
+uv run python tasks.py dbt-build
+uv run python tasks.py train
+```
+
+`train` writes `projects/02-late-delivery/reports/model_metrics.json`, the
+permutation-importance table and the two figures above. The feature contract,
+split and evaluation helpers have unit tests in
+`projects/02-late-delivery/tests/test_modeling.py`, including a check that no
+forbidden post-purchase column can enter the feature list.

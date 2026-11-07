@@ -25,11 +25,12 @@ of what the data cannot support.
 </article>
 
 <article class="project">
-<div class="project-seq">02<span class="project-status status-wip">In progress</span></div>
+<div class="project-seq">02<span class="project-status status-published">Published</span></div>
 <div class="project-detail">
 <h3>At the moment of purchase, can we tell which orders will arrive late?</h3>
-<p>A cost-sensitive classifier that only uses features available when the order is placed, so it cannot quietly learn the answer it is meant to predict.</p>
+<p>A classifier restricted to features available at checkout, evaluated on a temporal holdout. The riskiest 10% of orders carry 2.8× their share of late deliveries; the probabilities are honest about not being calibrated.</p>
 <p class="project-stack">Python, pandas, scikit-learn</p>
+<p class="project-links"><a href="reports/02-late-delivery/02-late-delivery.qmd">Read the analysis</a> <a href="reports/02-late-delivery/00-executive-memo.qmd">One-page decision memo</a></p>
 </div>
 </article>
 

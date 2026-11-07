@@ -1,0 +1,226 @@
+---
+title: "02 · Modelo de atraso na entrega"
+subtitle: "O que se sabe no checkout, e o que só parece previsível depois"
+date: today
+date-format: "MMMM YYYY"
+format:
+  html:
+    toc: true
+---
+
+Este é o segundo projeto sobre o conjunto de dados de e-commerce brasileiro da
+Olist. O [primeiro](../01-retail-analytics/01-business-analytics.qmd) mostrou que
+o atraso na entrega é o sinal mais forte de insatisfação do cliente no
+marketplace e que o atraso se concentra na rota São Paulo → Rio. Este projeto
+faz a pergunta voltada para a frente: **no momento em que o pedido é feito, é
+possível ordenar os pedidos pelo risco de chegar atrasado?**
+
+Todo número abaixo vem de `projects/02-late-delivery`, treinado sobre o mart dbt
+`mart_order_features`. O modelo treinado não é versionado; as métricas e figuras
+são, e `uv run python tasks.py train` as reconstrói.
+
+---
+
+## Resumo executivo
+
+- **O ranking tem sinal real, mas a probabilidade não.** Em uma amostra temporal
+  de 32.150 pedidos entregues, a regressão logística alcança **ROC AUC 0,724** e
+  **precisão média 0,105** contra uma taxa de atraso de 4,42%. Sinalizar os 10%
+  de maior risco (3.215 pedidos) captura **28,0% de todos os atrasos** com
+  **precisão de 12,4% — 2,8× a taxa base**.
+- **Uma baseline por estado não basta.** Ordenar pela taxa histórica de atraso do
+  estado do cliente eleva a precisão do decil superior a 4,9%, apenas 1,1× a taxa
+  base. O ganho do modelo vem de combinar geografia, prazo e o próprio pedido, não
+  de saber qual estado é lento.
+- **As probabilidades não estão calibradas para o período de teste.** O modelo
+  logístico prevê risco médio de **9,0%** enquanto a amostra observa **4,4%**, e
+  seu Brier (0,0444) é levemente pior do que prever sempre a prevalência de
+  treino (0,0435). A taxa de atraso caiu de 7,95% antes de abril de 2018 para
+  4,42% depois; o modelo aprendeu o regime anterior.
+- **Prazo e geografia dominam.** A importância por permutação coloca
+  `promise_days` em primeiro lugar, seguido de `customer_state`, `seller_state` e
+  `same_state`. Valor, frete, peso, pagamento e categoria acrescentam pouco
+  depois disso.
+- **Use como fila de triagem, não como probabilidade.** Operar com capacidade
+  fixa é a decisão que o modelo sustenta; converter o score em probabilidade
+  exigiria recalibrar com dados do regime atual.
+
+---
+
+## 1. O contrato de atributos
+
+O modelo só pode usar informação que existe quando o pedido é feito. Isso é
+garantido por uma lista explícita de atributos permitidos em
+`projects/02-late-delivery/src/late_delivery/features.py`, e não por descartar
+algumas colunas óbvias: uma nova coluna do mart falha fechada até alguém
+adicioná-la de propósito.
+
+| Grupo | Atributos |
+|---|---|
+| Momento da compra | mês, dia da semana, hora, indicador de fim de semana |
+| O prazo | `promise_days` (data prometida − data da compra) |
+| Geografia | estado do cliente, estado do vendedor, indicador de mesmo estado |
+| Composição do pedido | categoria, número de itens / produtos / vendedores, valor dos itens, frete, valor do pedido, participação do frete, peso, volume, fotos, dimensões ausentes |
+| Pagamento | número de pagamentos, máximo de parcelas, indicadores de cartão / boleto / voucher |
+
+Ficam de fora, deliberadamente: horário de aprovação, entrega à transportadora,
+data de entrega, duração da entrega, dias de atraso, o próprio rótulo e a nota
+da avaliação. Todos são observados depois do checkout. O tempo de chegada
+preveria o atraso quase perfeitamente, e é exatamente por isso que incluí-lo
+tornaria o resultado inútil como previsão e impossível de usar no momento da
+decisão.
+
+Duas consequências aparecem no mart. `seller_state` é nulo em 1.285 pedidos com
+mais de um vendedor, porque um pedido multi-vendedor não tem uma origem única;
+`same_state` é nulo nas mesmas linhas. Ambos são imputados dentro do pipeline, não
+adivinhados.
+
+---
+
+## 2. Desenho da avaliação
+
+**Alvo:** `is_late`, definido no Projeto 01 como a data de entrega
+estritamente posterior à data prometida. Pedidos nunca entregues não têm rótulo e
+ficam de fora — restam 96.476 dos 99.441 pedidos.
+
+**Divisão:** compras antes de **2018-04-01** treinam (64.326 pedidos entregues,
+7,95% atrasados); compras a partir dessa data testam (32.150 pedidos, 4,42%
+atrasados). Uma divisão aleatória colocaria os mesmos meses dos dois lados e
+deixaria o modelo aprender um backlog específico em vez de um padrão. A divisão
+temporal é a aproximação honesta de usar o modelo para a frente. Ela também
+expõe a mudança de regime que a divisão aleatória esconderia.
+
+**Modelos:** regressão logística e gradient boosting histogramado, ambos com
+imputação por mediana/constante e one-hot encoding dentro de um pipeline
+scikit-learn. Sem busca de hiperparâmetros: com uma única amostra de teste,
+ajustar nela transformaria o número relatado em artefato de seleção. A comparação
+é entre dois padrões.
+
+**Métricas:** ROC AUC e precisão média para ranking; Brier e tabela de calibração
+para probabilidades; precisão, recall e lift no decil superior para a decisão
+operacional. A taxa base é 4,42%, então acurácia é inútil aqui — prever “não
+atrasado” para todo pedido acerta 95,6%.
+
+---
+
+## 3. Resultados
+
+| Modelo | ROC AUC | Precisão média | Brier | Precisão topo 10% | Recall topo 10% | Lift |
+|---|---:|---:|---:|---:|---:|---:|
+| Regressão logística | 0,724 | 0,105 | 0,0444 | 12,4% | 28,0% | 2,80× |
+| Gradient boosting | 0,695 | 0,090 | 0,0415 | 11,0% | 25,0% | 2,50× |
+| Constante (prevalência de treino) | — | — | 0,0435 | 4,0%* | 9,1%* | 0,91×* |
+| Taxa por estado do cliente | — | — | 0,0439 | 4,9% | 11,0% | 1,10× |
+
+\* Um score constante não ordena; os números do decil superior são uma fatia
+arbitrária de um empate e aparecem apenas para tornar a comparação explícita.
+
+A regressão logística é o melhor ranking e o modelo usado para interpretação. O
+boosting é mais bem calibrado no meio da distribuição, mas encontra menos atrasos
+no topo, que é o ponto de operação que importa aqui.
+
+![Curva de precisão–recall dos dois modelos na amostra temporal. A linha pontilhada é a taxa base de 4,42%.](../../../reports/02-late-delivery/figures/pt/precision_recall.png){#fig-pr fig-alt="Curvas de precisão-recall da regressão logística e do gradient boosting na amostra temporal de 32.150 pedidos. A regressão logística fica acima do gradient boosting na maior parte do recall, e ambas ficam bem acima da linha de taxa base de 4,42 por cento." fig-align="center"}
+
+Com capacidade de 10%, o modelo logístico sinaliza 3.215 pedidos, dos quais 398
+estão atrasados. Revisar esses 3.215 pedidos captura 28% dos 1.421 atrasados da
+amostra. A baseline por estado capturaria 11% na mesma capacidade.
+
+---
+
+## 4. Calibração, e por que a probabilidade não é o produto
+
+O ranking e a probabilidade falham de maneiras diferentes, e vale mantê-los
+separados.
+
+![Calibração na amostra temporal. A diagonal tracejada é a calibração perfeita.](../../../reports/02-late-delivery/figures/pt/calibration.png){#fig-cal fig-alt="Gráfico de calibração comparando taxas previstas e observadas de atraso em dez faixas de score. Os dois modelos preveem taxas maiores do que as observadas na amostra, com a diferença aumentando na faixa mais alta, onde a regressão logística prevê cerca de 26 por cento e observa cerca de 12 por cento." fig-align="center"}
+
+A taxa de atraso da amostra é 4,42%, mas o modelo foi treinado quando ela era
+7,95%. Toda faixa superestima, e a mais alta erra mais: 26% previstos
+correspondem a 12% observados. Isso não é um defeito do pipeline; é o modelo
+carregando fielmente uma taxa base que deixou de valer. Recalibrar em uma fatia do
+período de treino também não resolveria, porque janeiro–março de 2018 foi um
+período excepcionalmente ruim (5,7%, 14,1% e 19,0% de atraso), não uma boa
+estimativa do que veio depois.
+
+A leitura prática: **o score é um ranking, não uma probabilidade.** Uma equipe
+pode usar “os 3.000 pedidos de maior risco neste mês” sem acreditar no percentual
+de um pedido individual. Se uma probabilidade for necessária para uma decisão
+voltada ao cliente, ela precisa ser recalibrada com pedidos entregues recentes e
+monitorada conforme o regime muda.
+
+---
+
+## 5. O que o modelo está usando
+
+A importância por permutação embaralha um atributo bruto por vez e mede a queda
+na precisão média na amostra de teste. Embaralhar no nível do atributo bruto
+mantém uma variável categórica como um conceito, em vez das dezenas de colunas
+one-hot que ela vira dentro do pipeline.
+
+| Atributo | Queda na precisão média |
+|---|---:|
+| `promise_days` | 0,044 |
+| `customer_state` | 0,029 |
+| `seller_state` | 0,015 |
+| `same_state` | 0,010 |
+| `purchase_month` | 0,005 |
+| `item_count` | 0,002 |
+| `order_value` | 0,002 |
+| `seller_count` | 0,001 |
+
+A lista é curta e coincide com a conclusão do Projeto 01. O prazo é o insumo mais
+forte, e os dois campos de estado mais a interação entre eles carregam quase todo
+o resto. Valor da cesta, frete, peso, forma de pagamento e categoria acrescentam
+quase nada depois disso.
+
+Isso **não** significa “aumente o prazo e o atraso desaparece”. O Projeto 01
+mostrou que o prazo é definido por rota e é mais curto no corredor São Paulo →
+Rio do que em rotas mais longas; `promise_days` é em parte a própria expectativa
+do marketplace sobre a dificuldade. O modelo explora essa expectativa, não
+identifica uma alavanca que possa ser mudada de forma independente. A pergunta
+causal continua sendo a operacional do Projeto 01: por que a travessia demora
+tanto.
+
+---
+
+## 6. Limitações
+
+- **Uma amostra, um regime.** O período de teste são os últimos sete meses do
+  conjunto. Ele contém o backlog de fevereiro/março de 2018 e a melhora abrupta
+  depois dele. Uma segunda amostra, ou avaliação com origem móvel, diria mais
+  sobre estabilidade do que uma única divisão.
+- **Sem identificador de transportadora ou armazém.** O conjunto para no vendedor
+  e no estado. A causa operacional mais plausível do atraso, portanto, não está no
+  modelo.
+- **O rótulo é a promessa, não a expectativa do cliente.** Um pedido pode estar
+  “atrasado” contra uma promessa agressiva e ainda chegar quando o cliente
+  esperava. O Projeto 01 mostra que a diferença de avaliação é real, mas o rótulo
+  herda a definição da promessa.
+- **Pedidos multi-vendedor perdem a origem.** 1.285 pedidos não têm um estado de
+  vendedor único. A imputação os mantém na avaliação, mas enfraquece a geografia
+  nessas linhas.
+- **Sem modelo de custo.** O conjunto não tem custo de intervenção, valor de
+  reembolso ou margem. A abordagem por decil evita inventar um; uma implantação
+  real escolheria a capacidade comparando o custo de revisar um pedido com o custo
+  de um atraso.
+- **Sem implantação nem monitoramento.** Esta é uma avaliação offline. Um score
+  em produção precisaria de checagem de deriva na taxa de atraso, na distribuição
+  de prazos e na composição de estados, além de recalibração.
+
+---
+
+## 7. Reprodução
+
+```bash
+uv run python tasks.py db-up
+uv run python tasks.py data
+uv run python tasks.py load
+uv run python tasks.py dbt-build
+uv run python tasks.py train
+```
+
+`train` grava `projects/02-late-delivery/reports/model_metrics.json`, a tabela de
+importância por permutação e as duas figuras acima. O contrato de atributos, a
+divisão e os helpers de avaliação têm testes em
+`projects/02-late-delivery/tests/test_modeling.py`, incluindo a checagem de que
+nenhuma coluna proibida pós-compra pode entrar na lista de atributos.

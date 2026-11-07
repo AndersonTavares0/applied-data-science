@@ -1,0 +1,76 @@
+---
+title: "Memorando de decisão — Risco de atraso"
+subtitle: "Uma página. O que o modelo faz, o que não faz e como usar."
+date: today
+date-format: "MMMM YYYY"
+body-classes: memo
+format:
+  html:
+    toc: false
+---
+
+::: {.memo-head}
+**Preparado para:** Diretoria de Operações<br>
+**Preparado por:** Anderson Tavares
+:::
+
+> Método, métricas e limitações estão no
+> [relatório 02 · Modelo de atraso na entrega](02-late-delivery.qmd).
+
+## Conclusão
+
+No checkout, um modelo consegue ordenar pedidos por risco de atraso bem o
+suficiente para focar uma fila de revisão: os 10% de maior risco concentram
+**2,8×** a participação esperada de atrasos. Ele ainda não produz uma
+probabilidade confiável, porque a taxa de atraso caiu pela metade entre os
+períodos de treino e teste. **Use o ranking; não prometa o percentual.**
+
+## A descoberta
+
+- Treinado em 64.326 pedidos antes de abril de 2018 e testado em 32.150 depois,
+  o modelo logístico alcança **ROC AUC 0,724** e **precisão média 0,105** contra
+  uma taxa base de **4,42%**.
+- Sinalizar os **10% do topo (3.215 pedidos)** captura **28% de todos os
+  atrasos** com **precisão de 12,4%**, um **lift de 2,8×**. Uma baseline por
+  estado do cliente captura 11% na mesma capacidade.
+- **A probabilidade está descalibrada.** O risco médio previsto é 9,0% contra
+  4,4% observados, e o Brier não é melhor do que uma constante. A prevalência de
+  treino era 7,95%; o mundo mudou.
+- **Prazo e geografia fazem o trabalho.** `promise_days`, estado do cliente,
+  estado do vendedor e o indicador de mesmo estado dominam. Valor da cesta,
+  frete, peso, pagamento e categoria acrescentam pouco.
+
+## O que ele pode ver
+
+Apenas informação que existe quando o pedido é feito: momento da compra, data
+prometida, estados do cliente e do vendedor, composição do pedido e condições de
+pagamento. Aprovação, entrega à transportadora, data de entrega, dias de atraso e
+nota da avaliação ficam fora por uma lista explícita. Usar o tempo de chegada
+faria o modelo parecer excelente e ser inútil no único momento em que poderia
+ajudar.
+
+## Recomendação
+
+1. **Pilote o ranking como fila de triagem.** A cada semana, pegue os pedidos
+   abertos de maior score até a capacidade da equipe e confira o status na
+   transportadora. Meça a taxa de atraso na fatia revisada contra a não revisada;
+   esse é o único teste que importa.
+2. **Não exponha o score como probabilidade para o cliente.** Se uma for
+   necessária, recalibre com pedidos entregues recentes e reveja mensalmente. O
+   score atual ordena bem e prevê mal.
+3. **Mantenha a pergunta operacional do Projeto 01 em primeiro lugar.** O modelo
+   confirma que o prazo e o par de estados vendedor–cliente carregam o sinal. Ele
+   não diz que mudar o prazo causa um resultado melhor; a pergunta do corredor
+   segue sendo a causal.
+
+## O que me faria mudar de ideia
+
+- **Se o lift do decil superior desabar em uma avaliação com origem móvel**, o
+  modelo está ajustando um backlog e não um padrão estável, e a fila não vale a
+  pena.
+- **Se os pedidos revisados atrasarem por razões que o modelo não vê** (alocação
+  de transportadora, backlog de armazém), o score é um proxy da rota e a
+  intervenção deve mirar a rota.
+- **Se um identificador de transportadora ou armazém ficar disponível**, ele deve
+  ser testado antes de qualquer nova engenharia de atributos; é a causa ausente
+  mais provável.

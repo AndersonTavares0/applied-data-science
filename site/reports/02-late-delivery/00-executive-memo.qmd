@@ -1,0 +1,74 @@
+---
+title: "Decision memo — Late-delivery risk"
+subtitle: "One page. What the model can do, what it cannot, and how to use it."
+date: today
+date-format: "MMMM YYYY"
+body-classes: memo
+format:
+  html:
+    toc: false
+---
+
+::: {.memo-head}
+**Prepared for:** Head of Operations<br>
+**Prepared by:** Anderson Tavares
+:::
+
+> Method, metrics and limitations are in the
+> [02 · Late-Delivery Model report](02-late-delivery.qmd).
+
+## Bottom line
+
+At checkout, a model can rank orders by late-delivery risk well enough to focus a
+review queue: the riskiest 10% contains **2.8×** its share of late orders. It
+cannot yet produce a trustworthy probability, because the late rate fell by half
+between the training and test periods. **Use the ranking; do not promise the
+percentage.**
+
+## The finding
+
+- Trained on 64,326 orders before April 2018 and tested on 32,150 after it, the
+  logistic model reaches **ROC AUC 0.724** and **average precision 0.105**
+  against a **4.42%** base rate.
+- Flagging the **top 10% (3,215 orders)** captures **28% of all late orders** at
+  **12.4% precision**, a **2.8× lift**. A customer-state baseline captures 11% at
+  the same capacity.
+- **The probability is miscalibrated.** Mean predicted risk is 9.0% against an
+  observed 4.4%, and the Brier score is no better than a constant. Training-period
+  prevalence was 7.95%; the world changed.
+- **Promise and geography do the work.** `promise_days`, customer state, seller
+  state and the same-state flag dominate. Basket value, freight, weight, payment
+  and category add little.
+
+## What it is allowed to see
+
+Only information that exists when the order is placed: purchase timing, the
+promised date, customer and seller state, order composition and payment terms.
+Approval, carrier hand-off, delivery date, days late and review score are
+excluded by an explicit allow-list. Using arrival time would make the model look
+excellent and be useless at the only moment it could help.
+
+## Recommendation
+
+1. **Pilot the ranking as a triage queue.** Each week, take the highest-scoring
+   open orders up to the team's review capacity and check them against carrier
+   status. Measure the late rate in the reviewed slice against the unreviewed
+   one; that is the only test that matters.
+2. **Do not expose the score as a customer-facing probability.** If one is
+   needed, recalibrate on recent delivered orders and re-check monthly. The
+   current score ranks well and predicts badly.
+3. **Keep Project 01's operational question first.** The model confirms that
+   promise length and the seller–customer state pair carry the signal. It does
+   not say that changing the promise causes a better outcome; the corridor
+   question from Project 01 remains the causal one.
+
+## What would change my mind
+
+- **If the top-decile lift collapses in a rolling-origin evaluation**, the model
+  is fitting one backlog rather than a stable pattern, and the queue is not worth
+  running.
+- **If reviewed orders turn out to be late for reasons the model cannot see**
+  (carrier allocation, warehouse backlog), the score is a proxy for the lane and
+  the intervention should target the lane instead.
+- **If a carrier or warehouse identifier becomes available**, it should be tested
+  before any further feature engineering; it is the most likely missing cause.

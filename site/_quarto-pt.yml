@@ -21,6 +21,7 @@ project:
     - pt/index.qmd
     - pt/about.qmd
     - pt/reports/01-retail-analytics/*.qmd
+    - pt/reports/02-late-delivery/*.qmd
   output-dir: .build-pt
 
 website:
@@ -36,6 +37,10 @@ website:
             text: "01 · Análise de varejo"
           - href: pt/reports/01-retail-analytics/00-executive-memo.qmd
             text: "01 · Memorando de decisão"
+          - href: pt/reports/02-late-delivery/02-late-delivery.qmd
+            text: "02 · Modelo de atraso"
+          - href: pt/reports/02-late-delivery/00-executive-memo.qmd
+            text: "02 · Memorando de decisão"
       - href: pt/about.qmd
         text: Sobre
     right:

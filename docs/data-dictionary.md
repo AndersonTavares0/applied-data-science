@@ -142,6 +142,31 @@ by severity instead of alphabetically.
 `avg_delivery_days`, `avg_review_score`. `late_pct` is NULL where nothing was
 delivered, and the denominator is published next to the rate.
 
+### `mart_order_features` — one row per order, for Project 02
+
+The model-ready grain: `order_id`, `purchased_at`, and the label `is_late` with
+`days_late`. `is_late` is **NULL for the 2,965 orders that were never delivered**;
+they are excluded from training and evaluation rather than counted as on-time.
+
+Pre-purchase columns only, because the model must be usable at checkout:
+
+- **Timing:** `purchase_month`, `purchase_dow`, `purchase_hour`,
+  `purchase_weekend`, `promise_days` (promised date − purchase date).
+- **Geography:** `customer_state`, `seller_state` (NULL when an order has more
+  than one seller), `same_state` (NULL for those rows).
+- **Composition:** `category` (alphabetically first English category for
+  multi-item orders), `item_count`, `product_count`, `seller_count`,
+  `items_value`, `freight_value`, `order_value`, `freight_share`,
+  `avg_weight_grams`, `avg_volume_cm3`, `avg_photos_qty`,
+  `items_missing_dimensions`.
+- **Payment:** `payment_count`, `max_installments`, `paid_by_credit_card`,
+  `paid_by_boleto`, `paid_by_voucher`.
+
+`is_late`, `days_late` and everything in the Project 02 forbidden list are
+**not** model features. The allow-list lives in
+`late_delivery.features.FEATURES`; the mart is allowed to carry the label because
+it is the training target, not an input.
+
 ### `mart_late_delivery_by_lane` - one row per (seller state, customer state)
 
 `seller_state`, `customer_state`, `lane` (the label `SP -> RJ`, which is also the
