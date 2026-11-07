@@ -285,7 +285,7 @@ tópicos serem ajustados.
 
 ```bash
 uv run python tasks.py topics     # ajusta o modelo, escreve tabelas e figuras
-uv run pytest                     # 29 testes, sem banco de dados nem rede
+uv run pytest                     # 40 testes, sem banco de dados nem rede
 ```
 
 O script lê os modelos construídos, então a ordem no pipeline é

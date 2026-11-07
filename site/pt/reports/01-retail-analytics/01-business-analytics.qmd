@@ -504,7 +504,7 @@ flowchart TB
   CSV --> L["load_raw.py<br/>toda coluna TEXT"]
   L --> DB[("PostgreSQL<br/>schema: raw")]
   DB --> S["dbt staging<br/>views — cast e renomeação"]
-  S --> F["dbt marts<br/>tabelas — 80 testes de dados"]
+  S --> F["dbt marts<br/>tabelas — 88 testes de dados"]
   F --> C["make_charts.py"]
   C --> FIG["figuras PNG"]
   F --> REP["relatório Quarto"]
@@ -519,7 +519,7 @@ uv run python tasks.py setup      # start the database and fetch the data
 uv run python tasks.py pipeline   # load, build, charts, test, render
 ```
 
-`dbt build` também executa 80 testes de dados, incluindo um que garante que a
+`dbt build` também executa 88 testes de dados, incluindo um que garante que a
 retenção do mês zero é exatamente 100%, um que garante que o sinalizador de
 atraso e o número de dias de atraso não podem discordar, e um que garante que uma
 promessa mais longa nunca pode deixar mais pedidos atrasados. Os dois primeiros
