@@ -74,7 +74,7 @@ models:
           stored at midnight, so the promise had no time of day to be late
           against.
       - name: is_late
-        description: "TRUE when delivery happened after the promised date. NULL when never delivered."
+        description: "TRUE when delivery happened after the promised date. NULL when no delivery timestamp exists (cancelled, unavailable, still open, or missing timestamp)."
 
   - name: fct_order_items
     description: >
@@ -183,13 +183,25 @@ models:
   - name: mart_delivery_performance
     description: >
       The headline table: delivery outcome versus review score. Orders are
-      bucketed by lateness against the estimate the customer was shown, with
-      never-delivered orders kept as their own bucket.
+      bucketed by lateness against the estimate the customer was shown. Orders
+      without a delivery timestamp are split into cancelled/unavailable, still
+      open at the snapshot, and delivered with a missing timestamp, because the
+      three are not the same customer experience.
     columns:
       - name: delivery_bucket
         data_tests:
           - unique
           - not_null
+          - accepted_values:
+              arguments:
+                values:
+                  - on time
+                  - "late: up to 7 days"
+                  - "late: 8 to 14 days"
+                  - "late: more than 14 days"
+                  - "not delivered: cancelled or unavailable"
+                  - "not delivered: still open"
+                  - "delivered: missing timestamp"
       - name: orders
         data_tests:
           - not_null

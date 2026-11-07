@@ -304,6 +304,13 @@ def load_raw_schema(
             keep_default_na=False,  # empty cells stay empty strings, not NaN
         )
         print(f"  load  {spec.filename:<42} -> {schema}.{spec.table} ({len(frame):,} rows)")
+        # A previous dbt run leaves views in analytics_staging that depend on
+        # this table. `to_sql(replace)` drops without CASCADE and fails on those
+        # views, so drop explicitly first; `dbt-build` recreates the views.
+        with engine.begin() as connection:
+            connection.execute(
+                text(f'DROP TABLE IF EXISTS "{schema}"."{spec.table}" CASCADE')
+            )
         frame.to_sql(
             spec.table,
             engine,

@@ -28,8 +28,15 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 TARGET = "is_late"
 SPLIT_CUTOFF = "2018-04-01"
-# The final test period starts in April 2018. Model selection uses an earlier
-# temporal validation period inside training, so the test set is touched once.
+# A label is only usable for training once the parcel has had time to arrive.
+# Training purchases therefore stop three months before the test cutoff; using
+# purchases up to the cutoff and keeping only already-delivered orders selects
+# on delivery speed and removes exactly the late orders the model is meant to
+# predict.
+LABEL_MATURITY_MONTHS = 3
+# The final test period starts in April 2018. The preceding three months are a
+# retrospective descriptive validation slice; model selection uses rolling
+# origins, so the test set is touched once.
 VALIDATION_CUTOFF = "2018-01-01"
 
 # Columns that exist in the mart but must never reach a model. Each one is
@@ -83,7 +90,10 @@ NUMERIC_FEATURES = tuple(name for name in FEATURES if name not in CATEGORICAL_FE
 
 
 def temporal_split(
-    frame: pd.DataFrame, cutoff: str = SPLIT_CUTOFF
+    frame: pd.DataFrame,
+    cutoff: str = SPLIT_CUTOFF,
+    *,
+    maturity_months: int = LABEL_MATURITY_MONTHS,
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Split by purchase date, keeping only labels observable at the cutoff.
 
@@ -91,35 +101,41 @@ def temporal_split(
     learn the delivery backlog of a given month rather than a general pattern.
     The temporal split is the honest approximation of using the model forward.
 
-    Training also requires delivery *before* the cutoff. An order purchased in
-    March but delivered in May had no label on 1 April, so training on it would
-    leak the future into the model that claims to predict at checkout.
+    Training stops ``maturity_months`` before the cutoff and also requires
+    delivery before the cutoff. The gap is deliberate: if purchases run right up
+    to the cutoff and only already-delivered orders are kept, the slowest orders
+    are removed from training. In this dataset that would drop 3,852 orders with
+    a 39% late rate, leaving a training set that looks much easier than the
+    population it is meant to predict.
     """
     delivered = frame.loc[frame[TARGET].notna()].copy()
     purchased_at = pd.to_datetime(delivered["purchased_at"])
     delivered_at = pd.to_datetime(delivered["delivered_to_customer_at"])
     cutoff_at = pd.Timestamp(cutoff)
+    train_end = cutoff_at - pd.DateOffset(months=maturity_months)
 
-    is_train = (purchased_at < cutoff_at) & (delivered_at < cutoff_at)
+    is_train = (purchased_at < train_end) & (delivered_at < cutoff_at)
     is_test = purchased_at >= cutoff_at
     return delivered.loc[is_train].copy(), delivered.loc[is_test].copy()
 
 
-def split_train_validation(
-    train: pd.DataFrame, cutoff: str = VALIDATION_CUTOFF
-) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Split the training period into a fit slice and a later validation slice.
+def validation_slice(
+    frame: pd.DataFrame,
+    cutoff: str = SPLIT_CUTOFF,
+    *,
+    maturity_months: int = LABEL_MATURITY_MONTHS,
+) -> pd.DataFrame:
+    """The gap between mature training and test, kept for description only.
 
-    The fit slice uses labels observable at the validation cutoff, mirroring
-    `temporal_split`. The validation slice is the part of training after that
-    date; it is not used to fit the models compared during selection.
+    This slice uses eventual labels, not labels observable at the test cutoff.
+    It describes what happened in the three months before the holdout; it is
+    not used to fit the selected model or to choose between models.
     """
-    purchased_at = pd.to_datetime(train["purchased_at"])
-    delivered_at = pd.to_datetime(train["delivered_to_customer_at"])
+    purchased_at = pd.to_datetime(frame["purchased_at"])
     cutoff_at = pd.Timestamp(cutoff)
-    is_fit = (purchased_at < cutoff_at) & (delivered_at < cutoff_at)
-    is_validation = purchased_at >= cutoff_at
-    return train.loc[is_fit].copy(), train.loc[is_validation].copy()
+    start = cutoff_at - pd.DateOffset(months=maturity_months)
+    selected = (purchased_at >= start) & (purchased_at < cutoff_at) & frame[TARGET].notna()
+    return frame.loc[selected].copy()
 
 
 def prepare_features(frame: pd.DataFrame) -> pd.DataFrame:
@@ -410,30 +426,29 @@ def rolling_origin(
     *,
     kind: str = "logistic",
     horizon_months: int = 3,
-    maturity_months: int = 3,
+    maturity_months: int = LABEL_MATURITY_MONTHS,
 ) -> list[dict]:
-    """Refit on data observable at each cutoff and score the next horizon.
+    """Refit on labels observable at each origin and score the next horizon.
 
     Each origin is a separate, honest simulation of deploying on that date.
-    Test orders are those purchased in the horizon; their labels are required to
-    have matured within a further `maturity_months`, so late orders that arrive
-    after the horizon are not silently excluded. The same fixed model family is
-    used throughout; this is a stability check, not another selection round.
+    Training stops ``maturity_months`` before the origin so the training set is
+    not selected on delivery speed. Test outcomes are eventual: every order in
+    the horizon with an observed label is scored, including orders that arrived
+    after the horizon. Dropping those would remove late orders from the
+    evaluation. The same fixed model family is used throughout; this is a
+    stability check, not another selection round.
     """
     purchased_at = pd.to_datetime(frame["purchased_at"])
     delivered_at = pd.to_datetime(frame["delivered_to_customer_at"])
     rows = []
     for raw_cutoff in cutoffs:
         cutoff = pd.Timestamp(raw_cutoff)
+        train_end = cutoff - pd.DateOffset(months=maturity_months)
         end = cutoff + pd.DateOffset(months=horizon_months)
-        label_end = end + pd.DateOffset(months=maturity_months)
-        train = frame.loc[(purchased_at < cutoff) & (delivered_at < cutoff) & frame[TARGET].notna()]
-        test = frame.loc[
-            (purchased_at >= cutoff)
-            & (purchased_at < end)
-            & (delivered_at < label_end)
-            & frame[TARGET].notna()
+        train = frame.loc[
+            (purchased_at < train_end) & (delivered_at < cutoff) & frame[TARGET].notna()
         ]
+        test = frame.loc[(purchased_at >= cutoff) & (purchased_at < end) & frame[TARGET].notna()]
         if train.empty or test.empty:
             continue
         model = build_model(kind).fit(prepare_features(train), train[TARGET].astype(int))
@@ -442,9 +457,9 @@ def rolling_origin(
         rows.append(
             {
                 "cutoff": str(cutoff.date()),
+                "train_cutoff": str(train_end.date()),
                 "horizon_months": horizon_months,
                 "maturity_months": maturity_months,
-                "label_end": str(label_end.date()),
                 "train_n": len(train),
                 "train_late_rate": float(train[TARGET].mean()),
                 "test_n": len(test),

@@ -20,12 +20,15 @@ def _metrics() -> dict:
 def test_split_counts_add_up_to_observable_orders() -> None:
     metrics = _metrics()
     train_n = metrics["train"]["n"]
+    validation_n = metrics["train"]["validation_n"]
     test_n = metrics["test"]["n"]
     excluded_n = metrics["excluded"]["n"]
-    in_flight_n = 3_852
-    assert train_n + test_n + excluded_n + in_flight_n == 99_441
-    assert train_n == 60_474
+    gap_n = metrics["maturity_gap"]["n"]
+    assert train_n + validation_n + test_n + excluded_n + gap_n == 99_441
+    assert train_n == 43_691
+    assert validation_n == 20_628
     assert test_n == 32_150
+    assert gap_n == 7
 
 
 def test_selection_uses_rolling_origin_and_reports_both_models() -> None:
@@ -42,6 +45,7 @@ def test_selection_uses_rolling_origin_and_reports_both_models() -> None:
             "2018-01-01",
         ]
         assert all(row["maturity_months"] == 3 for row in rows)
+        assert all(row["train_cutoff"] < row["cutoff"] for row in rows)
 
 
 def test_constant_baseline_has_no_ranking_metrics() -> None:

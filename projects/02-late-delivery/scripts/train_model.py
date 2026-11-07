@@ -22,6 +22,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt  # noqa: E402
 import pandas as pd  # noqa: E402
 from late_delivery.features import (  # noqa: E402
+    LABEL_MATURITY_MONTHS,
     SPLIT_CUTOFF,
     TARGET,
     VALIDATION_CUTOFF,
@@ -38,9 +39,9 @@ from late_delivery.features import (  # noqa: E402
     prepare_features,
     prevalence_baseline,
     rolling_origin,
-    split_train_validation,
     state_rate_baseline,
     temporal_split,
+    validation_slice,
 )
 from retail.config import get_settings  # noqa: E402
 from retail.io import build_engine  # noqa: E402
@@ -143,18 +144,25 @@ def main() -> int:
 
     frame = load_features()
     train, test = temporal_split(frame, cutoff=SPLIT_CUTOFF)
-    fit_slice, validation = split_train_validation(train, cutoff=VALIDATION_CUTOFF)
+    validation = validation_slice(frame, cutoff=SPLIT_CUTOFF)
+    train_end = pd.Timestamp(SPLIT_CUTOFF) - pd.DateOffset(months=LABEL_MATURITY_MONTHS)
     x_train, x_test = prepare_features(train), prepare_features(test)
     y_train, y_test = train[TARGET].astype(int), test[TARGET].astype(int)
 
     excluded = frame.loc[frame[TARGET].isna()]
-    print(f"train {len(train):,} orders ({y_train.mean():.2%} late) up to {SPLIT_CUTOFF}")
+    maturity_gap = frame.loc[
+        (pd.to_datetime(frame["purchased_at"]) < train_end)
+        & (pd.to_datetime(frame["delivered_to_customer_at"]) >= pd.Timestamp(SPLIT_CUTOFF))
+        & frame[TARGET].notna()
+    ]
+    print(f"train {len(train):,} orders ({y_train.mean():.2%} late) before {train_end.date()}")
     print(
-        f"  fit {len(fit_slice):,} before {VALIDATION_CUTOFF}; "
-        f"validation {len(validation):,} after it"
+        f"validation {len(validation):,} orders "
+        f"({validation[TARGET].mean():.2%} late), descriptive only"
     )
     print(f"test  {len(test):,} orders ({y_test.mean():.2%} late) from {SPLIT_CUTOFF}")
     print(f"excluded {len(excluded):,} orders without an observable late label")
+    print(f"maturity gap {len(maturity_gap):,} late-arriving pre-cutoff training orders")
 
     # Selection uses rolling origins, not the single validation slice. Each
     # origin only trains on labels observable at that date and only scores
@@ -175,10 +183,10 @@ def main() -> int:
 
     validation_payloads = {}
     for kind in ("logistic", "boosting"):
-        model = build_model(kind).fit(prepare_features(fit_slice), fit_slice[TARGET].astype(int))
+        model = build_model(kind).fit(x_train, y_train)
         scores = model.predict_proba(prepare_features(validation))[:, 1]
         validation_payloads[kind] = evaluate(validation[TARGET].astype(int), scores)
-    print(f"\ninner validation ({VALIDATION_CUTOFF} onward), descriptive only:")
+    print(f"\nretrospective validation ({VALIDATION_CUTOFF} to {SPLIT_CUTOFF}), descriptive only:")
     print(json.dumps(validation_payloads, indent=2))
 
     payloads: dict[str, dict] = {}
@@ -218,13 +226,18 @@ def main() -> int:
         "target": TARGET,
         "split_cutoff": SPLIT_CUTOFF,
         "validation_cutoff": VALIDATION_CUTOFF,
+        "label_maturity_months": LABEL_MATURITY_MONTHS,
         "train": {
             "n": len(train),
             "late_rate": float(y_train.mean()),
-            "fit_n": len(fit_slice),
+            "fit_n": len(train),
             "validation_n": len(validation),
         },
         "test": {"n": len(test), "late_rate": float(y_test.mean())},
+        "maturity_gap": {
+            "n": len(maturity_gap),
+            "late_rate": float(maturity_gap[TARGET].mean()) if len(maturity_gap) else None,
+        },
         "excluded": {
             "n": len(excluded),
             "with_delivery_timestamp": int(excluded["delivered_to_customer_at"].notna().sum()),

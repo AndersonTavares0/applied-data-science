@@ -69,6 +69,36 @@
       "q_value": 0.0
     }
   ],
+  "groups_k4": [
+    {
+      "group": "Delivery and non-receipt",
+      "late_n": 2259,
+      "on_time_n": 1881,
+      "late_share_pct": 83.3272,
+      "on_time_share_pct": 29.2626,
+      "diff_pp": 54.0646,
+      "ci_low_pp": 52.2741,
+      "ci_high_pp": 55.855,
+      "late_weight_share_pct": 75.9174,
+      "on_time_weight_share_pct": 34.9387,
+      "p_value": 0.0,
+      "q_value": 0.0
+    },
+    {
+      "group": "Product",
+      "late_n": 452,
+      "on_time_n": 4547,
+      "late_share_pct": 16.6728,
+      "on_time_share_pct": 70.7374,
+      "diff_pp": -54.0646,
+      "ci_low_pp": -55.855,
+      "ci_high_pp": -52.2741,
+      "late_weight_share_pct": 24.0826,
+      "on_time_weight_share_pct": 65.0613,
+      "p_value": 0.0,
+      "q_value": 0.0
+    }
+  ],
   "model": {
     "method": "Latent Dirichlet Allocation",
     "topics": 6,
