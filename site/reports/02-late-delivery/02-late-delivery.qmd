@@ -31,8 +31,8 @@ figures are, and `uv run python tasks.py train` rebuilds them.
   base rate**.
 - **The model class is not settled by this evidence.** Logistic regression won
   an inner validation period on average precision, but gradient boosting scored
-  slightly better on the final holdout (AP 0.097 vs 0.091; top-decile recall
-  28.4% vs 23.5%). The difference is small, and a single holdout cannot establish a
+  slightly better on the final holdout (AP 0.103 vs 0.091; top-decile recall
+  28.6% vs 23.5%). The difference is small, and a single holdout cannot establish a
   reliable ranking between them. The report shows both rather than declaring a
   winner from the test set.
 - **The score is a triage queue, not a probability.** The holdout late rate is
@@ -123,9 +123,9 @@ predicting “not late” for every order is 95.6% accurate.
 | Model | ROC AUC | Avg. precision | Brier | Top-10% precision | Top-10% recall | Lift |
 |---|---:|---:|---:|---:|---:|---:|
 | Logistic regression (selected) | 0.708 | 0.091 | 0.0420 | 10.4% | 23.5% | 2.35× |
-| Gradient boosting | 0.705 | 0.097 | 0.0415 | 12.5% | 28.4% | 2.84× |
-| Constant (training prevalence) | — | — | 0.0425 | 4.0%* | 8.9%* | 0.89×* |
-| Customer-state rate | — | — | 0.0427 | 4.8% | 10.9% | 1.09× |
+| Gradient boosting | 0.708 | 0.103 | 0.0413 | 12.6% | 28.6% | 2.86× |
+| Constant (training prevalence) | — | — | 0.0425 | 4.1%* | 9.2%* | 0.92×* |
+| Customer-state rate | — | — | 0.0427 | 4.8% | 10.8% | 1.08× |
 
 \* A constant score cannot rank; the top-decile figures are an arbitrary slice of
 a tie and are shown only to make the comparison explicit.
@@ -223,11 +223,11 @@ becomes inside the pipeline.
 
 | Feature | Drop in average precision |
 |---|---:|
-| `promise_days` | 0.032 |
-| `customer_state` | 0.022 |
+| `promise_days` | 0.033 |
+| `customer_state` | 0.021 |
 | `seller_state` | 0.005 |
+| `same_state` | 0.003 |
 | `seller_count` | 0.001 |
-| `avg_weight_grams` | 0.001 |
 | `items_value` | 0.001 |
 | `freight_share` | 0.001 |
 | `avg_photos_qty` | 0.001 |
