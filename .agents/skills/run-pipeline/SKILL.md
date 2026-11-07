@@ -27,9 +27,9 @@ and sets `PYTHONPATH`, and dbt does not read `.env` on its own.
 ## What success looks like
 
 - `load` prints all nine tables with matching row counts, `ok` on each
-- `dbt-build` ends with `PASS=108 ERROR=0` (19 models + 88 data tests)
+- `dbt-build` ends with `PASS=109 ERROR=0` (20 models + 89 data tests)
 - `topics` ends with `9,139 usable complaints from 9,237 low-star comments`
-- `pytest` ends with `40 passed`
+- `pytest` ends with `53 passed`
 
 Row counts on a correct load: customers 99,441 · geolocation 1,000,163 ·
 order_items 112,650 · order_payments 103,886 · order_reviews 99,224 ·

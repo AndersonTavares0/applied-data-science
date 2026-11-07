@@ -40,12 +40,15 @@ excellent score.
    this rule, 3,852 orders purchased before the cutoff but delivered after it
    contribute labels that did not exist on the deployment date. The mature
    training set is 60,474 orders at 5.97% late.
-4. **Select the model on an inner temporal validation period.** Models are fitted
-   before 2018-01-01 and compared on January–March 2018. Average precision
-   selects logistic regression (0.127 vs 0.101). The selected model is refitted
-   on the full mature training set and evaluated once on the April–August
-   holdout. The holdout is never used for selection; both models are reported
-   there only as a sensitivity check.
+4. **Select the model with rolling-origin evaluation.** At 2017-07-01,
+   2017-10-01 and 2018-01-01, fit on labels matured before the origin and score
+   the next three months, requiring test labels to mature within three months
+   after the horizon. Mean average precision selects logistic regression
+   (0.138 vs 0.102). The earlier single validation period (January–March 2018)
+   is descriptive only. The selected model is refitted on the full mature
+   training set and evaluated once on the April–August holdout. The holdout is
+   never used for selection; both models are reported there only as a
+   sensitivity check.
 5. **Report the base-rate shift instead of hiding it.** The prevalence falls from
    5.97% in the mature training period to 4.42% in the holdout. Predicted
    probabilities remain too high on average (6.38% vs 4.42%) even though the
@@ -55,9 +58,16 @@ excellent score.
    precision, recall and lift at 5%, 10% and 20%. This avoids inventing
    intervention costs the dataset does not contain.
 7. **Check stability with monthly and rolling-origin evaluation.** A single
-   holdout covers one regime. The report includes per-month metrics and four
-   three-month rolling origins; AUC ranges from 0.59 to 0.75. This is a
+   holdout covers one regime. The report includes per-month metrics and three
+   three-month rolling origins; AUC ranges from 0.59 to 0.67. This is a
    stability check, not a claim that any one origin is the deployment estimate.
+8. **Do not report a ranking metric for a constant score.** A constant predicts
+   the base rate but cannot rank, so its top-decile precision and lift are an
+   arbitrary tie slice. Its Brier score remains a valid calibration check.
+9. **Report paired uncertainty between models.** A paired bootstrap on holdout
+   rows gives the logistic-minus-boosting AP difference as −0.0125 (95% interval
+   −0.0215 to −0.0035). That is a within-period comparison; the single holdout
+   still cannot settle model choice, and the report says so.
 
 ## Consequences
 
@@ -68,7 +78,7 @@ excellent score.
   recent delivered orders and drift monitoring.
 - **One holdout is still one sample.** It covers the February–March 2018 backlog
   and the abrupt improvement after it. Rolling-origin evaluation now shows AUC
-  from 0.59 to 0.75 and top-decile recall from 14% to 35%, so stability is
+  from 0.59 to 0.67 and top-decile recall from 14% to 25%, so stability is
   bounded rather than assumed.
 - **Model selection is itself uncertain.** Logistic regression won validation,
   but gradient boosting did slightly better on the holdout. The difference is

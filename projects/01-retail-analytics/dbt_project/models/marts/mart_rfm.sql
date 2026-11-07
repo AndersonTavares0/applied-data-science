@@ -9,11 +9,11 @@
 --     ranks your best customers as your worst. There is no error message.
 --   * Frequency and Monetary are ordered ascending, so bucket 5 is the best.
 --
--- `f_score` is close to worthless in this dataset, and the report says so rather
--- than presenting a segment chart as though it meant something: 96.9% of people
--- ordered exactly once, so almost everybody lands in the same bucket and `ntile`
--- splits that tied mass arbitrarily. It is kept because the flatness IS the
--- finding — but it must not be presented as a discriminating signal.
+-- `f_score` is deliberately not an `ntile`. With 96.9% of people on exactly one
+-- order, ntile splits that tied mass arbitrarily and invents 20% "high
+-- frequency" customers who do not exist. Here f_score is the order count capped
+-- at five (1 order -> 1, 2 -> 2, ..., 5+ -> 5), which keeps the flatness visible
+-- and makes the segment rule interpretable.
 --
 -- The snapshot date is the day after the last order in the data, so no customer
 -- can have a negative recency.
@@ -57,7 +57,7 @@ scored as (
     select
         *,
         ntile(5) over (order by recency_days desc) as r_score,
-        ntile(5) over (order by frequency asc)     as f_score,
+        least(frequency, 5)                        as f_score,
         ntile(5) over (order by monetary asc)      as m_score
 
     from with_recency
@@ -75,9 +75,9 @@ select
     m_score,
 
     case
-        when r_score >= 4 and m_score >= 4 then 'Champions'
-        when r_score >= 4 and f_score <= 2 then 'New / promising'
-        when r_score <= 2 and f_score >= 3 then 'At risk (was valuable)'
+        when r_score >= 4 and m_score >= 4 and frequency >= 2 then 'Champions'
+        when r_score >= 4 and frequency = 1 then 'New / promising'
+        when r_score <= 2 and frequency >= 2 then 'At risk (repeat customer)'
         when r_score <= 2 and m_score <= 2 then 'Lost / low value'
         else 'Others'
     end as rfm_segment

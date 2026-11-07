@@ -102,3 +102,59 @@ def topic_prevalence(
     result = pd.DataFrame(rows).sort_values("share_pct", ascending=False, ignore_index=True)
     result["q_value"] = benjamini_hochberg(result["p_value"])
     return result
+
+
+def group_prevalence(
+    frame: pd.DataFrame,
+    weights: np.ndarray,
+    groups: dict[str, tuple[int, ...]],
+    *,
+    topic_col: str = "topic",
+    label_col: str = "is_late",
+) -> pd.DataFrame:
+    """Aggregate topics into named groups, using both hard and soft assignment.
+
+    Hard-assignment shares answer "what is the dominant theme?"; mean LDA
+    weights answer "where does the mass sit?". Reporting both makes the
+    grouping robust to complaints that mix themes.
+    """
+    if frame.empty:
+        raise ValueError("group_prevalence needs at least one row")
+    if weights.shape[0] != len(frame):
+        raise ValueError("weights must have one row per complaint")
+    if not groups or any(not topics for topics in groups.values()):
+        raise ValueError("every group needs at least one topic")
+
+    late = frame[label_col].astype(bool).to_numpy()
+    late_total = int(late.sum())
+    on_time_total = int((~late).sum())
+    if late_total == 0 or on_time_total == 0:
+        raise ValueError("both late and on-time complaints are needed")
+
+    labels = frame[topic_col].to_numpy()
+    rows = []
+    for name, topics in groups.items():
+        member = np.isin(labels, topics)
+        late_n = int((member & late).sum())
+        on_time_n = int((member & ~late).sum())
+        test = two_proportion_test(late_n, late_total, on_time_n, on_time_total)
+        late_weight = float(weights[late][:, list(topics)].sum(axis=1).mean())
+        on_time_weight = float(weights[~late][:, list(topics)].sum(axis=1).mean())
+        rows.append(
+            {
+                "group": name,
+                "late_n": late_n,
+                "on_time_n": on_time_n,
+                "late_share_pct": 100 * test["rate_1"],
+                "on_time_share_pct": 100 * test["rate_2"],
+                "diff_pp": 100 * test["diff"],
+                "ci_low_pp": 100 * test["ci_low"],
+                "ci_high_pp": 100 * test["ci_high"],
+                "late_weight_share_pct": 100 * late_weight,
+                "on_time_weight_share_pct": 100 * on_time_weight,
+                "p_value": test["p_value"],
+            }
+        )
+    result = pd.DataFrame(rows)
+    result["q_value"] = benjamini_hochberg(result["p_value"])
+    return result

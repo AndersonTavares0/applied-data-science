@@ -1,6 +1,11 @@
 import numpy as np
 import pandas as pd
-from voice.stats import benjamini_hochberg, topic_prevalence, two_proportion_test
+from voice.stats import (
+    benjamini_hochberg,
+    group_prevalence,
+    topic_prevalence,
+    two_proportion_test,
+)
 
 
 def test_two_proportion_test_matches_hand_calculation():
@@ -27,3 +32,23 @@ def test_topic_prevalence_uses_complaint_denominators():
     assert table.loc[0, "on_time_share_pct"] == 20.0
     assert table.loc[0, "diff_pp"] == 40.0
     assert table.loc[0, "q_value"] < 0.01
+
+
+def test_group_prevalence_aggregates_hard_and_soft_assignment():
+    frame = pd.DataFrame(
+        {
+            "topic": [0] * 60 + [1] * 40 + [0] * 20 + [1] * 80,
+            "is_late": [True] * 100 + [False] * 100,
+        }
+    )
+    weights = np.zeros((len(frame), 2))
+    weights[:100, 0] = 0.75
+    weights[:100, 1] = 0.25
+    weights[100:, 0] = 0.30
+    weights[100:, 1] = 0.70
+    table = group_prevalence(frame, weights, {"first": (0,), "second": (1,)}).set_index("group")
+    assert table.loc["first", "late_share_pct"] == 60.0
+    assert table.loc["first", "on_time_share_pct"] == 20.0
+    assert abs(table.loc["first", "late_weight_share_pct"] - 75.0) < 1e-9
+    assert abs(table.loc["second", "on_time_weight_share_pct"] - 70.0) < 1e-9
+    assert table["q_value"].max() < 0.01

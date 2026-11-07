@@ -67,15 +67,46 @@ cohort_size as (
     from first_orders
     group by cohort_month
 
+),
+
+-- Every cohort has an eligible row for every month from acquisition to the end
+-- of the snapshot. Without the zero-activity rows, a cohort that nobody returned
+-- from simply disappears from the denominator and retention is biased upward.
+observation as (
+
+    select max(date_trunc('month', purchased_at)::date) as last_month
+    from {{ ref('fct_orders') }}
+
+),
+
+cohort_grid as (
+
+    select
+        cs.cohort_month,
+        cs.cohort_customers,
+        gs.month_offset
+
+    from cohort_size cs
+    cross join observation o
+    cross join lateral generate_series(
+        0,
+        (
+            (extract(year  from o.last_month) - extract(year  from cs.cohort_month)) * 12
+            + (extract(month from o.last_month) - extract(month from cs.cohort_month))
+        )::int
+    ) as gs(month_offset)
+
 )
 
 select
-    ca.cohort_month,
-    ca.month_offset,
-    ca.cohort_month || '-' || ca.month_offset  as cohort_offset_key,
-    cs.cohort_customers,
-    ca.active_customers,
-    round(100.0 * ca.active_customers / cs.cohort_customers, 2) as retention_pct
+    g.cohort_month,
+    g.month_offset,
+    g.cohort_month || '-' || g.month_offset  as cohort_offset_key,
+    g.cohort_customers,
+    coalesce(ca.active_customers, 0) as active_customers,
+    round(100.0 * coalesce(ca.active_customers, 0) / g.cohort_customers, 2) as retention_pct
 
-from cohort_activity ca
-join cohort_size cs on ca.cohort_month = cs.cohort_month
+from cohort_grid g
+left join cohort_activity ca
+    on g.cohort_month = ca.cohort_month
+   and g.month_offset = ca.month_offset

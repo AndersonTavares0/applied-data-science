@@ -29,9 +29,11 @@ directly to orders inflates every denominator.
    signal; the topic model describes what the complaint is about.
 3. **Fit the topics without the outcome.** LDA sees only the complaint text.
    Delivery outcome is joined after fitting, so the topics cannot be chosen to
-   separate late from on-time orders. Six topics is the best of k=4–10 by UMass
-   coherence, not by perplexity; the margin is small and the choice is recorded
-   as a candidate comparison, not an optimum.
+   separate late from on-time orders. Six topics is a prespecified semantic
+   choice, not a coherence optimum: at seed 0 it has the highest UMass coherence
+   of k=4–10, but the seed-averaged score is highest at k=4 (mean −2.628 vs
+   −2.739), and k=4 merges product quality with returns. The candidate table is
+   reported across seeds 0–2 so the instability is visible.
 4. **Compare composition, with uncertainty.** Report each topic's share of late
    complaints and of on-time complaints, the difference in percentage points, a
    95% interval, and a Benjamini–Hochberg adjusted p-value across the six topics.
@@ -51,18 +53,21 @@ directly to orders inflates every denominator.
 - **The corpus is selected by outcome.** 57.57% of late orders comment against
   39.07% of on-time orders. Topic shares describe complainers, and cannot be
   projected onto all customers or all orders.
-- **Six topics is the best candidate, not the true number.** UMass coherence is
-  highest at k=6 among k=4–10, but the margin over k=4, k=5 and k=7 is small.
-  Perplexity is lower at k=8 and is not used to claim an optimum. Refits with
-  seeds 1–4 give mean ARI 0.258 and mean top-term Jaccard 0.413; the broad
-  logistics/product grouping survives, the exact boundaries do not.
+- **Six topics is a useful summary, not the true number.** UMass coherence is
+  highest at k=6 at seed 0 but highest at k=4 on average across seeds 0–2; the
+  difference is small relative to the seed spread. Perplexity is lower at k=8
+  and is not used to claim an optimum. Refits with seeds 1–4 give mean ARI 0.258
+  and mean top-term Jaccard 0.413; the broad delivery/product grouping
+  survives, the exact boundaries do not.
 - **The labels are subjective and the topics overlap.** "Delivery problem" and
   "Delay and long wait" both concern delivery; "Not received" and "Delay" share
   vocabulary. Hard assignment to the largest weight hides complaints that mix
   product and delivery issues: 22.7% have a largest weight below 0.5 and 31.7%
   have a second topic at or above 0.3. Aggregating full weights preserves the
-  direction: logistics topics are 75.1% of late complaint weight vs 36.9% of
-  on-time; product topics are 24.9% vs 63.1%.
+  direction: delivery and non-receipt are 58.9% of late complaint weight vs
+  22.8% of on-time; product topics are 24.9% vs 63.1%; the mixed delay topic is
+  16.2% vs 14.1%. The delay topic is not counted as logistics because its
+  manual audit was the weakest.
 - **Individual labels are unreliable.** A stratified random sample of five
   complaints per topic (30 total, seed 20261107) was read by the analyst: 20
   clearly matched the assigned topic, 5 partly matched, and 5 were dominated by

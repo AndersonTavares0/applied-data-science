@@ -28,17 +28,17 @@ The thread through all three is one finding: **late delivery is the strongest si
 ## What Project 01 found
 
 - **Revenue.** 99,441 orders worth R$ 16.0M, an average order of R$ 160.99. November 2017 is the largest month at R$ 1.19M, on Black Friday. 2016 holds 329 orders across three months, a launch period rather than a quiet year.
-- **Repeat purchase is 3.12%.** 2,997 of 96,096 customers ever placed a second order, and 96.88% placed exactly one. Month-one cohort retention is 0.48%, flat near 0.2% afterwards. There is almost no repeat-purchase habit to lose, so the usual retention playbook does not apply. This is an acquisition business.
+- **Repeat purchase is 3.12%.** 2,997 of 96,096 customers ever placed a second order, and 96.88% placed exactly one. Ordering again in the next calendar month is 0.48%, flat near 0.2% afterwards. There is almost no repeat-purchase habit to lose, so the usual retention playbook does not apply. This is an acquisition business.
 - **Late delivery is 6.77%.** 6,535 of 96,476 deliveries arrived after the promised date. Those orders average 2.27 stars against 4.29 for on-time orders, and past a week late about 80% of reviewers give one or two stars.
 - **The promised date is conservative.** The average order arrives 11.18 days early and only 6.77% miss. Expectation management may matter as much as speed.
 
-The report recommends investigating Rio de Janeiro, where 12.10% of 12,353 deliveries are late against São Paulo's 4.49%. At São Paulo's rate, roughly 940 Rio orders a year would not be late, and the observed review behaviour implies about 370 fewer one- and two-star reviews. It labels that an association rather than a forecast, because the data holds states and not distances, and no cost or margin figures.
+The report recommends investigating Rio de Janeiro, where 12.10% of 12,353 deliveries are late against São Paulo's 4.49%. At São Paulo's rate, roughly 940 Rio orders over the 25-month snapshot would not be late, and the observed review behaviour implies about 377 fewer one- and two-star reviews over the snapshot. It labels that an association rather than a forecast, because the data holds states and not distances, and no cost or margin figures.
 
 ## What Project 02 found
 
 A model restricted to what is known at checkout can rank orders by late-delivery risk, but it cannot yet produce a stable probability.
 
-- **The ranking has signal, and its stability is bounded.** On 32,150 orders purchased after 2018-04-01, the selected logistic model reaches ROC AUC 0.708 (95% bootstrap interval 0.695–0.720) and average precision 0.091 (0.083–0.101) against a 4.42% base rate. The riskiest 10% captures 23.5% of late orders at 10.4% precision — 2.35× the base rate. Rolling origins range from AUC 0.59 to 0.75.
+- **The ranking has signal, and its stability is bounded.** On 32,150 orders purchased after 2018-04-01, the selected logistic model reaches ROC AUC 0.708 (95% bootstrap interval 0.695–0.722) and average precision 0.091 (0.083–0.100) against a 4.42% base rate. The riskiest 10% captures 23.5% of late orders at 10.4% precision — 2.35× the base rate. Rolling origins range from AUC 0.59 to 0.67; boosting is significantly better on the single holdout, so the model class remains open.
 - **Training labels must have matured.** Orders purchased before the cutoff but delivered after it are excluded from training, so the model learns only outcomes that were observable on the deployment date. That leaves 60,474 training orders at 5.97% late.
 - **The probability is shifted, not broken.** Mean predicted risk is 6.38% against 4.42% observed; the calibration slope is 1.02 and the intercept −0.35. The score is still a triage queue, not a risk percentage.
 - **The signal is the promise and the geography.** Permutation importance ranks `promise_days` first, then customer state and seller state. Basket value, freight, weight, payment and category add little.
@@ -47,11 +47,11 @@ The full analysis is in [Project 02](https://AndersonTavares0.github.io/ds-portf
 
 ## What Project 03 found
 
-- **Late complaints are about the parcel.** Delivery problems, non-receipt and delay are **81.9%** of late-order complaints against **31.1%** of on-time complaints. Delivery problems alone are 39.8% against 11.0% (+28.8 pp), non-receipt 25.9% against 7.5% (+18.4 pp), and delay 16.2% against 12.6% (+3.6 pp).
+- **Late complaints are about the parcel.** Delivery problems and non-receipt are **65.7%** of late-order complaints against **18.5%** of on-time complaints. Delivery problems alone are 39.8% against 11.0% (+28.8 pp), non-receipt 25.9% against 7.5% (+18.4 pp). Delay is a mixed topic at 16.2% against 12.6% (+3.6 pp) and is reported separately, not counted as logistics.
 - **On-time complaints are about the product.** Quality or "not as described", incomplete orders and wrong items are **68.9%** of on-time complaints against **18.1%** of late ones. Quality alone is 26.7% against 5.6% (−21.1 pp), incomplete orders 22.8% against 4.2% (−18.6 pp), and wrong item or return 19.4% against 8.3% (−11.1 pp).
 - **The corpus is selected, and the report says so first.** 9,139 complaints come from delivered orders with a written 1–2 star review. Late orders are 6.8% of deliveries but 29.7% of those complaints: 57.6% of late orders receive a comment against 39.1% of on-time ones, and 42.0% receive a low-star comment against 7.2%. The comparison is compositional, not a customer survey, and carries no causal claim.
 
-The analysis fits six LDA topics on the complaint text without using the delivery outcome, then compares topic shares with 95% intervals and Benjamini–Hochberg correction. Coherence selects k=6 among 4–10, but seed refits show the exact boundaries are unstable, so the report treats the six labels as a readable summary rather than fixed categories. A soft-assignment check reaches the same conclusion: logistics topics carry 75.1% of late complaint weight against 36.9% of on-time weight, while product topics carry 24.9% against 63.1%. It is in [the report](https://AndersonTavares0.github.io/ds-portfolio/reports/03-voice-of-customer/03-voice-of-customer.html), with [a one-page memo](https://AndersonTavares0.github.io/ds-portfolio/reports/03-voice-of-customer/00-executive-memo.html).
+The analysis fits six LDA topics on the complaint text without using the delivery outcome, then compares topic shares with 95% intervals and Benjamini–Hochberg correction. Six is a prespecified semantic choice: seed 0 ranks it highest on UMass coherence, but the seed-averaged score is highest at k=4, and k=4 merges product with returns. Seed refits also show the exact boundaries are unstable, so the report treats the six labels as a readable summary rather than fixed categories. A soft-assignment check reaches the same conclusion: delivery and non-receipt carry 58.9% of late complaint weight against 22.8% of on-time weight, while product topics carry 24.9% against 63.1%. It is in [the report](https://AndersonTavares0.github.io/ds-portfolio/reports/03-voice-of-customer/03-voice-of-customer.html), with [a one-page memo](https://AndersonTavares0.github.io/ds-portfolio/reports/03-voice-of-customer/00-executive-memo.html).
 
 ## How it is built
 
@@ -91,13 +91,13 @@ uv run python tasks.py pipeline    # load, build, charts, train + topics, tests,
 
 The website is then in `site/_site/`. Every command goes through [`tasks.py`](tasks.py), which is plain Python rather than a `Makefile` because `make` is not on Windows and this repository is written on Windows and run on Linux.
 
-The dataset is 126 MB and is not committed. It comes from a Hugging Face mirror of the original Kaggle release, pinned to one revision so the numbers cannot move underneath you, and validated by exact byte size plus a minimum row count. CI needs neither the dataset nor a database: it runs ruff and the Python tests, and the site is published from committed figures.
+The dataset is 126 MB and is not committed. It comes from a Hugging Face mirror of the original Kaggle release, pinned to one revision so the numbers cannot move underneath you, and validated by exact byte size plus a minimum row count. CI needs neither the dataset nor a database: it runs ruff, the Python tests, a dbt parse of the project, and the site is published from committed figures.
 
 ## Repository map
 
 ```
 projects/01-retail-analytics/   the analysis
-  dbt_project/                  staging models, mart models, 88 data tests (9 singular)
+  dbt_project/                  staging models, mart models, 89 data tests (10 singular)
   src/retail/                   the data layer: config, dataset manifest, download and load
   scripts/                      download_data.py, load_raw.py, make_charts.py
   tests/                        Python tests, no network and no database

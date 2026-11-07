@@ -27,8 +27,17 @@
     }
   },
   "selection": {
-    "criterion": "average_precision",
-    "validation": {
+    "criterion": "mean rolling-origin average precision",
+    "origins": [
+      "2017-07-01",
+      "2017-10-01",
+      "2018-01-01"
+    ],
+    "mean_average_precision": {
+      "logistic": 0.13802465111150983,
+      "boosting": 0.10156336129229131
+    },
+    "validation_descriptive": {
       "logistic": {
         "n": 16783,
         "late_rate": 0.06905797533218137,
@@ -341,69 +350,140 @@
         "average_precision": 0.08706696897178415,
         "top_decile_recall": 0.11704834605597965
       }
+    ],
+    "paired_differences": {
+      "logistic_minus_boosting": {
+        "average_precision": {
+          "metric": "average_precision",
+          "n_resamples": 500,
+          "difference": -0.012519116043888862,
+          "ci_low": -0.021537242777325282,
+          "ci_high": -0.003461921211679959,
+          "share_a_better": 0.006
+        },
+        "roc_auc": {
+          "metric": "roc_auc",
+          "n_resamples": 500,
+          "difference": 0.00024396606515175723,
+          "ci_low": -0.012380833672962435,
+          "ci_high": 0.011581209950275825,
+          "share_a_better": 0.508
+        }
+      },
+      "logistic_minus_state_rate": {
+        "average_precision": {
+          "metric": "average_precision",
+          "n_resamples": 500,
+          "difference": 0.03716779488164593,
+          "ci_low": 0.03150556886113426,
+          "ci_high": 0.04375830901245564,
+          "share_a_better": 1.0
+        },
+        "roc_auc": {
+          "metric": "roc_auc",
+          "n_resamples": 500,
+          "difference": 0.1405167358361875,
+          "ci_low": 0.12877147917376153,
+          "ci_high": 0.15298894412505495,
+          "share_a_better": 1.0
+        }
+      }
+    }
+  },
+  "rolling_origin": {
+    "logistic": [
+      {
+        "cutoff": "2017-07-01",
+        "horizon_months": 3,
+        "maturity_months": 3,
+        "label_end": "2018-01-01",
+        "train_n": 13111,
+        "train_late_rate": 0.0319578979482877,
+        "test_n": 12214,
+        "late_rate": 0.03364990993941379,
+        "roc_auc": 0.6143368845357267,
+        "average_precision": 0.05896840616076253,
+        "top_decile_recall": 0.20194647201946472,
+        "top_decile_precision": 0.06797706797706797
+      },
+      {
+        "cutoff": "2017-10-01",
+        "horizon_months": 3,
+        "maturity_months": 3,
+        "label_end": "2018-04-01",
+        "train_n": 24833,
+        "train_late_rate": 0.030644706640357587,
+        "test_n": 17272,
+        "late_rate": 0.08655627605372858,
+        "roc_auc": 0.5858929736208438,
+        "average_precision": 0.11023969522028368,
+        "top_decile_recall": 0.14180602006688964,
+        "top_decile_precision": 0.12275622466705269
+      },
+      {
+        "cutoff": "2018-01-01",
+        "horizon_months": 3,
+        "maturity_months": 3,
+        "label_end": "2018-07-01",
+        "train_n": 41202,
+        "train_late_rate": 0.042837726323964855,
+        "test_n": 20624,
+        "late_rate": 0.12868502715283164,
+        "roc_auc": 0.6744319532805868,
+        "average_precision": 0.2448658519534833,
+        "top_decile_recall": 0.25018839487565936,
+        "top_decile_precision": 0.32201745877788557
+      }
+    ],
+    "boosting": [
+      {
+        "cutoff": "2017-07-01",
+        "horizon_months": 3,
+        "maturity_months": 3,
+        "label_end": "2018-01-01",
+        "train_n": 13111,
+        "train_late_rate": 0.0319578979482877,
+        "test_n": 12214,
+        "late_rate": 0.03364990993941379,
+        "roc_auc": 0.4827578991938418,
+        "average_precision": 0.034503232876183364,
+        "top_decile_recall": 0.09732360097323602,
+        "top_decile_precision": 0.03276003276003276
+      },
+      {
+        "cutoff": "2017-10-01",
+        "horizon_months": 3,
+        "maturity_months": 3,
+        "label_end": "2018-04-01",
+        "train_n": 24833,
+        "train_late_rate": 0.030644706640357587,
+        "test_n": 17272,
+        "late_rate": 0.08655627605372858,
+        "roc_auc": 0.49233234612088256,
+        "average_precision": 0.08236016656480895,
+        "top_decile_recall": 0.07357859531772576,
+        "top_decile_precision": 0.06369426751592357
+      },
+      {
+        "cutoff": "2018-01-01",
+        "horizon_months": 3,
+        "maturity_months": 3,
+        "label_end": "2018-07-01",
+        "train_n": 41202,
+        "train_late_rate": 0.042837726323964855,
+        "test_n": 20624,
+        "late_rate": 0.12868502715283164,
+        "roc_auc": 0.6132845330847403,
+        "average_precision": 0.18782668443588157,
+        "top_decile_recall": 0.17671439336850037,
+        "top_decile_precision": 0.22744907856450047
+      }
     ]
   },
-  "rolling_origin": [
-    {
-      "cutoff": "2017-07-01",
-      "horizon_months": 3,
-      "train_n": 13111,
-      "train_late_rate": 0.0319578979482877,
-      "test_n": 12215,
-      "late_rate": 0.03372902169463774,
-      "roc_auc": 0.6148608548591808,
-      "average_precision": 0.0590981631622169,
-      "top_decile_recall": 0.20145631067961164,
-      "top_decile_precision": 0.06792144026186579
-    },
-    {
-      "cutoff": "2017-10-01",
-      "horizon_months": 3,
-      "train_n": 24833,
-      "train_late_rate": 0.030644706640357587,
-      "test_n": 17279,
-      "late_rate": 0.08692632675502054,
-      "roc_auc": 0.5857674544692348,
-      "average_precision": 0.11061563450695605,
-      "top_decile_recall": 0.1418109187749667,
-      "top_decile_precision": 0.1232638888888889
-    },
-    {
-      "cutoff": "2018-01-01",
-      "horizon_months": 3,
-      "train_n": 41202,
-      "train_late_rate": 0.042837726323964855,
-      "test_n": 20628,
-      "late_rate": 0.12885398487492727,
-      "roc_auc": 0.67477394185527,
-      "average_precision": 0.2452934751403413,
-      "top_decile_recall": 0.25018811136192626,
-      "top_decile_precision": 0.3223460979156568
-    },
-    {
-      "cutoff": "2018-04-01",
-      "horizon_months": 3,
-      "train_n": 60474,
-      "train_late_rate": 0.059662003505638786,
-      "test_n": 19643,
-      "late_rate": 0.04174515094435677,
-      "roc_auc": 0.7518869623695972,
-      "average_precision": 0.11869820681001467,
-      "top_decile_recall": 0.35121951219512193,
-      "top_decile_precision": 0.14663951120162932
-    }
-  ],
   "baselines": {
     "constant_prevalence": {
       "brier": 0.04248461177076641,
-      "top_decile": {
-        "capacity": 0.1,
-        "n_selected": 3215,
-        "precision": 0.0401244167962675,
-        "recall": 0.09078114004222379,
-        "lift": 0.907811400422238,
-        "prevalence": 0.04419906687402799
-      }
+      "top_decile": null
     },
     "state_rate": {
       "brier": 0.04265160213707741,

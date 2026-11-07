@@ -38,7 +38,7 @@ of what the data cannot support.
 <div class="project-seq">03<span class="project-status status-published">Published</span></div>
 <div class="project-detail">
 <h3>What do 9,139 written complaints say?</h3>
-<p>Topic modelling of 9,139 written 1–2 star complaints. Late complaints are about the parcel: delivery problems, non-receipt and delay are 81.9% of them. On-time complaints are about the product: quality, completeness and wrong items are 68.9%. The report states the selection before the result.</p>
+<p>Topic modelling of 9,139 written 1–2 star complaints. Late complaints are about the parcel: delivery problems and non-receipt are 65.7% of them. On-time complaints are about the product: quality, completeness and wrong items are 68.9%. Delay is a mixed topic and is counted separately. The report states the selection before the result.</p>
 <p class="project-stack">Python, NLP, topic modelling</p>
 <p class="project-links"><a href="reports/03-voice-of-customer/03-voice-of-customer.qmd">Read the analysis</a> <a href="reports/03-voice-of-customer/00-executive-memo.qmd">One-page decision memo</a></p>
 </div>

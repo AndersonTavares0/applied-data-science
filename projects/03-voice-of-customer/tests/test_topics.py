@@ -48,9 +48,16 @@ def test_coherence_returns_one_score_per_topic():
 
 
 def test_coherence_by_topic_count_has_one_row_per_candidate():
-    table = coherence_by_topic_count(_corpus(), topic_counts=(2, 3), max_iter=10)
-    assert list(table.columns) == ["topics", "mean_coherence", "perplexity"]
+    table = coherence_by_topic_count(_corpus(), topic_counts=(2, 3), seeds=(0, 1), max_iter=10)
+    assert list(table.columns) == [
+        "topics",
+        "seed0_coherence",
+        "mean_coherence",
+        "sd_coherence",
+        "perplexity",
+    ]
     assert table["topics"].tolist() == [2, 3]
+    assert table["sd_coherence"].ge(0).all()
     assert table["perplexity"].gt(0).all()
 
 

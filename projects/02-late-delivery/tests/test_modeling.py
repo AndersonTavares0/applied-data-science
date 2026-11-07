@@ -15,7 +15,9 @@ from late_delivery.features import (
     capacity_metrics,
     capacity_table,
     monthly_metrics,
+    paired_bootstrap_difference,
     prepare_features,
+    rolling_origin,
     split_train_validation,
     state_rate_baseline,
     temporal_split,
@@ -102,6 +104,33 @@ def test_bootstrap_interval_contains_the_point_estimate() -> None:
     assert result["n_resamples"] > 0
     for name in ("roc_auc", "average_precision", "brier", "top_precision"):
         assert result[name]["ci_low"] <= result[name]["point"] <= result[name]["ci_high"]
+
+
+def test_paired_bootstrap_is_zero_for_identical_scores() -> None:
+    y_true = [0] * 90 + [1] * 10
+    scores = [0.1] * 90 + [0.9] * 10
+    result = paired_bootstrap_difference(y_true, scores, scores, n_resamples=50, seed=1)
+
+    assert result["difference"] == pytest.approx(0.0)
+    assert result["ci_low"] <= 0 <= result["ci_high"]
+    assert result["share_a_better"] == 0.0
+
+
+def test_rolling_origin_matures_labels_beyond_the_horizon() -> None:
+    frame = synthetic_frame()
+    rows = rolling_origin(
+        frame,
+        ("2018-02-01",),
+        kind="logistic",
+        horizon_months=1,
+        maturity_months=1,
+    )
+
+    assert len(rows) == 1
+    row = rows[0]
+    assert row["label_end"] == "2018-04-01"
+    assert row["test_n"] > 0
+    assert row["maturity_months"] == 1
 
 
 def test_calibration_summary_recovers_a_positive_slope() -> None:

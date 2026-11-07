@@ -33,6 +33,7 @@ from late_delivery.features import (  # noqa: E402
     capacity_table,
     evaluate,
     monthly_metrics,
+    paired_bootstrap_difference,
     permutation_importance_by_raw_feature,
     prepare_features,
     prevalence_baseline,
@@ -155,15 +156,29 @@ def main() -> int:
     print(f"test  {len(test):,} orders ({y_test.mean():.2%} late) from {SPLIT_CUTOFF}")
     print(f"excluded {len(excluded):,} orders without an observable late label")
 
-    # Selection happens only on the validation slice. The test set is then
-    # touched once, for the selected model, and descriptively for the other.
+    # Selection uses rolling origins, not the single validation slice. Each
+    # origin only trains on labels observable at that date and only scores
+    # orders whose labels had time to mature. The final test is then touched
+    # once, for the selected model, and descriptively for the other.
+    origins = ("2017-07-01", "2017-10-01", "2018-01-01")
+    rolling = {
+        kind: rolling_origin(frame, origins, kind=kind, horizon_months=3, maturity_months=3)
+        for kind in ("logistic", "boosting")
+    }
+    mean_ap = {
+        kind: sum(row["average_precision"] for row in rows) / len(rows)
+        for kind, rows in rolling.items()
+    }
+    best = max(mean_ap, key=mean_ap.get)
+    print(f"\nrolling-origin mean average precision: {mean_ap}; selected {best}")
+    print(json.dumps(rolling, indent=2))
+
     validation_payloads = {}
     for kind in ("logistic", "boosting"):
         model = build_model(kind).fit(prepare_features(fit_slice), fit_slice[TARGET].astype(int))
         scores = model.predict_proba(prepare_features(validation))[:, 1]
         validation_payloads[kind] = evaluate(validation[TARGET].astype(int), scores)
-    best = max(validation_payloads, key=lambda kind: validation_payloads[kind]["average_precision"])
-    print(f"\nvalidation ({VALIDATION_CUTOFF} onward), selected {best}:")
+    print(f"\ninner validation ({VALIDATION_CUTOFF} onward), descriptive only:")
     print(json.dumps(validation_payloads, indent=2))
 
     payloads: dict[str, dict] = {}
@@ -178,7 +193,6 @@ def main() -> int:
         }
         print(f"\n{kind} on test: {json.dumps(payloads[kind]['metrics'], indent=2)}")
 
-    selected = payloads[best]
     importance = permutation_importance_by_raw_feature(
         build_model(best).fit(x_train, y_train), x_test, y_test
     )
@@ -190,7 +204,9 @@ def main() -> int:
     baselines = {
         "constant_prevalence": {
             "brier": float(((y_test - prevalence) ** 2).mean()),
-            "top_decile": capacity_metrics(y_test, [prevalence] * len(y_test)),
+            # A constant score cannot rank; reporting a top-decile slice would
+            # be an arbitrary tie-break, so leave the ranking metrics undefined.
+            "top_decile": None,
         },
         "state_rate": {
             "brier": float(((y_test - state_scores) ** 2).mean()),
@@ -218,8 +234,10 @@ def main() -> int:
             },
         },
         "selection": {
-            "criterion": "average_precision",
-            "validation": validation_payloads,
+            "criterion": "mean rolling-origin average precision",
+            "origins": list(origins),
+            "mean_average_precision": mean_ap,
+            "validation_descriptive": validation_payloads,
             "selected": best,
         },
         "models": {
@@ -232,16 +250,41 @@ def main() -> int:
         },
         "selected_model": {
             "kind": best,
-            "bootstrap": bootstrap_metrics(y_test, selected["scores"], n_resamples=500, seed=0),
-            "calibration_summary": calibration_summary(y_test, selected["scores"]),
-            "monthly": monthly_metrics(test, selected["scores"]),
+            "bootstrap": bootstrap_metrics(
+                y_test, payloads[best]["scores"], n_resamples=500, seed=0
+            ),
+            "calibration_summary": calibration_summary(y_test, payloads[best]["scores"]),
+            "monthly": monthly_metrics(test, payloads[best]["scores"]),
+            "paired_differences": {
+                f"{best}_minus_{other}": {
+                    metric: paired_bootstrap_difference(
+                        y_test,
+                        payloads[best]["scores"],
+                        payloads[other]["scores"],
+                        metric=metric,
+                        n_resamples=500,
+                        seed=0,
+                    )
+                    for metric in ("average_precision", "roc_auc")
+                }
+                for other in payloads
+                if other != best
+            }
+            | {
+                f"{best}_minus_state_rate": {
+                    metric: paired_bootstrap_difference(
+                        y_test,
+                        payloads[best]["scores"],
+                        state_scores,
+                        metric=metric,
+                        n_resamples=500,
+                        seed=0,
+                    )
+                    for metric in ("average_precision", "roc_auc")
+                }
+            },
         },
-        "rolling_origin": rolling_origin(
-            frame,
-            ("2017-07-01", "2017-10-01", "2018-01-01", "2018-04-01"),
-            kind=best,
-            horizon_months=3,
-        ),
+        "rolling_origin": rolling,
         "baselines": baselines,
     }
     (REPORTS / "model_metrics.json").write_text(
