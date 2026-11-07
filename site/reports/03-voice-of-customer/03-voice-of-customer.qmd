@@ -134,6 +134,13 @@ coherence alone would choose four. The labels also remain a human interpretation
 of the terms, and two pairs overlap: "delivery problem" and "delay" both concern
 delivery, and "not received" and "delay" share vocabulary.
 
+The four-topic alternative does not overturn the headline. At k=4, the two
+delivery/non-receipt topics contain **83.3%** of late complaints and **29.3%** of
+on-time complaints; the two product/order topics contain **16.7%** and **70.7%**.
+That is the same contrast as the six-topic model (65.7% / 18.5% and 18.1% /
+68.9%), with coarser boundaries. Six is retained for granularity, not because it
+creates the result.
+
 ### How stable are the topics?
 
 Refitting with four other seeds (1–4) gives a mean adjusted Rand index of
@@ -301,7 +308,7 @@ outcome after the topics were fitted.
 
 ```bash
 uv run python tasks.py topics     # fit the model, write tables and figures
-uv run pytest                     # 53 tests, no database or network needed
+uv run pytest                     # 54 tests, no database or network needed
 ```
 
 The script reads the built marts, so the pipeline order is
@@ -315,6 +322,8 @@ The script reads the built marts, so the pipeline order is
   with exact p-values and confidence bounds.
 - `projects/03-voice-of-customer/reports/topic_groups.csv` — the three-way
   grouping, with hard-assignment shares and soft topic weights.
+- `projects/03-voice-of-customer/reports/topic_groups_k4.csv` — the four-topic
+  sensitivity check quoted above.
 - `projects/03-voice-of-customer/reports/topic_selection.csv` — coherence and
   perplexity for k=4–10 at seeds 0–2. Six is preselected for semantic
   granularity; the script reports the seed-0 and seed-averaged best counts but

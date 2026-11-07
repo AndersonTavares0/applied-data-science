@@ -30,7 +30,7 @@ The thread through all three is one finding: **late delivery is the strongest si
 - **Revenue.** 99,441 orders worth R$ 16.0M, an average order of R$ 160.99. November 2017 is the largest month at R$ 1.19M, on Black Friday. 2016 holds 329 orders across three months, a launch period rather than a quiet year.
 - **Repeat purchase is 3.12%.** 2,997 of 96,096 customers ever placed a second order, and 96.88% placed exactly one. Ordering again in the next calendar month is 0.48%, flat near 0.2% afterwards. There is almost no repeat-purchase habit to lose, so the usual retention playbook does not apply. This is an acquisition business.
 - **Late delivery is 6.77%.** 6,535 of 96,476 deliveries arrived after the promised date. Those orders average 2.27 stars against 4.29 for on-time orders, and past a week late about 80% of reviewers give one or two stars.
-- **The promised date is conservative.** The average order arrives 11.18 days early and only 6.77% miss. Expectation management may matter as much as speed.
+- **The promised date is conservative.** The average delivered order arrives 11.88 days early and only 6.77% miss. Expectation management may matter as much as speed.
 
 The report recommends investigating Rio de Janeiro, where 12.10% of 12,353 deliveries are late against São Paulo's 4.49%. At São Paulo's rate, roughly 940 Rio orders over the 25-month snapshot would not be late, and the observed review behaviour implies about 377 fewer one- and two-star reviews over the snapshot. It labels that an association rather than a forecast, because the data holds states and not distances, and no cost or margin figures.
 
@@ -38,8 +38,8 @@ The report recommends investigating Rio de Janeiro, where 12.10% of 12,353 deliv
 
 A model restricted to what is known at checkout can rank orders by late-delivery risk, but it cannot yet produce a stable probability.
 
-- **The ranking has signal, and its stability is bounded.** On 32,150 orders purchased after 2018-04-01, the selected logistic model reaches ROC AUC 0.708 (95% bootstrap interval 0.695–0.722) and average precision 0.091 (0.083–0.100) against a 4.42% base rate. The riskiest 10% captures 23.5% of late orders at 10.4% precision — 2.35× the base rate. Rolling origins range from AUC 0.59 to 0.67; boosting is significantly better on the single holdout, so the model class remains open.
-- **Training labels must have matured.** Orders purchased before the cutoff but delivered after it are excluded from training, so the model learns only outcomes that were observable on the deployment date. That leaves 60,474 training orders at 5.97% late.
+- **The ranking is modest, not strong.** On 32,150 orders purchased after 2018-04-01, the selected logistic model reaches ROC AUC 0.685 (95% bootstrap interval 0.671–0.698) and average precision 0.082 (0.076–0.091) against a 4.42% base rate. The riskiest 10% captures 19.7% of late orders at 8.7% precision — 1.97× the base rate. The top 5% is less precise than the top 10%, so the model is not a deployment-ready shortlist.
+- **Training labels must have matured.** Training stops three months before the test cutoff, so the sample is not selected on delivery speed. A naive “purchase before April, keep delivered” rule would drop 3,852 in-flight orders with a 39.1% late rate. The mature training set is 43,691 orders at 5.61% late; rolling origins range from AUC 0.59 to 0.62, and the model class remains open.
 - **The probability is shifted, not broken.** Mean predicted risk is 6.38% against 4.42% observed; the calibration slope is 1.02 and the intercept −0.35. The score is still a triage queue, not a risk percentage.
 - **The signal is the promise and the geography.** Permutation importance ranks `promise_days` first, then customer state and seller state. Basket value, freight, weight, payment and category add little.
 
@@ -97,7 +97,7 @@ The dataset is 126 MB and is not committed. It comes from a Hugging Face mirror 
 
 ```
 projects/01-retail-analytics/   the analysis
-  dbt_project/                  staging models, mart models, 89 data tests (10 singular)
+  dbt_project/                  staging models, mart models, 91 data tests (11 singular)
   src/retail/                   the data layer: config, dataset manifest, download and load
   scripts/                      download_data.py, load_raw.py, make_charts.py
   tests/                        Python tests, no network and no database

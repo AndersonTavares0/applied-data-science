@@ -83,14 +83,13 @@ promise never had: 1,292 orders that arrived on the promised day, at 00:03 for
 instance, would be counted as late. Full reasoning and the measurement are in
 [decision 0003](decisions/0003-lateness-in-whole-days.md).
 
-**Never delivered is its own outcome, and it is not "on time".** Orders
-cancelled, unavailable or still in transit at the end of the snapshot have
-`is_late = NULL`. They are kept as a separate `never delivered` bucket rather
-than dropped, because for the customer they are the worst outcome available, and
-dropping them would flatter the delivery record. At the end of the snapshot that
-bucket includes cancelled, unavailable and still-in-transit orders; it is not a
-claim that every one of them will never arrive. Project 02 separates these
-statuses explicitly when it decides which labels are mature.
+**No delivery timestamp is its own outcome, and it is not "on time" or one
+experience.** Orders cancelled or unavailable (1,228), still open at the end of
+the snapshot (1,729), and delivered with an incomplete timestamp (8) have
+`is_late = NULL`. They are kept as separate buckets rather than dropped, because
+for the customer they are not on time, but collapsing a refund with a parcel
+still in transit would be wrong. Project 02 separates these statuses explicitly
+when it decides which labels are mature.
 
 ---
 
@@ -262,28 +261,32 @@ all “never delivered” (1,107 shipped, 619 cancelled, 609 unavailable, 314
 invoiced, 301 processing, 8 delivered with an incomplete timestamp, and a few
 earlier statuses).
 
-**Population and split.** Orders purchased before **2018-04-01** train; orders
-purchased on or after that date test (32,150 orders, 4.42% late). The split is
-temporal and non-overlapping: a random split would put the same months on both
+**Population and split.** Training uses orders purchased before **2018-01-01**
+and delivered before **2018-04-01**; test orders are purchased on or after
+**2018-04-01** and have an observed label (32,150 orders, 4.42% late). The split
+is temporal and non-overlapping: a random split would put the same months on both
 sides and leak period-specific backlog into the score.
 
-**Label maturity.** A training order must have been both purchased and delivered
-before 2018-04-01. An order purchased in March but delivered in May did not have
-an observable label on the deployment date, so it cannot train a model deployed
-then. That rule excludes 3,852 in-flight orders and leaves **60,474 mature
-training orders, 5.97% late**.
+**Label maturity, and why the training window stops early.** A training order
+must have an observable label before the test cutoff. A naive rule — purchase
+before April, keep only delivered orders — looks correct but selects on delivery
+speed: the 3,852 orders still in flight on 1 April had a **39.1% late rate** and
+would all disappear from training. Training therefore stops three months before
+the cutoff. That leaves **43,691 mature training orders, 5.61% late**. Seven
+orders purchased before January but delivered after April are excluded from
+training; all seven were late. January–March 2018 (20,628 orders, 12.89% late)
+is a retrospective descriptive slice only; it is not used to fit the selected
+model or to choose between models.
 
 **Model selection.** Rolling origin at **2017-07-01, 2017-10-01 and
-2018-01-01**. At each origin the model is fitted only on labels matured before
-that date and scored on the next three months; test labels must also mature
-within three months after the horizon, so a late order is not silently excluded
-from its own evaluation. Mean average precision selects logistic regression
-(**0.138 vs 0.102**). The earlier single validation period (41,202 fit orders,
-16,783 January–March orders, 6.91% late, AP 0.127 vs 0.101) is descriptive only
-and is not the selection criterion. The selected model is refitted on all 60,474
-training orders and evaluated once on the April–August holdout. Both models are
-still reported on the holdout as a sensitivity check; they are not used to
-re-select.
+2018-01-01**. At each origin the model is fitted only on labels matured three
+months before that date and scored on the next three months. Every order in the
+test window with an eventual label is scored; no late order is dropped for
+arriving after the horizon. Mean average precision selects logistic regression
+(**0.119 vs 0.108**). The January–March slice is descriptive only and is not the
+selection criterion. The selected model is refit on all 43,691 training orders
+and evaluated once on the April–August holdout. Both models are still reported
+on the holdout as a sensitivity check; they are not used to re-select.
 
 **Feature policy.** The model uses an explicit allow-list in
 `late_delivery.features.FEATURES`: purchase timing, promised days, customer and
@@ -320,23 +323,23 @@ purpose.
   of the difference. It answers whether one model beats another *within this
   holdout*; it does not describe period-to-period variation.
 - **Rolling origin** — refit at 2017-07, 2017-10 and 2018-01 using only labels
-  matured before each origin, then score the next three months with labels
-  matured by three months after the horizon. This is the stability check a
-  single holdout cannot provide.
+  matured three months before each origin, then score the next three months with
+  all eventual labels. This is the stability check a single holdout cannot
+  provide.
 
-**Results on the holdout.** Selected logistic: AUC 0.708 (0.695–0.722), AP 0.091
-(0.083–0.100), Brier 0.0420, top-decile precision 10.4% (9.4–11.5%), recall
-23.5% (21.5–25.6%) and lift 2.35× (2.15–2.56×). Gradient boosting scores AP
-0.103 and top-decile recall 28.6%, so the model class is not settled by this
-holdout. The paired bootstrap difference in AP is −0.0125 (95% interval −0.0215
-to −0.0035) in favour of boosting on this holdout; logistic won the rolling
-origins. Treat the class as open rather than declaring the holdout winner.
+**Results on the holdout.** Selected logistic: AUC 0.685 (0.671–0.698), AP 0.082
+(0.076–0.091), Brier 0.0418, top-decile precision 8.7% (7.7–9.6%), recall 19.7%
+(17.7–21.7%) and lift 1.97× (1.77–2.17×). Capacity precision is not monotone:
+7.7% at the top 5%, 8.7% at 10%, 9.2% at 20%. Gradient boosting scores AP 0.087
+and top-decile recall 21.8%; the paired logistic-minus-boosting AP difference is
+−0.0048 (95% interval −0.0122 to +0.0036), so the model class is not settled.
+Logistic won the rolling origins (mean AP 0.119 vs 0.108), but the test interval
+includes zero.
 
-**Calibration is a level shift, not a broken ranking.** Mean prediction is 6.38%
-against 4.42% observed; calibration slope is 1.02 and intercept −0.35. The
-holdout's Brier (0.0420) is slightly better than a constant (0.0425), so the
-older “worse than a constant” claim no longer holds after the label-maturity
-fix. Probabilities still must not be read as risks for the current regime.
+**Calibration is close in level but compressed.** Mean prediction is 4.26%
+against 4.42% observed; calibration slope is 0.82 and intercept −0.47. The Brier
+(0.0418) is slightly better than a constant (0.0424). Probabilities still must
+not be read as risks for an individual order or a future regime.
 
 All Project 02 numbers are generated by `uv run python tasks.py train`, which
 writes `projects/02-late-delivery/reports/model_metrics.json`, the capacity
@@ -372,11 +375,14 @@ only — the delivery label is joined afterwards and is not an input. Features a
 unigrams and bigrams, `min_df=20`, `max_df=0.5`, `random_state=0`,
 `learning_method="batch"`, `max_iter=30`, a conservative Portuguese stopword
 list, and tokens of at least three letters. Each complaint is assigned to the
-topic with the largest weight (hard assignment). UMass coherence (top 10 terms)
-is **−2.677** at seed 0, the best of k=4–10 at that seed, but seed-averaged
+topic with the largest weight (hard assignment). UMass coherence (top 10 terms,
+using Gensim's topic-weight ordering) is **−2.677** at seed 0, the best of k=4–10 at that seed, but seed-averaged
 coherence is highest at k=4 (**−2.628** vs **−2.739** at k=6). Six is therefore
 a prespecified semantic choice, not a coherence optimum: k=4 merges product
 quality with returns, while six preserves the distinction the question needs.
+A k=4 sensitivity fit still puts **83.3%** of late complaints and **29.3%** of
+on-time complaints in the delivery/non-receipt group, against **16.7%** and
+**70.7%** in the product group, so the headline contrast does not depend on six.
 Perplexity is **332.92** and is descriptive only; it is not used to choose k.
 Refits with seeds 1–4 give a mean adjusted Rand index of **0.258** and mean
 top-term Jaccard of **0.413** against the seed-0 partition, so the exact topic
