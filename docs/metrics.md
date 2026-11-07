@@ -238,3 +238,57 @@ segment chart should be presented as though Frequency discriminated.
 An order with four items appears once in `fct_orders` and four times in
 `fct_order_items`. Summing freight from the items table while counting orders from
 the orders table would count the freight once per item.
+
+---
+
+## Review complaint topics (Project 03)
+
+**Scope.** One review per delivered order, the latest by
+`review_created_at` (then `review_id`), matching `fct_orders`. A complaint is a
+review scored **1 or 2 stars** whose comment retains at least two tokens after
+normalisation. Of the 12,276 low-star reviews on delivered orders, 9,237 carry a
+written comment and 9,139 survive the token filter (98 one-word verdicts are
+dropped). The corpus therefore holds **9,139 complaints from 96,476 delivered
+orders**, and **29.66%** come from late orders.
+
+**The corpus is selected, not representative.** Late orders are much more likely
+to be reviewed and much more likely to be reviewed badly:
+
+| Outcome | Orders | With a comment | 1–2 star comments |
+|---|---:|---:|---:|
+| On time | 89,941 | 35,138 (39.07%) | 6,490 (7.22%) |
+| Late | 6,535 | 3,762 (57.57%) | 2,747 (42.04%) |
+
+Late orders are **6.8%** of deliveries but **29.66%** of the complaint corpus.
+Every share below is therefore a share *of complaints*, not of orders or
+customers. The report never converts one into the other.
+
+**Model.** Latent Dirichlet Allocation with six topics, fit on the complaint text
+only — the delivery label is joined afterwards and is not an input. Features are
+unigrams and bigrams, `min_df=20`, `max_df=0.5`, `random_state=0`,
+`learning_method="batch"`, `max_iter=30`, a conservative Portuguese stopword
+list, and tokens of at least three letters. Each complaint is assigned to the
+topic with the largest weight (hard assignment). Perplexity is **332.92** on the
+fitted corpus; it is reported as a descriptive fit statistic, not as evidence
+that six is the uniquely correct number of topics.
+
+**Topic share.** `share_pct` = complaints assigned to a topic ÷ all 9,139
+complaints. `late_share_pct` and `on_time_share_pct` use a different denominator
+each: complaints from late orders (2,711) and complaints from on-time orders
+(6,428). They therefore sum to 100% within each column, and the two columns
+describe different populations.
+
+**Difference and uncertainty.** `diff_pp` is `late_share_pct − on_time_share_pct`
+in percentage points. Its 95% interval comes from an unpooled two-proportion
+normal approximation; the p-value comes from a pooled two-sided z-test. Six
+topics are tested together, so `q_value` is the Benjamini–Hochberg adjusted
+p-value across those six tests. A topic is called over-represented only when the
+interval excludes zero and `q_value` is small; the report also prints the
+interval so a reader can see the size of the gap, not only its significance.
+
+**What this does not measure.** The topic model describes *what the text is
+about*, not sentiment: the star rating supplies the negative signal. A topic
+being over-represented among late orders is an association between a delivery
+outcome and the subject of a complaint. It is not evidence that lateness caused
+that complaint, and the selected corpus makes even the association descriptive of
+complainers rather than of all customers.
