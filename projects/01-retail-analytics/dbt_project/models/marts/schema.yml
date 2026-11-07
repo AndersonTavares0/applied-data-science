@@ -238,3 +238,39 @@ models:
       - name: late_pct_if_promise_plus7
         data_tests:
           - not_null
+
+  - name: mart_order_features
+    description: >
+      One row per order for the Project 02 late-delivery model. Every column
+      before `is_late` is knowable at checkout: purchase calendar, destination
+      and origin state, product and payment attributes, and the promise length.
+      `is_late` and `days_late` are the label and are never used as features.
+      Orders that were never delivered have a NULL label and are excluded from
+      training and evaluation.
+    columns:
+      - name: order_id
+        data_tests:
+          - unique
+          - not_null
+      - name: purchased_at
+        data_tests:
+          - not_null
+      - name: promise_days
+        description: >
+          Whole days between purchase and the promised delivery date. Shown to
+          the customer at checkout, so it is a legitimate feature and the lever
+          the business actually controls.
+        data_tests:
+          - not_null
+      - name: is_late
+        description: "TRUE when delivered after the promised date. NULL when never delivered."
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [true, false]
+                quote: false
+      - name: customer_state
+        data_tests:
+          - not_null
+      - name: order_value
+        description: "Payment total at checkout. NULL for the one order with no payment row."
