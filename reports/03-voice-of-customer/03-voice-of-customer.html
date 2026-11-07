@@ -491,7 +491,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="how-the-topics-were-built">2. How the topics were built</h2>
 <p>The method is deliberately simple and fixed before looking at the outcome.</p>
 <ol type="1">
-<li><strong>One review per delivered order</strong>, the latest by <code>review_created_at</code> and then <code>review_id</code>. This is the same rule <code>fct_orders</code> uses. Joining all 99,224 review rows directly would double-count 547 orders and inflate every denominator.</li>
+<li><strong>One review per delivered order</strong>, the latest by <code>review_created_at</code> and then <code>review_id</code>. This is the same rule <code>fct_orders</code> uses. Joining all 99,224 review rows directly would add 551 duplicate rows across 547 orders and inflate every denominator.</li>
 <li><strong>Keep 1–2 star reviews with a comment.</strong> The star rating is the negative signal. The model is not asked to discover sentiment; it is asked to describe what the complaint is about.</li>
 <li><strong>Normalise conservatively.</strong> Lowercase, remove links, digits and punctuation, keep accents, and drop Portuguese function words plus seller names. Negation stays: <code>não</code> is the difference between <code>recebi</code> and <code>não recebi</code>, and removing it merged “received” and “never received” in an earlier fit.</li>
 <li><strong>Fit LDA with six topics</strong> on unigrams and bigrams (<code>min_df=20</code>, <code>max_df=0.5</code>, <code>random_state=0</code>, <code>max_iter=30</code>). The delivery outcome is not an input; it is joined after the topics are fitted.</li>
@@ -590,7 +590,69 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="mixed-complaints-and-hard-assignment" class="level3">
 <h3 class="anchored" data-anchor-id="mixed-complaints-and-hard-assignment">Mixed complaints and hard assignment</h3>
 <p>LDA returns a distribution over topics for every complaint; the tables above use only the largest weight. That is a simplification, and it is measurable: <strong>22.7%</strong> of complaints have a largest topic weight below 0.5, <strong>7.5%</strong> below 0.4, and <strong>31.7%</strong> have a second topic at or above 0.3. The mean normalised entropy is 0.522 on a 0–1 scale. A complaint about a late, damaged, incomplete order often has substantial mass on more than one theme.</p>
-<p>The labels themselves were checked by reading the highest-weight complaints for each topic. The themes are recognisable in the raw text: damaged or different from the photo (quality), still waiting a month later (not received), ordered two and received one (incomplete), promised date passed or tracking says delivered but nothing arrived (delivery problem), “almost a month, other sites are faster” (delay), and wrong voltage or wrong item with no exchange (wrong item/return). Those paraphrases are qualitative evidence for the labels, not a substitute for the quantitative comparison.</p>
+<p>The themes are recognisable in the raw text: damaged or different from the photo (quality), still waiting a month later (not received), ordered two and received one (incomplete), promised date passed or tracking says delivered but nothing arrived (delivery problem), “almost a month, other sites are faster” (delay), and wrong voltage or wrong item with no exchange (wrong item/return).</p>
+<p>To test whether that readability holds beyond the highest-weight examples, I drew a stratified random sample of five complaints per topic (30 total, seed 20261107) and read each one.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 26%">
+<col style="width: 26%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Topic</th>
+<th style="text-align: right;">Clearly consistent</th>
+<th style="text-align: right;">Partly consistent</th>
+<th style="text-align: right;">Dominated by another theme</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Quality / not as described</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td>Not received</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td>Incomplete order</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td>Delivery problem</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td>Delay / long wait</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td>Wrong item / return</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td><strong>Total</strong></td>
+<td style="text-align: right;"><strong>20</strong></td>
+<td style="text-align: right;"><strong>5</strong></td>
+<td style="text-align: right;"><strong>5</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The labels are readable but not reliable at the individual level: 20 of 30 were clearly consistent, 5 were partly consistent, and 5 were dominated by another theme. The delay topic was the weakest — three of its five sampled complaints were mainly about product quality or wrong items — which matches its low seed stability. This is one analyst’s review, not independent human coding, and 30 complaints cannot estimate label accuracy with useful precision. It supports the broad reading of the corpus, not the exact assignment of an individual complaint.</p>
 <p>Using the full topic distribution instead of only the largest weight gives the same picture. Across the corpus, the three logistics topics account for <strong>75.1%</strong> of the mean topic weight in late complaints against <strong>36.9%</strong> in on-time complaints; the three product topics account for <strong>24.9%</strong> against <strong>63.1%</strong>. The hard-assignment gaps in the table are larger, but the direction does not depend on forcing each complaint into one topic.</p>
 <!-- Source: reports/topic_terms.csv -->
 <table class="caption-top table">
@@ -725,7 +787,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<div id="fig-gap" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Horizontal bar chart of the difference in each complaint topic's share between late and on-time orders. Delivery problem, not received and delay are positive; quality, incomplete order and wrong item are negative. Every bar's 95% interval excludes zero.">
+<div id="fig-gap" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Horizontal bar chart of the difference in each complaint topic's share between late and on-time orders. Delivery problem, not received and delay are positive; quality, incomplete order and wrong item are negative. Every bar's 95% interval excludes zero." data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-gap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="figures/topic_gap.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Horizontal bar chart of the difference in each complaint topic's share between late and on-time orders. Delivery problem, not received and delay are positive; quality, incomplete order and wrong item are negative. Every bar's 95% interval excludes zero.">
@@ -735,7 +797,7 @@ Figure&nbsp;1: Topics over- and under-represented among late complaints. Orange 
 </figcaption>
 </figure>
 </div>
-<div id="fig-mix" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Paired horizontal bars showing each topic's share of late complaints and of on-time complaints. Delivery problem, not received and delay dominate the late group; quality, incomplete order and wrong item dominate the on-time group.">
+<div id="fig-mix" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Paired horizontal bars showing each topic's share of late complaints and of on-time complaints. Delivery problem, not received and delay dominate the late group; quality, incomplete order and wrong item dominate the on-time group." data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-mix-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="figures/topic_mix.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Paired horizontal bars showing each topic's share of late complaints and of on-time complaints. Delivery problem, not received and delay dominate the late group; quality, incomplete order and wrong item dominate the on-time group.">

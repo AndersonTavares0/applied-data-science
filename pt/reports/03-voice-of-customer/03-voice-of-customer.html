@@ -491,7 +491,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="como-os-tópicos-foram-construídos">2. Como os tópicos foram construídos</h2>
 <p>O método é deliberadamente simples e fixado antes de olhar o desfecho.</p>
 <ol type="1">
-<li><strong>Uma avaliação por pedido entregue</strong>, a mais recente por <code>review_created_at</code> e depois <code>review_id</code>. É a mesma regra que <code>fct_orders</code> usa. Juntar as 99.224 linhas de avaliação diretamente duplicaria 547 pedidos e inflaria todos os denominadores.</li>
+<li><strong>Uma avaliação por pedido entregue</strong>, a mais recente por <code>review_created_at</code> e depois <code>review_id</code>. É a mesma regra que <code>fct_orders</code> usa. Juntar as 99.224 linhas de avaliação diretamente acrescentaria 551 linhas duplicadas em 547 pedidos e inflaria todos os denominadores.</li>
 <li><strong>Manter avaliações de 1–2 estrelas com comentário.</strong> A nota é o sinal negativo. O modelo não precisa descobrir sentimento; precisa descrever sobre o que é a reclamação.</li>
 <li><strong>Normalizar de forma conservadora.</strong> Minúsculas, remoção de links, dígitos e pontuação, acentos preservados, e remoção de palavras funcionais do português e de nomes de vendedores. A negação fica: <code>não</code> é a diferença entre <code>recebi</code> e <code>não recebi</code>, e removê-la juntou “recebi” e “nunca recebi” em um ajuste anterior.</li>
 <li><strong>Ajustar LDA com seis tópicos</strong> sobre unigramas e bigramas (<code>min_df=20</code>, <code>max_df=0,5</code>, <code>random_state=0</code>, <code>max_iter=30</code>). O desfecho de entrega não é entrada; ele é juntado depois que os tópicos são ajustados.</li>
@@ -590,7 +590,69 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="reclamações-mistas-e-atribuição-dura" class="level3">
 <h3 class="anchored" data-anchor-id="reclamações-mistas-e-atribuição-dura">Reclamações mistas e atribuição dura</h3>
 <p>O LDA retorna uma distribuição sobre tópicos para cada reclamação; as tabelas acima usam apenas o maior peso. Isso é uma simplificação mensurável: <strong>22,7%</strong> das reclamações têm o maior peso abaixo de 0,5, <strong>7,5%</strong> abaixo de 0,4, e <strong>31,7%</strong> têm um segundo tópico em 0,3 ou mais. A entropia normalizada média é 0,522 numa escala de 0–1. Uma reclamação sobre um pedido atrasado, danificado e incompleto frequentemente tem massa substancial em mais de um tema.</p>
-<p>Os rótulos foram verificados lendo as reclamações de maior peso de cada tópico. Os temas são reconhecíveis no texto bruto: danificado ou diferente da foto (qualidade), ainda esperando um mês depois (não recebido), pediu dois e recebeu um (pedido incompleto), prazo vencido ou rastreio diz entregue mas nada chegou (problema de entrega), “quase um mês, outros sites são mais rápidos” (atraso), e voltagem ou item errado sem troca (item errado/troca). Essas paráfrases são evidência qualitativa para os rótulos, não um substituto da comparação quantitativa.</p>
+<p>Os temas são reconhecíveis no texto bruto: danificado ou diferente da foto (qualidade), ainda esperando um mês depois (não recebido), pediu dois e recebeu um (pedido incompleto), prazo vencido ou rastreio diz entregue mas nada chegou (problema de entrega), “quase um mês, outros sites são mais rápidos” (atraso), e voltagem ou item errado sem troca (item errado/troca).</p>
+<p>Para testar se essa legibilidade se mantém além dos exemplos de maior peso, eu sorteei cinco reclamações por tópico, de forma estratificada e aleatória (30 no total, semente 20261107), e li cada uma.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 26%">
+<col style="width: 26%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Tópico</th>
+<th style="text-align: right;">Claramente consistente</th>
+<th style="text-align: right;">Parcialmente consistente</th>
+<th style="text-align: right;">Dominado por outro tema</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Qualidade / diferente</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td>Não recebido</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td>Pedido incompleto</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td>Problema de entrega</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td>Atraso / longa espera</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+</tr>
+<tr class="even">
+<td>Item errado / troca</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td><strong>Total</strong></td>
+<td style="text-align: right;"><strong>20</strong></td>
+<td style="text-align: right;"><strong>5</strong></td>
+<td style="text-align: right;"><strong>5</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Os rótulos são legíveis, mas não confiáveis no nível individual: 20 de 30 eram claramente consistentes, 5 eram parcialmente consistentes e 5 eram dominados por outro tema. O tópico de atraso foi o mais fraco — três das cinco reclamações sorteadas tratavam principalmente de qualidade do produto ou item errado —, o que combina com sua baixa estabilidade entre sementes. Esta é a leitura de um analista, não uma codificação humana independente, e 30 reclamações não estimam a acurácia dos rótulos com precisão útil. A auditoria sustenta a leitura ampla do corpus, não a atribuição exata de uma reclamação individual.</p>
 <p>Usar a distribuição completa de tópicos, e não apenas o maior peso, leva à mesma leitura. No corpus, os três tópicos de logística respondem por <strong>75,1%</strong> do peso médio das reclamações de pedidos atrasados contra <strong>36,9%</strong> das reclamações no prazo; os três tópicos de produto respondem por <strong>24,9%</strong> contra <strong>63,1%</strong>. As diferenças por atribuição dura na tabela são maiores, mas a direção não depende de forçar cada reclamação em um único tópico.</p>
 <!-- Source: reports/topic_terms.csv -->
 <table class="caption-top table">

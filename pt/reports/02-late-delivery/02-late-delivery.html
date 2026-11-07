@@ -431,7 +431,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="resumo-executivo">Resumo executivo</h2>
 <ul>
 <li><strong>O ranking tem sinal, mas é moderado e instável entre períodos.</strong> Em uma amostra temporal de 32.150 pedidos entregues, o modelo logístico selecionado alcança <strong>ROC AUC 0,708</strong> (intervalo bootstrap de 95%: 0,695–0,720) e <strong>precisão média 0,091</strong> (0,083–0,101) contra uma taxa de atraso de 4,42%. Sinalizar os 10% de maior risco captura <strong>23,5% dos atrasos</strong> com <strong>precisão de 10,4% — 2,35× a taxa base</strong>.</li>
-<li><strong>A classe do modelo não está decidida por esta evidência.</strong> A regressão logística venceu um período interno de validação por precisão média, mas o gradient boosting foi levemente melhor na amostra final (precisão média 0,096 contra 0,091; recall no decil superior 27,5% contra 23,5%). A diferença está dentro do ruído. O relatório mostra os dois em vez de declarar um vencedor a partir do teste.</li>
+<li><strong>A classe do modelo não está decidida por esta evidência.</strong> A regressão logística venceu um período interno de validação por precisão média, mas o gradient boosting foi levemente melhor na amostra final (precisão média 0,097 contra 0,091; recall no decil superior 28,4% contra 23,5%). A diferença é pequena e uma única amostra temporal não estabelece um ranking confiável entre os dois. O relatório mostra ambos em vez de declarar um vencedor a partir do teste.</li>
 <li><strong>O score é uma fila de triagem, não uma probabilidade.</strong> A taxa de atraso da amostra é 4,42%, enquanto a previsão média do modelo selecionado é 6,38%. A inclinação de calibração é próxima de um (1,02), mas o intercepto é −0,35 na escala logit: o modelo ordena razoavelmente e superestima o nível. Uma probabilidade em produção precisaria ser recalibrada com pedidos recentes e maduros.</li>
 <li><strong>Prazo e geografia dominam.</strong> A importância por permutação coloca <code>promise_days</code> em primeiro lugar, seguido de <code>customer_state</code> e <code>seller_state</code>. Valor, frete, peso, pagamento e categoria acrescentam pouco depois disso.</li>
 <li><strong>O resultado não é uma alavanca causal.</strong> <code>promise_days</code> é a própria expectativa do marketplace sobre a dificuldade. Encurtá-lo não reduziria o atraso mecanicamente; a pergunta operacional do Projeto 01 sobre o corredor São Paulo → Rio continua sendo a causal.</li>
@@ -524,12 +524,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td>Gradient boosting</td>
-<td style="text-align: right;">0,704</td>
-<td style="text-align: right;">0,096</td>
-<td style="text-align: right;">0,0414</td>
-<td style="text-align: right;">12,2%</td>
-<td style="text-align: right;">27,5%</td>
-<td style="text-align: right;">2,75×</td>
+<td style="text-align: right;">0,705</td>
+<td style="text-align: right;">0,097</td>
+<td style="text-align: right;">0,0415</td>
+<td style="text-align: right;">12,5%</td>
+<td style="text-align: right;">28,4%</td>
+<td style="text-align: right;">2,84×</td>
 </tr>
 <tr class="odd">
 <td>Constante (prevalência de treino)</td>
