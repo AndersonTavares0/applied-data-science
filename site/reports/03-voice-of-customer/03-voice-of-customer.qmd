@@ -173,6 +173,13 @@ but nothing arrived (delivery problem), "almost a month, other sites are faster"
 Those paraphrases are qualitative evidence for the labels, not a substitute for
 the quantitative comparison.
 
+Using the full topic distribution instead of only the largest weight gives the
+same picture. Across the corpus, the three logistics topics account for **75.1%**
+of the mean topic weight in late complaints against **36.9%** in on-time
+complaints; the three product topics account for **24.9%** against **63.1%**. The
+hard-assignment gaps in the table are larger, but the direction does not depend
+on forcing each complaint into one topic.
+
 ```{=html}
 <!-- Source: reports/topic_terms.csv -->
 ```

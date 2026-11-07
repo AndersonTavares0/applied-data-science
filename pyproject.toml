@@ -1,7 +1,7 @@
 [project]
 name = "ds-portfolio"
 version = "0.1.0"
-description = "Data Science portfolio: end-to-end retail analytics on the Olist Brazilian e-commerce dataset."
+description = "Applied data science portfolio: retail measurement, delivery-risk modelling and complaint-text analysis on the Olist Brazilian e-commerce dataset."
 readme = "README.md"
 
 # Pinned below 3.13 on purpose: dbt-postgres is the most version-sensitive
@@ -61,11 +61,11 @@ extend-exclude = [
 select = ["E", "F", "W", "I", "UP", "B", "SIM"]
 
 [tool.uv]
-# Project 01 is a plain source tree, NOT a distributable package — packaging
-# arrives in Project 02. This stops uv from trying to build/install the project
+# This repository is a set of source trees, not a distributable package.
+# Keeping `package = false` stops uv from trying to build/install the project
 # itself (which would fail, since `retail` does not live at the repo root).
-# The package is imported via PYTHONPATH: `pytest`'s `pythonpath` option below,
-# and `tasks.py` for scripts.
+# The packages are imported via PYTHONPATH: `pytest`'s `pythonpath` option
+# below, and `tasks.py` for scripts.
 package = false
 
 [tool.pytest.ini_options]
