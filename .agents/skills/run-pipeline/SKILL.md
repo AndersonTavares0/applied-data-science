@@ -14,6 +14,7 @@ uv run python tasks.py data         # download + validate (~126 MB, once)
 uv run python tasks.py load         # CSVs -> the `raw` schema
 uv run python tasks.py dbt-build    # models AND tests
 uv run python tasks.py charts       # figures from the marts
+uv run python tasks.py train        # late-delivery model and figures
 uv run python tasks.py topics       # complaint topic model and figures
 uv run python tasks.py test         # Python tests
 ```
@@ -26,9 +27,9 @@ and sets `PYTHONPATH`, and dbt does not read `.env` on its own.
 ## What success looks like
 
 - `load` prints all nine tables with matching row counts, `ok` on each
-- `dbt-build` ends with `PASS=99 ERROR=0` (19 models + 80 data tests)
+- `dbt-build` ends with `PASS=108 ERROR=0` (19 models + 88 data tests)
 - `topics` ends with `9,139 usable complaints from 9,237 low-star comments`
-- `pytest` ends with `25 passed`
+- `pytest` ends with `40 passed`
 
 Row counts on a correct load: customers 99,441 · geolocation 1,000,163 ·
 order_items 112,650 · order_payments 103,886 · order_reviews 99,224 ·

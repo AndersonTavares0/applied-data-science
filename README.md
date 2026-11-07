@@ -97,7 +97,7 @@ The dataset is 126 MB and is not committed. It comes from a Hugging Face mirror 
 
 ```
 projects/01-retail-analytics/   the analysis
-  dbt_project/                  staging models, mart models, 80 data tests (7 singular)
+  dbt_project/                  staging models, mart models, 88 data tests (9 singular)
   src/retail/                   the data layer: config, dataset manifest, download and load
   scripts/                      download_data.py, load_raw.py, make_charts.py
   tests/                        Python tests, no network and no database

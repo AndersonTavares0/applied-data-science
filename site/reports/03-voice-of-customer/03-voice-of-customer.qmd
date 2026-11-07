@@ -277,7 +277,7 @@ outcome after the topics were fitted.
 
 ```bash
 uv run python tasks.py topics     # fit the model, write tables and figures
-uv run pytest                     # 29 tests, no database or network needed
+uv run pytest                     # 40 tests, no database or network needed
 ```
 
 The script reads the built marts, so the pipeline order is

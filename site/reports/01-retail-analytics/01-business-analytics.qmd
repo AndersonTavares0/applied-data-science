@@ -496,7 +496,7 @@ flowchart TB
   CSV --> L["load_raw.py<br/>every column TEXT"]
   L --> DB[("PostgreSQL<br/>schema: raw")]
   DB --> S["dbt staging<br/>views — cast and rename"]
-  S --> F["dbt marts<br/>tables — 80 data tests"]
+  S --> F["dbt marts<br/>tables — 88 data tests"]
   F --> C["make_charts.py"]
   C --> FIG["PNG figures"]
   F --> REP["Quarto report"]
@@ -511,7 +511,7 @@ uv run python tasks.py setup      # start the database and fetch the data
 uv run python tasks.py pipeline   # load, build, charts, test, render
 ```
 
-`dbt build` also runs 80 data tests, including one that asserts month-zero
+`dbt build` also runs 88 data tests, including one that asserts month-zero
 retention is exactly 100%, one that asserts the late flag and the lateness in days
 cannot disagree, and one that asserts a longer promise can never make more orders
 late. The first two exist because they were wrong once.
