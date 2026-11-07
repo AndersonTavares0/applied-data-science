@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>03 · Voice of the Customer – Retail Analytics Portfolio</title>
+<title>03 · Voice of the Customer – Applied Data Science Portfolio</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -308,7 +308,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../../index.html">
-    <span class="navbar-title">Retail Analytics Portfolio</span>
+    <span class="navbar-title">Applied Data Science Portfolio</span>
     </a>
   </div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
@@ -591,6 +591,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="mixed-complaints-and-hard-assignment">Mixed complaints and hard assignment</h3>
 <p>LDA returns a distribution over topics for every complaint; the tables above use only the largest weight. That is a simplification, and it is measurable: <strong>22.7%</strong> of complaints have a largest topic weight below 0.5, <strong>7.5%</strong> below 0.4, and <strong>31.7%</strong> have a second topic at or above 0.3. The mean normalised entropy is 0.522 on a 0–1 scale. A complaint about a late, damaged, incomplete order often has substantial mass on more than one theme.</p>
 <p>The labels themselves were checked by reading the highest-weight complaints for each topic. The themes are recognisable in the raw text: damaged or different from the photo (quality), still waiting a month later (not received), ordered two and received one (incomplete), promised date passed or tracking says delivered but nothing arrived (delivery problem), “almost a month, other sites are faster” (delay), and wrong voltage or wrong item with no exchange (wrong item/return). Those paraphrases are qualitative evidence for the labels, not a substitute for the quantitative comparison.</p>
+<p>Using the full topic distribution instead of only the largest weight gives the same picture. Across the corpus, the three logistics topics account for <strong>75.1%</strong> of the mean topic weight in late complaints against <strong>36.9%</strong> in on-time complaints; the three product topics account for <strong>24.9%</strong> against <strong>63.1%</strong>. The hard-assignment gaps in the table are larger, but the direction does not depend on forcing each complaint into one topic.</p>
 <!-- Source: reports/topic_terms.csv -->
 <table class="caption-top table">
 <colgroup>

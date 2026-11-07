@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>02 · Late-Delivery Model – Retail Analytics Portfolio</title>
+<title>02 · Late-Delivery Model – Applied Data Science Portfolio</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -308,7 +308,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../../index.html">
-    <span class="navbar-title">Retail Analytics Portfolio</span>
+    <span class="navbar-title">Applied Data Science Portfolio</span>
     </a>
   </div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
@@ -553,7 +553,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p>* A constant score cannot rank; the top-decile figures are an arbitrary slice of a tie and are shown only to make the comparison explicit.</p>
 <p>The two models are close enough that the holdout does not distinguish them. The selected logistic model has a slightly better Brier score than the constant baseline (0.0420 vs 0.0425), but its advantage in ranking is the real result. Gradient boosting is better at the very top of the queue; logistic regression is easier to interpret and was chosen without looking at the holdout. A production team should treat the model class as an open choice and decide it with a rolling evaluation, not with this single test period.</p>
-<div id="fig-pr" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Precision-recall curves for logistic regression and gradient boosting on the 32,150-order temporal holdout. Both sit above the 4.42 percent base-rate line, with gradient boosting slightly higher at the top of the ranking.">
+<div id="fig-pr" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Precision-recall curves for logistic regression and gradient boosting on the 32,150-order temporal holdout. Both sit above the 4.42 percent base-rate line, with gradient boosting slightly higher at the top of the ranking." data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-pr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="figures/precision_recall.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Precision-recall curves for logistic regression and gradient boosting on the 32,150-order temporal holdout. Both sit above the 4.42 percent base-rate line, with gradient boosting slightly higher at the top of the ranking.">
@@ -618,7 +618,7 @@ Figure&nbsp;1: Precision–recall curve for both models on the temporal holdout.
 </section>
 <section id="calibration-and-why-the-probability-is-not-the-product" class="level2">
 <h2 class="anchored" data-anchor-id="calibration-and-why-the-probability-is-not-the-product">4. Calibration, and why the probability is not the product</h2>
-<div id="fig-cal" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Calibration plot comparing predicted and observed late-delivery rates in ten score bins. Both models predict higher late rates than are observed in the holdout, especially in the highest bins.">
+<div id="fig-cal" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Calibration plot comparing predicted and observed late-delivery rates in ten score bins. Both models predict higher late rates than are observed in the holdout, especially in the highest bins." data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-cal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="figures/calibration.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Calibration plot comparing predicted and observed late-delivery rates in ten score bins. Both models predict higher late rates than are observed in the holdout, especially in the highest bins.">

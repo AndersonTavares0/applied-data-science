@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>02 · Modelo de atraso na entrega – Retail Analytics Portfolio</title>
+<title>02 · Modelo de atraso na entrega – Portfólio de Ciência de Dados Aplicada</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -308,7 +308,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../../../index.html">
-    <span class="navbar-title">Retail Analytics Portfolio</span>
+    <span class="navbar-title">Portfólio de Ciência de Dados Aplicada</span>
     </a>
   </div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Alternar de navegação" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
@@ -553,7 +553,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p>* Um score constante não ordena; os números do decil superior são uma fatia arbitrária de um empate e aparecem apenas para tornar a comparação explícita.</p>
 <p>Os dois modelos são próximos o suficiente para que a amostra não os distinga. A regressão logística selecionada tem Brier levemente melhor que a constante (0,0420 contra 0,0425), mas sua vantagem no ranking é o resultado real. O gradient boosting é melhor no topo da fila; a regressão logística é mais fácil de interpretar e foi escolhida sem olhar o teste. Uma equipe de produção deveria tratar a classe do modelo como uma escolha aberta e decidi-la com avaliação móvel, não com este único período.</p>
-<div id="fig-pr" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Curvas de precisão-recall da regressão logística e do gradient boosting na amostra temporal de 32.150 pedidos. Ambas ficam acima da linha de taxa base de 4,42 por cento, com o gradient boosting levemente acima no topo do ranking." data-fig-align="center">
+<div id="fig-pr" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Curvas de precisão-recall da regressão logística e do gradient boosting na amostra temporal de 32.150 pedidos. Ambas ficam acima da linha de taxa base de 4,42 por cento, com o gradient boosting levemente acima no topo do ranking.">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-pr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="../../../reports/02-late-delivery/figures/pt/precision_recall.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Curvas de precisão-recall da regressão logística e do gradient boosting na amostra temporal de 32.150 pedidos. Ambas ficam acima da linha de taxa base de 4,42 por cento, com o gradient boosting levemente acima no topo do ranking.">
@@ -618,7 +618,7 @@ Figura&nbsp;1: Curva de precisão–recall dos dois modelos na amostra temporal.
 </section>
 <section id="calibração-e-por-que-a-probabilidade-não-é-o-produto" class="level2">
 <h2 class="anchored" data-anchor-id="calibração-e-por-que-a-probabilidade-não-é-o-produto">4. Calibração, e por que a probabilidade não é o produto</h2>
-<div id="fig-cal" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Gráfico de calibração comparando taxas previstas e observadas de atraso em dez faixas de score. Os dois modelos preveem taxas maiores do que as observadas na amostra, especialmente nas faixas mais altas." data-fig-align="center">
+<div id="fig-cal" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Gráfico de calibração comparando taxas previstas e observadas de atraso em dez faixas de score. Os dois modelos preveem taxas maiores do que as observadas na amostra, especialmente nas faixas mais altas.">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-cal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="../../../reports/02-late-delivery/figures/pt/calibration.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Gráfico de calibração comparando taxas previstas e observadas de atraso em dez faixas de score. Os dois modelos preveem taxas maiores do que as observadas na amostra, especialmente nas faixas mais altas.">
