@@ -42,8 +42,7 @@ são, e `uv run python tasks.py train` as reconstrói.
   probabilidade em produção precisaria ser recalibrada com pedidos recentes e
   maduros.
 - **Prazo e geografia dominam.** A importância por permutação coloca
-  `promise_days` em primeiro lugar, seguido de `customer_state`, `seller_state` e
-  `same_state`. Valor, frete, peso, pagamento e categoria acrescentam pouco
+  `promise_days` em primeiro lugar, seguido de `customer_state` e `seller_state`. Valor, frete, peso, pagamento e categoria acrescentam pouco
   depois disso.
 - **O resultado não é uma alavanca causal.** `promise_days` é a própria
   expectativa do marketplace sobre a dificuldade. Encurtá-lo não reduziria o
@@ -228,18 +227,17 @@ one-hot que ela vira dentro do pipeline.
 
 | Atributo | Queda na precisão média |
 |---|---:|
-| `promise_days` | 0,033 |
-| `customer_state` | 0,024 |
-| `seller_state` | 0,006 |
-| `same_state` | 0,002 |
+| `promise_days` | 0,032 |
+| `customer_state` | 0,022 |
+| `seller_state` | 0,005 |
+| `seller_count` | 0,001 |
 | `avg_weight_grams` | 0,001 |
 | `items_value` | 0,001 |
-| `avg_photos_qty` | 0,001 |
 | `freight_share` | 0,001 |
+| `avg_photos_qty` | 0,001 |
 
 A lista é curta e coincide com a conclusão do Projeto 01. O prazo é o insumo mais
-forte, e os dois campos de estado mais a interação entre eles carregam quase todo
-o resto. Valor da cesta, frete, peso, forma de pagamento e categoria acrescentam
+forte, e a geografia carrega quase todo o resto. Valor da cesta, frete, peso, forma de pagamento e categoria acrescentam
 quase nada depois disso. Categoria e mês da compra têm quedas levemente negativas,
 o que significa que embaralhá-los não prejudicou esta amostra; eles não carregam
 sinal aqui.

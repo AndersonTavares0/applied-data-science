@@ -15,6 +15,7 @@ project:
     - about.qmd
     - reports/01-retail-analytics/*.qmd
     - reports/02-late-delivery/*.qmd
+    - reports/03-voice-of-customer/*.qmd
 
 website:
   navbar:
@@ -33,6 +34,10 @@ website:
             text: "02 · Late-delivery model"
           - href: reports/02-late-delivery/00-executive-memo.qmd
             text: "02 · Decision memo"
+          - href: reports/03-voice-of-customer/03-voice-of-customer.qmd
+            text: "03 · Voice of the customer"
+          - href: reports/03-voice-of-customer/00-executive-memo.qmd
+            text: "03 · Decision memo"
       - href: about.qmd
         text: About
     right:

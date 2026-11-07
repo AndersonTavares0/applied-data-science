@@ -22,6 +22,7 @@ project:
     - pt/about.qmd
     - pt/reports/01-retail-analytics/*.qmd
     - pt/reports/02-late-delivery/*.qmd
+    - pt/reports/03-voice-of-customer/*.qmd
   output-dir: .build-pt
 
 website:
@@ -41,6 +42,10 @@ website:
             text: "02 · Modelo de atraso"
           - href: pt/reports/02-late-delivery/00-executive-memo.qmd
             text: "02 · Memorando de decisão"
+          - href: pt/reports/03-voice-of-customer/03-voice-of-customer.qmd
+            text: "03 · Voz do cliente"
+          - href: pt/reports/03-voice-of-customer/00-executive-memo.qmd
+            text: "03 · Memorando de decisão"
       - href: pt/about.qmd
         text: Sobre
     right:

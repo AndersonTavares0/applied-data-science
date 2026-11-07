@@ -42,8 +42,8 @@ ranking; não prometa o percentual.**
 - **O nível não está calibrado para o próximo período.** O risco médio previsto é
   6,38% contra 4,42% observados, embora a inclinação de calibração seja próxima
   de um (1,02). O ranking está aproximadamente certo; o nível está alto demais.
-- **Prazo e geografia fazem o trabalho.** `promise_days`, estado do cliente,
-  estado do vendedor e o indicador de mesmo estado dominam. Valor da cesta,
+- **Prazo e geografia fazem o trabalho.** `promise_days`, estado do cliente e
+  estado do vendedor dominam. Valor da cesta,
   frete, peso, pagamento e categoria acrescentam pouco.
 - **O sinal não é estável o suficiente para prometer um lift fixo.** A AUC mensal
   na amostra varia de 0,61 a 0,79, e as origens móveis de 0,59 a 0,75.

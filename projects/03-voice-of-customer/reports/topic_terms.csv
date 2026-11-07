@@ -1,0 +1,73 @@
+topic,label,rank,term
+0,Product quality or not as described,1,produto
+0,Product quality or not as described,2,veio
+0,Product quality or not as described,3,nao
+0,Product quality or not as described,4,qualidade
+0,Product quality or not as described,5,cor
+0,Product quality or not as described,6,gostei
+0,Product quality or not as described,7,diferente
+0,Product quality or not as described,8,quero
+0,Product quality or not as described,9,foto
+0,Product quality or not as described,10,original
+0,Product quality or not as described,11,não gostei
+0,Product quality or not as described,12,comprei
+1,Not received (still waiting),1,recebi
+1,Not received (still waiting),2,não recebi
+1,Not received (still waiting),3,produto
+1,Not received (still waiting),4,ainda
+1,Not received (still waiting),5,recebi produto
+1,Not received (still waiting),6,ainda não
+1,Not received (still waiting),7,nao
+1,Not received (still waiting),8,produto ainda
+1,Not received (still waiting),9,nao recebi
+1,Not received (still waiting),10,saber
+1,Not received (still waiting),11,gostaria
+1,Not received (still waiting),12,comprei
+2,Incomplete order (missing items),1,comprei
+2,Incomplete order (missing items),2,recebi
+2,Incomplete order (missing items),3,apenas
+2,Incomplete order (missing items),4,dois
+2,Incomplete order (missing items),5,produtos
+2,Incomplete order (missing items),6,pedido
+2,Incomplete order (missing items),7,duas
+2,Incomplete order (missing items),8,nota
+2,Incomplete order (missing items),9,veio
+2,Incomplete order (missing items),10,somente
+2,Incomplete order (missing items),11,entregue
+2,Incomplete order (missing items),12,fiscal
+3,Delivery problem (promise or carrier),1,produto
+3,Delivery problem (promise or carrier),2,entregue
+3,Delivery problem (promise or carrier),3,entrega
+3,Delivery problem (promise or carrier),4,prazo
+3,Delivery problem (promise or carrier),5,dia
+3,Delivery problem (promise or carrier),6,chegou
+3,Delivery problem (promise or carrier),7,não entregue
+3,Delivery problem (promise or carrier),8,não chegou
+3,Delivery problem (promise or carrier),9,correios
+3,Delivery problem (promise or carrier),10,produto não
+3,Delivery problem (promise or carrier),11,momento
+3,Delivery problem (promise or carrier),12,nada
+4,Delay and long wait,1,produto
+4,Delay and long wait,2,estou
+4,Delay and long wait,3,recomendo
+4,Delay and long wait,4,loja
+4,Delay and long wait,5,entrega
+4,Delay and long wait,6,não recomendo
+4,Delay and long wait,7,compra
+4,Delay and long wait,8,aguardando
+4,Delay and long wait,9,comprei
+4,Delay and long wait,10,demora
+4,Delay and long wait,11,nunca
+4,Delay and long wait,12,vez
+5,"Wrong item, defect or return",1,produto
+5,"Wrong item, defect or return",2,veio
+5,"Wrong item, defect or return",3,comprei
+5,"Wrong item, defect or return",4,contato
+5,"Wrong item, defect or return",5,outro
+5,"Wrong item, defect or return",6,troca
+5,"Wrong item, defect or return",7,errado
+5,"Wrong item, defect or return",8,defeito
+5,"Wrong item, defect or return",9,chegou
+5,"Wrong item, defect or return",10,estou
+5,"Wrong item, defect or return",11,devolução
+5,"Wrong item, defect or return",12,loja

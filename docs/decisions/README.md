@@ -36,6 +36,7 @@ anything older than the last change.
 | [0005](0005-postgres-on-host-port-5433.md) | PostgreSQL runs on host port 5433 | Accepted |
 | [0006](0006-a-lane-is-a-pair-of-states.md) | Lateness is measured per seller-state to customer-state lane | Accepted |
 | [0007](0007-temporal-holdout-and-feature-allow-list.md) | The late-delivery model is judged on a temporal holdout with a feature allow-list | Accepted |
+| [0008](0008-review-corpus-and-topic-model.md) | Complaints, not all reviews, and a compositional topic comparison | Accepted |
 
 ## Format
 

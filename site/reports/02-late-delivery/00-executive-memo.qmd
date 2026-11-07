@@ -32,16 +32,16 @@ periods. **Use the ranking; do not promise the percentage.**
 - Flagging the **top 10% (3,215 orders)** captures **23.5% of all late orders**
   at **10.4% precision**, a **2.35× lift**. A customer-state baseline captures
   10.9% at the same capacity. At 5% capacity, precision is 10.8% and recall
-  12.2%; at 20%, precision is 9.5% and recall 42.9%.
+  12.5%; at 20%, precision is 9.5% and recall 42.9%.
 - **The model class is not settled.** Logistic regression won an inner
   validation period on average precision, but gradient boosting did slightly
-  better on the final holdout (AP 0.096, recall 27.5%). The gap is within noise.
+  better on the final holdout (AP 0.097, recall 28.4%). The gap is within noise.
   Treat the model as a promising ranker, not a finished choice.
 - **The level is not calibrated to the next period.** Mean predicted risk is
   6.38% against 4.42% observed, even though the calibration slope is close to
   one (1.02). The ranking is roughly right; the level is too high.
-- **Promise and geography do the work.** `promise_days`, customer state, seller
-  state and the same-state flag dominate. Basket value, freight, weight, payment
+- **Promise and geography do the work.** `promise_days`, customer state and seller
+  state dominate. Basket value, freight, weight, payment
   and category add little.
 - **The signal is not stable enough to promise a fixed lift.** Monthly AUC in the
   holdout ranges from 0.61 to 0.79, and rolling origins from 0.59 to 0.75.

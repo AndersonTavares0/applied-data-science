@@ -31,8 +31,8 @@ figures are, and `uv run python tasks.py train` rebuilds them.
   base rate**.
 - **The model class is not settled by this evidence.** Logistic regression won
   an inner validation period on average precision, but gradient boosting scored
-  slightly better on the final holdout (AP 0.096 vs 0.091; top-decile recall
-  27.5% vs 23.5%). The difference is within noise. The report shows both rather
+  slightly better on the final holdout (AP 0.097 vs 0.091; top-decile recall
+  28.4% vs 23.5%). The difference is within noise. The report shows both rather
   than declaring a winner from the test set.
 - **The score is a triage queue, not a probability.** The holdout late rate is
   4.42%, while the selected model's mean prediction is 6.38%. Its calibration
@@ -40,7 +40,7 @@ figures are, and `uv run python tasks.py train` rebuilds them.
   ranks reasonably and overpredicts the level. A deployed probability would
   need recalibration on recent, matured orders.
 - **Promise length and geography dominate.** Permutation importance ranks
-  `promise_days` first, then `customer_state`, `seller_state` and `same_state`.
+  `promise_days` first, then `customer_state` and `seller_state`.
   Basket value, freight, weight, payment method and category contribute little
   once those are known.
 - **The result is not a causal lever.** `promise_days` is the marketplace's own
@@ -122,7 +122,7 @@ predicting “not late” for every order is 95.6% accurate.
 | Model | ROC AUC | Avg. precision | Brier | Top-10% precision | Top-10% recall | Lift |
 |---|---:|---:|---:|---:|---:|---:|
 | Logistic regression (selected) | 0.708 | 0.091 | 0.0420 | 10.4% | 23.5% | 2.35× |
-| Gradient boosting | 0.704 | 0.096 | 0.0414 | 12.2% | 27.5% | 2.75× |
+| Gradient boosting | 0.705 | 0.097 | 0.0415 | 12.5% | 28.4% | 2.84× |
 | Constant (training prevalence) | — | — | 0.0425 | 4.0%* | 8.9%* | 0.89×* |
 | Customer-state rate | — | — | 0.0427 | 4.8% | 10.9% | 1.09× |
 
@@ -222,18 +222,17 @@ becomes inside the pipeline.
 
 | Feature | Drop in average precision |
 |---|---:|
-| `promise_days` | 0.033 |
-| `customer_state` | 0.024 |
-| `seller_state` | 0.006 |
-| `same_state` | 0.002 |
+| `promise_days` | 0.032 |
+| `customer_state` | 0.022 |
+| `seller_state` | 0.005 |
+| `seller_count` | 0.001 |
 | `avg_weight_grams` | 0.001 |
 | `items_value` | 0.001 |
-| `avg_photos_qty` | 0.001 |
 | `freight_share` | 0.001 |
+| `avg_photos_qty` | 0.001 |
 
 The list is short and it matches Project 01's finding. The promise is the
-strongest single input, and the two state fields plus their interaction carry
-most of the rest. Basket value, freight, weight, payment method and category add
+strongest single input, and geography carries most of the rest. Basket value, freight, weight, payment method and category add
 almost nothing once those are known. Category and purchase month have slightly
 negative drops, which means shuffling them did not hurt this holdout; they are
 not carrying signal here.
