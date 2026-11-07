@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR" xml:lang="pt-BR"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>02 · Modelo de atraso na entrega – Retail Analytics Portfolio</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-5794a8b9aef8032b13690810f19f5b31.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-673b95e394feefee4dcea13dd3a952c6.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-5794a8b9aef8032b13690810f19f5b31.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-79c03f229c8b8d28a1f37a0ac2d33506.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-dark-2b0ff35632f542c3d2dd2cb3eeccbf97.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../site_libs/bootstrap/bootstrap-79c03f229c8b8d28a1f37a0ac2d33506.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Nenhum resultado",
+    "search-matching-documents-text": "documentos correspondentes",
+    "search-copy-link-title": "Copiar link para a busca",
+    "search-hide-matches-text": "Esconder correspondências adicionais",
+    "search-more-match-text": "mais correspondência neste documento",
+    "search-more-matches-text": "mais correspondências neste documento",
+    "search-clear-button-title": "Limpar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Procurar"
+  }
+}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600&amp;family=Source+Sans+3:ital,wght@0,400;0,600;1,400&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&amp;display=swap">
+
+
+</head>
+
+<body class="nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Pular para o conteúdo principal</a><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          toggle.setAttribute("aria-checked", alternate ? "true" : "false");
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455).
+    // Not run on load: stylesheets are set before first paint there, and
+    // scrolling would undo the scroll to a URL fragment (#14973).
+    // The one pixel nudge keeps the reader where they were.
+    const refreshSafariScrollbar = () => {
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        const scrollY = window.scrollY;
+        window.scrollTo(0, scrollY > 0 ? scrollY - 1 : 1);
+        setTimeout(() => {
+          window.scrollTo(0, scrollY);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const queryPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const darkModeDefault = queryPrefersDark.matches;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      refreshSafariScrollbar();
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    queryPrefersDark.addEventListener("change", e => {
+      if(window.localStorage.getItem("quarto-color-scheme") !== null)
+        return;
+      const alternate = e.matches
+      toggleColorMode(alternate);
+      refreshSafariScrollbar();
+      localAlternateSentinel = e.matches ? 'alternate' : 'default'; // this is used alongside local storage!
+      toggleGiscusIfUsed(alternate, darkModeDefault);
+    });
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Site">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">Retail Analytics Portfolio</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Alternar de navegação" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../pt/index.html"> 
+<span class="menu-text">Início</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-projetos" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Projetos</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-projetos">    
+        <li>
+    <a class="dropdown-item" href="../../../pt/reports/01-retail-analytics/01-business-analytics.html">
+ <span class="dropdown-text">01 · Análise de varejo</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../pt/reports/01-retail-analytics/00-executive-memo.html">
+ <span class="dropdown-text">01 · Memorando de decisão</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../pt/reports/02-late-delivery/02-late-delivery.html">
+ <span class="dropdown-text">02 · Modelo de atraso</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../pt/reports/02-late-delivery/00-executive-memo.html">
+ <span class="dropdown-text">02 · Memorando de decisão</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../../pt/about.html"> 
+<span class="menu-text">Sobre</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../index.html"> 
+<span class="menu-text">English</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <button type="button" role="switch" aria-checked="false" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Alternar modo escuro" aria-label="Alternar modo escuro"><i class="bi"></i></button>
+</div>
+            <div id="quarto-search" class="" title="Procurar"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
+    <h2 id="toc-title">Nesta página</h2>
+   
+  <ul>
+  <li><a href="#resumo-executivo" id="toc-resumo-executivo" class="nav-link active" data-scroll-target="#resumo-executivo">Resumo executivo</a></li>
+  <li><a href="#o-contrato-de-atributos" id="toc-o-contrato-de-atributos" class="nav-link" data-scroll-target="#o-contrato-de-atributos">1. O contrato de atributos</a></li>
+  <li><a href="#desenho-da-avaliação" id="toc-desenho-da-avaliação" class="nav-link" data-scroll-target="#desenho-da-avaliação">2. Desenho da avaliação</a></li>
+  <li><a href="#resultados" id="toc-resultados" class="nav-link" data-scroll-target="#resultados">3. Resultados</a>
+  <ul class="collapse">
+  <li><a href="#capacidade-de-revisão" id="toc-capacidade-de-revisão" class="nav-link" data-scroll-target="#capacidade-de-revisão">Capacidade de revisão</a></li>
+  </ul></li>
+  <li><a href="#calibração-e-por-que-a-probabilidade-não-é-o-produto" id="toc-calibração-e-por-que-a-probabilidade-não-é-o-produto" class="nav-link" data-scroll-target="#calibração-e-por-que-a-probabilidade-não-é-o-produto">4. Calibração, e por que a probabilidade não é o produto</a></li>
+  <li><a href="#estabilidade-ao-longo-do-tempo" id="toc-estabilidade-ao-longo-do-tempo" class="nav-link" data-scroll-target="#estabilidade-ao-longo-do-tempo">5. Estabilidade ao longo do tempo</a></li>
+  <li><a href="#o-que-o-modelo-está-usando" id="toc-o-que-o-modelo-está-usando" class="nav-link" data-scroll-target="#o-que-o-modelo-está-usando">6. O que o modelo está usando</a></li>
+  <li><a href="#limitações" id="toc-limitações" class="nav-link" data-scroll-target="#limitações">7. Limitações</a></li>
+  <li><a href="#reprodução" id="toc-reprodução" class="nav-link" data-scroll-target="#reprodução">8. Reprodução</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content" tabindex="-1">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">02 · Modelo de atraso na entrega</h1>
+<p class="subtitle lead">O que se sabe no checkout, e o que só parece previsível depois</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Data de Publicação</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">novembro 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Este é o segundo projeto sobre o conjunto de dados de e-commerce brasileiro da Olist. O <a href="../../../pt/reports/01-retail-analytics/01-business-analytics.html">primeiro</a> mostrou que o atraso na entrega é o sinal mais forte de insatisfação do cliente no marketplace e que o atraso se concentra na rota São Paulo → Rio. Este projeto faz a pergunta voltada para a frente: <strong>no momento em que o pedido é feito, é possível ordenar os pedidos pelo risco de chegar atrasado?</strong></p>
+<p>Todo número abaixo vem de <code>projects/02-late-delivery</code>, treinado sobre o mart dbt <code>mart_order_features</code>. O modelo treinado não é versionado; as métricas e figuras são, e <code>uv run python tasks.py train</code> as reconstrói.</p>
+<hr>
+<section id="resumo-executivo" class="level2">
+<h2 class="anchored" data-anchor-id="resumo-executivo">Resumo executivo</h2>
+<ul>
+<li><strong>O ranking tem sinal, mas é moderado e instável entre períodos.</strong> Em uma amostra temporal de 32.150 pedidos entregues, o modelo logístico selecionado alcança <strong>ROC AUC 0,708</strong> (intervalo bootstrap de 95%: 0,695–0,720) e <strong>precisão média 0,091</strong> (0,083–0,101) contra uma taxa de atraso de 4,42%. Sinalizar os 10% de maior risco captura <strong>23,5% dos atrasos</strong> com <strong>precisão de 10,4% — 2,35× a taxa base</strong>.</li>
+<li><strong>A classe do modelo não está decidida por esta evidência.</strong> A regressão logística venceu um período interno de validação por precisão média, mas o gradient boosting foi levemente melhor na amostra final (precisão média 0,096 contra 0,091; recall no decil superior 27,5% contra 23,5%). A diferença está dentro do ruído. O relatório mostra os dois em vez de declarar um vencedor a partir do teste.</li>
+<li><strong>O score é uma fila de triagem, não uma probabilidade.</strong> A taxa de atraso da amostra é 4,42%, enquanto a previsão média do modelo selecionado é 6,38%. A inclinação de calibração é próxima de um (1,02), mas o intercepto é −0,35 na escala logit: o modelo ordena razoavelmente e superestima o nível. Uma probabilidade em produção precisaria ser recalibrada com pedidos recentes e maduros.</li>
+<li><strong>Prazo e geografia dominam.</strong> A importância por permutação coloca <code>promise_days</code> em primeiro lugar, seguido de <code>customer_state</code>, <code>seller_state</code> e <code>same_state</code>. Valor, frete, peso, pagamento e categoria acrescentam pouco depois disso.</li>
+<li><strong>O resultado não é uma alavanca causal.</strong> <code>promise_days</code> é a própria expectativa do marketplace sobre a dificuldade. Encurtá-lo não reduziria o atraso mecanicamente; a pergunta operacional do Projeto 01 sobre o corredor São Paulo → Rio continua sendo a causal.</li>
+</ul>
+<hr>
+</section>
+<section id="o-contrato-de-atributos" class="level2">
+<h2 class="anchored" data-anchor-id="o-contrato-de-atributos">1. O contrato de atributos</h2>
+<p>O modelo só pode usar informação que existe quando o pedido é feito. Isso é garantido por uma lista explícita de atributos permitidos em <code>projects/02-late-delivery/src/late_delivery/features.py</code>, e não por descartar algumas colunas óbvias: uma nova coluna do mart falha fechada até alguém adicioná-la de propósito.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Grupo</th>
+<th>Atributos</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Momento da compra</td>
+<td>mês, dia da semana, hora, indicador de fim de semana</td>
+</tr>
+<tr class="even">
+<td>O prazo</td>
+<td><code>promise_days</code> (data prometida − data da compra)</td>
+</tr>
+<tr class="odd">
+<td>Geografia</td>
+<td>estado do cliente, estado do vendedor, indicador de mesmo estado</td>
+</tr>
+<tr class="even">
+<td>Composição do pedido</td>
+<td>categoria, número de itens / produtos / vendedores, valor dos itens, frete, valor do pedido, participação do frete, peso, volume, fotos, dimensões ausentes</td>
+</tr>
+<tr class="odd">
+<td>Pagamento</td>
+<td>número de pagamentos, máximo de parcelas, indicadores de cartão / boleto / voucher</td>
+</tr>
+</tbody>
+</table>
+<p>Ficam de fora, deliberadamente: horário de aprovação, entrega à transportadora, data de entrega, duração da entrega, dias de atraso, o próprio rótulo, a nota da avaliação e o status do pedido. Todos são observados depois do checkout. O tempo de chegada preveria o atraso quase perfeitamente, e é exatamente por isso que incluí-lo tornaria o resultado inútil como previsão e impossível de usar no momento da decisão.</p>
+<p><code>order_status</code> e <code>delivered_to_customer_at</code> existem no mart apenas para decidir se o rótulo de treino era observável no corte. Eles são proibidos na matriz de atributos, e um teste unitário garante isso.</p>
+<p>Duas consequências aparecem no mart. <code>seller_state</code> é nulo em 1.285 pedidos com mais de um vendedor, porque um pedido multi-vendedor não tem uma origem única; <code>same_state</code> é nulo nas mesmas linhas. Ambos são imputados dentro do pipeline, não adivinhados. Para pedidos com várias categorias, o mart mantém a categoria mais frequente e desempata alfabeticamente.</p>
+<hr>
+</section>
+<section id="desenho-da-avaliação" class="level2">
+<h2 class="anchored" data-anchor-id="desenho-da-avaliação">2. Desenho da avaliação</h2>
+<p><strong>Alvo:</strong> <code>is_late</code>, definido no Projeto 01 como a data de entrega estritamente posterior à data prometida. Pedidos sem data de entrega observada não têm rótulo e ficam de fora. Isso não é o mesmo que “nunca entregue”: os 2.965 pedidos excluídos estão majoritariamente em trânsito ou cancelados no fim do conjunto (1.107 enviados, 619 cancelados, 609 indisponíveis, 314 faturados, 301 em processamento, 8 entregues com data incompleta e alguns status anteriores).</p>
+<p><strong>Divisão:</strong> compras antes de <strong>2018-04-01</strong> formam o período de treino; compras a partir dessa data formam o teste (32.150 pedidos, 4,42% atrasados). Uma divisão aleatória colocaria os mesmos meses dos dois lados e deixaria o modelo aprender um backlog específico em vez de um padrão.</p>
+<p><strong>Maturação do rótulo:</strong> um pedido de treino precisa ter sido comprado e entregue antes do corte. Sem essa regra, 3.852 pedidos comprados antes de abril mas entregues depois contribuiriam com rótulos que não existiam na data de implantação. O conjunto de treino maduro tem <strong>60.474 pedidos e taxa de atraso de 5,97%</strong>.</p>
+<p><strong>Seleção de modelo:</strong> o período de treino é dividido novamente em <strong>2018-01-01</strong>. Os modelos são ajustados antes dessa data (41.202 pedidos) e comparados em janeiro–março de 2018 (16.783 pedidos, 6,91% atrasados). A precisão média seleciona a regressão logística (0,127 contra 0,101 do boosting). O modelo selecionado é reajustado em todo o treino maduro e avaliado uma única vez na amostra de abril–agosto. Os dois modelos são reportados no teste como checagem de sensibilidade, não para re-selecionar.</p>
+<p><strong>Métricas:</strong> ROC AUC e precisão média para ranking; Brier e resumo de calibração para probabilidades; precisão, recall e lift em capacidades de 5%, 10% e 20% de revisão. A taxa base é 4,42%, então acurácia é inútil aqui — prever “não atrasado” para todo pedido acerta 95,6%.</p>
+<hr>
+</section>
+<section id="resultados" class="level2">
+<h2 class="anchored" data-anchor-id="resultados">3. Resultados</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Modelo</th>
+<th style="text-align: right;">ROC AUC</th>
+<th style="text-align: right;">Precisão média</th>
+<th style="text-align: right;">Brier</th>
+<th style="text-align: right;">Precisão topo 10%</th>
+<th style="text-align: right;">Recall topo 10%</th>
+<th style="text-align: right;">Lift</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Regressão logística (selecionada)</td>
+<td style="text-align: right;">0,708</td>
+<td style="text-align: right;">0,091</td>
+<td style="text-align: right;">0,0420</td>
+<td style="text-align: right;">10,4%</td>
+<td style="text-align: right;">23,5%</td>
+<td style="text-align: right;">2,35×</td>
+</tr>
+<tr class="even">
+<td>Gradient boosting</td>
+<td style="text-align: right;">0,704</td>
+<td style="text-align: right;">0,096</td>
+<td style="text-align: right;">0,0414</td>
+<td style="text-align: right;">12,2%</td>
+<td style="text-align: right;">27,5%</td>
+<td style="text-align: right;">2,75×</td>
+</tr>
+<tr class="odd">
+<td>Constante (prevalência de treino)</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">0,0425</td>
+<td style="text-align: right;">4,0%*</td>
+<td style="text-align: right;">8,9%*</td>
+<td style="text-align: right;">0,89×*</td>
+</tr>
+<tr class="even">
+<td>Taxa por estado do cliente</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">0,0427</td>
+<td style="text-align: right;">4,8%</td>
+<td style="text-align: right;">10,9%</td>
+<td style="text-align: right;">1,09×</td>
+</tr>
+</tbody>
+</table>
+<p>* Um score constante não ordena; os números do decil superior são uma fatia arbitrária de um empate e aparecem apenas para tornar a comparação explícita.</p>
+<p>Os dois modelos são próximos o suficiente para que a amostra não os distinga. A regressão logística selecionada tem Brier levemente melhor que a constante (0,0420 contra 0,0425), mas sua vantagem no ranking é o resultado real. O gradient boosting é melhor no topo da fila; a regressão logística é mais fácil de interpretar e foi escolhida sem olhar o teste. Uma equipe de produção deveria tratar a classe do modelo como uma escolha aberta e decidi-la com avaliação móvel, não com este único período.</p>
+<div id="fig-pr" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Curvas de precisão-recall da regressão logística e do gradient boosting na amostra temporal de 32.150 pedidos. Ambas ficam acima da linha de taxa base de 4,42 por cento, com o gradient boosting levemente acima no topo do ranking." data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../../reports/02-late-delivery/figures/pt/precision_recall.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Curvas de precisão-recall da regressão logística e do gradient boosting na amostra temporal de 32.150 pedidos. Ambas ficam acima da linha de taxa base de 4,42 por cento, com o gradient boosting levemente acima no topo do ranking.">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;1: Curva de precisão–recall dos dois modelos na amostra temporal. A linha pontilhada é a taxa base de 4,42%.
+</figcaption>
+</figure>
+</div>
+<section id="capacidade-de-revisão" class="level3">
+<h3 class="anchored" data-anchor-id="capacidade-de-revisão">Capacidade de revisão</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 17%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Capacidade</th>
+<th style="text-align: right;">Pedidos revisados</th>
+<th style="text-align: right;">Atrasos encontrados</th>
+<th style="text-align: right;">Precisão</th>
+<th style="text-align: right;">Recall</th>
+<th style="text-align: right;">Lift</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>5%</td>
+<td style="text-align: right;">1.608</td>
+<td style="text-align: right;">174</td>
+<td style="text-align: right;">10,8%</td>
+<td style="text-align: right;">12,2%</td>
+<td style="text-align: right;">2,45×</td>
+</tr>
+<tr class="even">
+<td>10%</td>
+<td style="text-align: right;">3.215</td>
+<td style="text-align: right;">334</td>
+<td style="text-align: right;">10,4%</td>
+<td style="text-align: right;">23,5%</td>
+<td style="text-align: right;">2,35×</td>
+</tr>
+<tr class="odd">
+<td>20%</td>
+<td style="text-align: right;">6.430</td>
+<td style="text-align: right;">610</td>
+<td style="text-align: right;">9,5%</td>
+<td style="text-align: right;">42,9%</td>
+<td style="text-align: right;">2,15×</td>
+</tr>
+</tbody>
+</table>
+<p>A fila degrada de forma suave: dobrar o orçamento de 10% para 20% encontra mais 276 atrasos, mas a precisão cai de 10,4% para 9,5%. A capacidade certa é uma decisão de custo que o conjunto não permite tomar.</p>
+<p>Intervalos bootstrap (500 reamostragens) colocam o ponto de 10% em 9,3–11,5% de precisão, 21,6–25,6% de recall e 2,16–2,56× de lift. Esses intervalos descrevem o ruído amostral dentro desta amostra; não cobrem a mudança de regime entre períodos.</p>
+<hr>
+</section>
+</section>
+<section id="calibração-e-por-que-a-probabilidade-não-é-o-produto" class="level2">
+<h2 class="anchored" data-anchor-id="calibração-e-por-que-a-probabilidade-não-é-o-produto">4. Calibração, e por que a probabilidade não é o produto</h2>
+<div id="fig-cal" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Gráfico de calibração comparando taxas previstas e observadas de atraso em dez faixas de score. Os dois modelos preveem taxas maiores do que as observadas na amostra, especialmente nas faixas mais altas." data-fig-align="center">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-cal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../../reports/02-late-delivery/figures/pt/calibration.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Gráfico de calibração comparando taxas previstas e observadas de atraso em dez faixas de score. Os dois modelos preveem taxas maiores do que as observadas na amostra, especialmente nas faixas mais altas.">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-cal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;2: Calibração na amostra temporal. A diagonal tracejada é a calibração perfeita.
+</figcaption>
+</figure>
+</div>
+<p>A taxa de atraso da amostra é 4,42%; o modelo selecionado prevê 6,38% em média. Uma recalibração logística ajustada na amostra dá intercepto <strong>−0,35</strong> e inclinação <strong>1,02</strong> (escala logit). A inclinação diz que o ranking está aproximadamente certo; o intercepto diz que o nível está alto demais. É exatamente o que um modelo treinado com 5,97% de atraso faz quando o período seguinte roda a 4,42%.</p>
+<p>A leitura prática: <strong>o score é um ranking, não uma probabilidade.</strong> Uma equipe pode usar “os 3.000 pedidos de maior risco neste mês” sem acreditar no percentual de um pedido individual. Se uma probabilidade for necessária para uma decisão voltada ao cliente, ela precisa ser recalibrada com pedidos entregues recentes e monitorada conforme o regime muda. A versão anterior desta análise afirmava que o modelo estava muito descalibrado; depois de corrigir o vazamento de maturação do rótulo, a inclinação fica próxima de um e o Brier é levemente melhor que uma constante. A diferença de nível permanece, mas é menor do que parecia.</p>
+<hr>
+</section>
+<section id="estabilidade-ao-longo-do-tempo" class="level2">
+<h2 class="anchored" data-anchor-id="estabilidade-ao-longo-do-tempo">5. Estabilidade ao longo do tempo</h2>
+<p>Uma única amostra pode esconder o quanto o resultado depende do período. A abertura mensal mostra variação real:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 17%">
+<col style="width: 17%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Mês da compra</th>
+<th style="text-align: right;">Pedidos</th>
+<th style="text-align: right;">Taxa de atraso</th>
+<th style="text-align: right;">ROC AUC</th>
+<th style="text-align: right;">Precisão média</th>
+<th style="text-align: right;">Recall topo 10%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2018-04</td>
+<td style="text-align: right;">6.798</td>
+<td style="text-align: right;">4,50%</td>
+<td style="text-align: right;">0,780</td>
+<td style="text-align: right;">0,153</td>
+<td style="text-align: right;">41,8%</td>
+</tr>
+<tr class="even">
+<td>2018-05</td>
+<td style="text-align: right;">6.749</td>
+<td style="text-align: right;">6,56%</td>
+<td style="text-align: right;">0,690</td>
+<td style="text-align: right;">0,130</td>
+<td style="text-align: right;">26,9%</td>
+</tr>
+<tr class="odd">
+<td>2018-06</td>
+<td style="text-align: right;">6.096</td>
+<td style="text-align: right;">1,16%</td>
+<td style="text-align: right;">0,790</td>
+<td style="text-align: right;">0,056</td>
+<td style="text-align: right;">35,2%</td>
+</tr>
+<tr class="even">
+<td>2018-07</td>
+<td style="text-align: right;">6.156</td>
+<td style="text-align: right;">3,38%</td>
+<td style="text-align: right;">0,638</td>
+<td style="text-align: right;">0,067</td>
+<td style="text-align: right;">18,3%</td>
+</tr>
+<tr class="odd">
+<td>2018-08</td>
+<td style="text-align: right;">6.351</td>
+<td style="text-align: right;">6,19%</td>
+<td style="text-align: right;">0,611</td>
+<td style="text-align: right;">0,087</td>
+<td style="text-align: right;">11,7%</td>
+</tr>
+</tbody>
+</table>
+<p>A precisão média acompanha a taxa de atraso: junho parece fraco em parte porque havia quase nada para encontrar. O padrão mais preocupante é julho–agosto, quando a AUC cai para 0,61–0,64 e o decil superior captura apenas 12–18% dos atrasos.</p>
+<p>A avaliação com origem móvel conta a mesma história em uma janela maior. Em cada origem o modelo é treinado apenas com rótulos maduros antes daquela data e avaliado nos três meses seguintes:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Origem</th>
+<th style="text-align: right;">Pedidos de treino</th>
+<th style="text-align: right;">Pedidos de teste</th>
+<th style="text-align: right;">Taxa de atraso no teste</th>
+<th style="text-align: right;">ROC AUC</th>
+<th style="text-align: right;">Precisão média</th>
+<th style="text-align: right;">Recall topo 10%</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2017-07</td>
+<td style="text-align: right;">13.111</td>
+<td style="text-align: right;">12.215</td>
+<td style="text-align: right;">3,37%</td>
+<td style="text-align: right;">0,615</td>
+<td style="text-align: right;">0,059</td>
+<td style="text-align: right;">20,1%</td>
+</tr>
+<tr class="even">
+<td>2017-10</td>
+<td style="text-align: right;">24.833</td>
+<td style="text-align: right;">17.279</td>
+<td style="text-align: right;">8,69%</td>
+<td style="text-align: right;">0,586</td>
+<td style="text-align: right;">0,111</td>
+<td style="text-align: right;">14,2%</td>
+</tr>
+<tr class="odd">
+<td>2018-01</td>
+<td style="text-align: right;">41.202</td>
+<td style="text-align: right;">20.628</td>
+<td style="text-align: right;">12,89%</td>
+<td style="text-align: right;">0,675</td>
+<td style="text-align: right;">0,245</td>
+<td style="text-align: right;">25,0%</td>
+</tr>
+<tr class="even">
+<td>2018-04</td>
+<td style="text-align: right;">60.474</td>
+<td style="text-align: right;">19.643</td>
+<td style="text-align: right;">4,17%</td>
+<td style="text-align: right;">0,752</td>
+<td style="text-align: right;">0,119</td>
+<td style="text-align: right;">35,1%</td>
+</tr>
+</tbody>
+</table>
+<p>O ranking é positivo em todas as janelas, mas varia de fraco (AUC 0,59) a útil (AUC 0,75). Essa é a incerteza honesta em torno de um número de manchete, e argumenta por monitoramento em vez de uma alegação única de implantação.</p>
+<hr>
+</section>
+<section id="o-que-o-modelo-está-usando" class="level2">
+<h2 class="anchored" data-anchor-id="o-que-o-modelo-está-usando">6. O que o modelo está usando</h2>
+<p>A importância por permutação embaralha um atributo bruto por vez e mede a queda na precisão média na amostra de teste. Embaralhar no nível do atributo bruto mantém uma variável categórica como um conceito, em vez das dezenas de colunas one-hot que ela vira dentro do pipeline.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Atributo</th>
+<th style="text-align: right;">Queda na precisão média</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>promise_days</code></td>
+<td style="text-align: right;">0,033</td>
+</tr>
+<tr class="even">
+<td><code>customer_state</code></td>
+<td style="text-align: right;">0,024</td>
+</tr>
+<tr class="odd">
+<td><code>seller_state</code></td>
+<td style="text-align: right;">0,006</td>
+</tr>
+<tr class="even">
+<td><code>same_state</code></td>
+<td style="text-align: right;">0,002</td>
+</tr>
+<tr class="odd">
+<td><code>avg_weight_grams</code></td>
+<td style="text-align: right;">0,001</td>
+</tr>
+<tr class="even">
+<td><code>items_value</code></td>
+<td style="text-align: right;">0,001</td>
+</tr>
+<tr class="odd">
+<td><code>avg_photos_qty</code></td>
+<td style="text-align: right;">0,001</td>
+</tr>
+<tr class="even">
+<td><code>freight_share</code></td>
+<td style="text-align: right;">0,001</td>
+</tr>
+</tbody>
+</table>
+<p>A lista é curta e coincide com a conclusão do Projeto 01. O prazo é o insumo mais forte, e os dois campos de estado mais a interação entre eles carregam quase todo o resto. Valor da cesta, frete, peso, forma de pagamento e categoria acrescentam quase nada depois disso. Categoria e mês da compra têm quedas levemente negativas, o que significa que embaralhá-los não prejudicou esta amostra; eles não carregam sinal aqui.</p>
+<p>Isso <strong>não</strong> significa “aumente o prazo e o atraso desaparece”. O Projeto 01 mostrou que o prazo é definido por rota e é mais curto no corredor São Paulo → Rio do que em rotas mais longas; <code>promise_days</code> é em parte a própria expectativa do marketplace sobre a dificuldade. O modelo explora essa expectativa, não identifica uma alavanca que possa ser mudada de forma independente. A pergunta causal continua sendo a operacional do Projeto 01: por que a travessia demora tanto.</p>
+<hr>
+</section>
+<section id="limitações" class="level2">
+<h2 class="anchored" data-anchor-id="limitações">7. Limitações</h2>
+<ul>
+<li><strong>Uma amostra, e um regime em movimento.</strong> O período de teste contém o backlog de fevereiro/março de 2018 e a melhora abrupta depois dele. Os resultados mensais e de origem móvel mostram AUC de 0,59 a 0,75. Uma decisão de produção precisa de uma avaliação móvel mais longa, não desta única divisão.</li>
+<li><strong>Os pedidos excluídos não são uma amostra aleatória.</strong> 2.965 pedidos não têm rótulo de atraso observável. A maioria está em trânsito ou cancelada no fim do conjunto. O modelo é avaliado em pedidos entregues, então não diz nada sobre se um pedido cancelado teria atrasado.</li>
+<li><strong>Sem identificador de transportadora ou armazém.</strong> O conjunto para no vendedor e no estado. A causa operacional mais plausível do atraso, portanto, não está no modelo.</li>
+<li><strong>O rótulo é a promessa, não a expectativa do cliente.</strong> Um pedido pode estar “atrasado” contra uma promessa agressiva e ainda chegar quando o cliente esperava. O Projeto 01 mostra que a diferença de avaliação é real, mas o rótulo herda a definição da promessa.</li>
+<li><strong>Pedidos multi-vendedor perdem a origem.</strong> 1.285 pedidos não têm um estado de vendedor único. A imputação os mantém na avaliação, mas enfraquece a geografia nessas linhas.</li>
+<li><strong>A importância é associacional.</strong> Embaralhar <code>promise_days</code> quebra sua correlação com a dificuldade da rota, então a queda não é o efeito causal de mudar o prazo.</li>
+<li><strong>Sem modelo de custo.</strong> O conjunto não tem custo de intervenção, valor de reembolso ou margem. A abordagem por capacidade evita inventar um; uma implantação real escolheria a capacidade comparando o custo de revisar um pedido com o custo de um atraso.</li>
+<li><strong>Sem implantação nem monitoramento.</strong> Esta é uma avaliação offline. Um score em produção precisaria de checagem de deriva na taxa de atraso, na distribuição de prazos e na composição de estados, além de recalibração.</li>
+</ul>
+<hr>
+</section>
+<section id="reprodução" class="level2">
+<h2 class="anchored" data-anchor-id="reprodução">8. Reprodução</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python tasks.py db-up</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python tasks.py data</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python tasks.py load</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python tasks.py dbt-build</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python tasks.py train</span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>train</code> grava <code>projects/02-late-delivery/reports/model_metrics.json</code>, a tabela de importância por permutação e as duas figuras acima. O contrato de atributos, divisão, seleção e avaliação têm testes em <code>projects/02-late-delivery/tests/test_modeling.py</code>, incluindo checagens de que nenhuma coluna proibida pós-compra entra na lista e de que rótulos em trânsito ficam fora do treino.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const toggle = window.document.createElement('button');
+      toggle.type = "button";
+      toggle.setAttribute("role", "switch");
+      toggle.setAttribute("aria-checked", "false");
+      toggle.classList.add('top-right');
+      toggle.classList.add('quarto-color-scheme-toggle');
+      toggle.setAttribute("aria-label", "Alternar modo escuro");
+      toggle.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      toggle.appendChild(i);
+      // Put the toggle in a landmark of its own, so that landmark navigation
+      // can reach it.
+      //
+      // The container is always a fresh direct child of body, and the toggle is
+      // never moved into page furniture that the theme or the author controls.
+      // The toggle is positioned against the page, so any ancestor that
+      // establishes a containing block captures it: a positioned element or a
+      // grid for position: absolute, and transform, filter, will-change or
+      // contain for position: fixed. A direct child of body has none of these
+      // to inherit, and the shift when one appears is silent and visual.
+      //
+      // ARIA says a document should have at most one banner, and axe reports a
+      // duplicate whether or not the banners carry distinct labels. So use a
+      // header when the page has no banner yet, and a named region otherwise.
+      //
+      // A header is a banner wherever it sits, unless it is inside sectioning
+      // content, so this cannot just look at the children of body: a custom
+      // page layout wraps the title block header in a plain div. An explicit
+      // role="banner" always counts.
+      const sectioning = 'article, aside, main, nav, section, [role="article"], [role="complementary"], [role="main"], [role="navigation"], [role="region"]';
+      const hasBanner = Array.from(
+        window.document.querySelectorAll('header:not([role]), [role="banner"]')
+      ).some(function(el) {
+        return el.hasAttribute("role") || el.closest(sectioning) === null;
+      });
+      const container = window.document.createElement(hasBanner ? "div" : "header");
+      if (hasBanner) {
+        container.setAttribute("role", "region");
+        container.setAttribute("aria-label", "Alternar modo escuro");
+      }
+      container.classList.add('quarto-color-scheme-toggle-container');
+      container.appendChild(toggle);
+      window.document.body.appendChild(container);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiada");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiada");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/AndersonTavares0\.github\.io\/ds-portfolio\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+          if (!link.classList.contains('no-external-icon')) {
+          }
+        }
+      }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
+          if (lineIds.length > 0) {
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            placeBand(gutterDiv, el, lastEl);
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Código deslocável","output":"Saída deslocável"};
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Built with Quarto. Data © Olist.</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="https://github.com/AndersonTavares0/ds-portfolio">
+<p>GitHub</p>
+</a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

@@ -333,6 +333,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="./reports/01-retail-analytics/00-executive-memo.html">
  <span class="dropdown-text">01 · Decision memo</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="./reports/02-late-delivery/02-late-delivery.html">
+ <span class="dropdown-text">02 · Late-delivery model</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./reports/02-late-delivery/00-executive-memo.html">
+ <span class="dropdown-text">02 · Decision memo</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item">
@@ -393,17 +401,20 @@ PostgreSQL, dbt, SQL, Python, Quarto
 </article>
 <article class="project">
 <div class="project-seq">
-02<span class="project-status status-wip">In progress</span>
+02<span class="project-status status-published">Published</span>
 </div>
 <div class="project-detail">
 <h3 class="anchored">
 At the moment of purchase, can we tell which orders will arrive late?
 </h3>
 <p>
-A cost-sensitive classifier that only uses features available when the order is placed, so it cannot quietly learn the answer it is meant to predict.
+A classifier restricted to features available at checkout, evaluated on a temporal holdout. The riskiest 10% of orders carry 2.35× their share of late deliveries; rolling-origin checks show the signal is real but variable, and the score is a ranking rather than a calibrated probability.
 </p>
 <p class="project-stack">
 Python, pandas, scikit-learn
+</p>
+<p class="project-links">
+<a href="./reports/02-late-delivery/02-late-delivery.html">Read the analysis</a> <a href="./reports/02-late-delivery/00-executive-memo.html">One-page decision memo</a>
 </p>
 </div>
 </article>
