@@ -33,10 +33,11 @@ The report recommends investigating Rio de Janeiro, where 12.10% of 12,353 deliv
 
 ## What Project 02 found
 
-A model restricted to what is known at checkout can rank orders by late-delivery risk, but it cannot yet produce a calibrated probability.
+A model restricted to what is known at checkout can rank orders by late-delivery risk, but it cannot yet produce a stable probability.
 
-- **The ranking works.** On 32,150 orders purchased after 2018-04-01, logistic regression reaches ROC AUC 0.724 and average precision 0.105 against a 4.42% base rate. The riskiest 10% captures 28% of all late orders at 12.4% precision — 2.8× the base rate.
-- **The probability does not.** The late rate fell from 7.95% before the split to 4.42% after it, so the model overpredicts (mean 9.0% against 4.4% observed) and its Brier score is slightly worse than a constant. The report presents the score as a triage queue, not a risk percentage.
+- **The ranking has signal, and its stability is bounded.** On 32,150 orders purchased after 2018-04-01, the selected logistic model reaches ROC AUC 0.708 (95% bootstrap interval 0.695–0.720) and average precision 0.091 (0.083–0.101) against a 4.42% base rate. The riskiest 10% captures 23.5% of late orders at 10.4% precision — 2.35× the base rate. Rolling origins range from AUC 0.59 to 0.75.
+- **Training labels must have matured.** Orders purchased before the cutoff but delivered after it are excluded from training, so the model learns only outcomes that were observable on the deployment date. That leaves 60,474 training orders at 5.97% late.
+- **The probability is shifted, not broken.** Mean predicted risk is 6.38% against 4.42% observed; the calibration slope is 1.02 and the intercept −0.35. The score is still a triage queue, not a risk percentage.
 - **The signal is the promise and the geography.** Permutation importance ranks `promise_days` first, then customer state, seller state and the same-state flag. Basket value, freight, weight, payment and category add little.
 
 The full analysis is in [Project 02](https://AndersonTavares0.github.io/ds-portfolio/reports/02-late-delivery/02-late-delivery.html) and its [decision memo](https://AndersonTavares0.github.io/ds-portfolio/reports/02-late-delivery/00-executive-memo.html).

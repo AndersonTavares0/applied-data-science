@@ -245,8 +245,10 @@ models:
       before `is_late` is knowable at checkout: purchase calendar, destination
       and origin state, product and payment attributes, and the promise length.
       `is_late` and `days_late` are the label and are never used as features.
-      Orders that were never delivered have a NULL label and are excluded from
-      training and evaluation.
+      `order_status` and `delivered_to_customer_at` are outcome metadata, also
+      never features; the timestamp is used only to require that a training label
+      existed at the model cutoff. Orders without an observed delivery timestamp
+      have a NULL label and are excluded from training and evaluation.
     columns:
       - name: order_id
         data_tests:
@@ -262,8 +264,14 @@ models:
           the business actually controls.
         data_tests:
           - not_null
+      - name: order_status
+        description: "Olist order status at extraction. Outcome metadata, never a model feature."
+      - name: delivered_to_customer_at
+        description: >
+          Delivery timestamp. Outcome metadata, never a model feature; used only
+          to require label maturity before the training cutoff.
       - name: is_late
-        description: "TRUE when delivered after the promised date. NULL when never delivered."
+        description: "TRUE when delivered after the promised date. NULL when no delivery timestamp is observed."
         data_tests:
           - accepted_values:
               arguments:

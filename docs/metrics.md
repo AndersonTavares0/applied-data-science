@@ -247,49 +247,78 @@ the orders table would count the freight once per item.
 late be ranked using only information that exists at checkout?
 
 **Target.** `mart_order_features.is_late`, the same whole-day definition used in
-Project 01. Orders that were never delivered have a null label and are excluded
-from training and evaluation, leaving 96,476 eligible orders.
+Project 01. An order needs an observed delivery timestamp to have a label. The
+2,965 orders without one are excluded from training and evaluation; they are not
+all “never delivered” (1,107 shipped, 619 cancelled, 609 unavailable, 314
+invoiced, 301 processing, 8 delivered with an incomplete timestamp, and a few
+earlier statuses).
 
-**Population and split.** Delivered orders purchased **before 2018-04-01** train
-(64,326 orders, 7.95% late); orders purchased **on or after** that date test
-(32,150 orders, 4.42% late). The split is temporal, not random: a random split
-would place the same months on both sides and leak period-specific backlog into
-the score. The two periods do not overlap.
+**Population and split.** Orders purchased before **2018-04-01** train; orders
+purchased on or after that date test (32,150 orders, 4.42% late). The split is
+temporal and non-overlapping: a random split would put the same months on both
+sides and leak period-specific backlog into the score.
+
+**Label maturity.** A training order must have been both purchased and delivered
+before 2018-04-01. An order purchased in March but delivered in May did not have
+an observable label on the deployment date, so it cannot train a model deployed
+then. That rule excludes 3,852 in-flight orders and leaves **60,474 mature
+training orders, 5.97% late**.
+
+**Model selection.** The mature training period is split at **2018-01-01**:
+41,202 orders before it fit the models, 16,783 in January–March validate them
+(6.91% late). Average precision selects logistic regression (0.127 vs 0.101).
+The selected model is refitted on all 60,474 training orders and evaluated once
+on the April–August holdout. Both models are still reported on the holdout as a
+sensitivity check; they are not used to re-select.
 
 **Feature policy.** The model uses an explicit allow-list in
 `late_delivery.features.FEATURES`: purchase timing, promised days, customer and
 seller state, the same-state flag, order composition and payment terms. Anything
 observed after checkout — approval, carrier hand-off, delivery date, delivery
-duration, days late, review score — is forbidden. A new mart column is not a
-model feature until it is added to the allow-list on purpose.
+duration, days late, review score, order status — is forbidden. `order_status`
+and `delivered_to_customer_at` exist in the mart only to enforce label maturity.
+A new mart column is not a model feature until it is added to the allow-list on
+purpose.
 
 **Metrics.**
 
 - **ROC AUC** — probability that a randomly chosen late order scores above a
   randomly chosen on-time order. Insensitive to the base rate, useful for
-  comparing rankers, not for deciding a threshold.
+  comparing rankers, not for choosing a threshold.
 - **Average precision (AP)** — area under the precision–recall curve. With a 4.4%
   base rate this is the honest summary of ranking quality; a constant score has
   AP equal to the base rate.
 - **Brier score** — mean squared error of the predicted probability. It measures
   calibration and discrimination together, so it is only meaningful if the
   predicted probability is meant to be believed.
-- **Top-decile precision, recall and lift** — at a capacity of 10% of test
-  orders, the share of flagged orders that were late, the share of all late
-  orders captured, and precision divided by the test base rate. This is the
-  operational framing: a fixed review budget, not a fixed probability threshold.
-- **Calibration table** — observed late rate per decile of predicted
-  probability. A well-calibrated model lies on the diagonal.
+- **Capacity precision, recall and lift** — at 5%, 10% and 20% of test orders,
+  the share of flagged orders that were late, the share of all late orders
+  captured, and precision divided by the test base rate. This is the operational
+  framing: a fixed review budget, not a fixed probability threshold.
+- **Bootstrap interval** — percentile interval over 500 resamples of the test
+  rows, reported for AUC, AP, Brier and the top-decile metrics. It describes
+  sampling noise within this holdout, not regime change between periods.
+- **Calibration intercept and slope** — a logistic regression of the outcome on
+  the predicted logit. Slope measures whether the ranking is stretched; intercept
+  measures whether the level is shifted.
+- **Rolling origin** — refit at 2017-07, 2017-10, 2018-01 and 2018-04 using only
+  labels matured before each origin, then score the next three months. This is
+  the stability check a single holdout cannot provide.
 
-**The base-rate shift is part of the result, not a footnote.** The late rate fell
-from 7.95% to 4.42% at the split. The model therefore overpredicts on the
-holdout, its Brier score is slightly worse than a constant, and its probabilities
-must not be read as calibrated risks. The ranking metrics (AUC, AP, top-decile
-lift) remain informative because they do not assume the predicted level is
-correct. Recalibration on the holdout would use the test period to fix the test
-period and is not reported.
+**Results on the holdout.** Selected logistic: AUC 0.708 (0.695–0.720), AP 0.091
+(0.083–0.101), Brier 0.0420, top-decile precision 10.4% (9.3–11.5%), recall
+23.5% (21.6–25.6%) and lift 2.35× (2.16–2.56×). Gradient boosting scores AP
+0.096 and top-decile recall 27.5%, so the model class is not settled by this
+holdout.
+
+**Calibration is a level shift, not a broken ranking.** Mean prediction is 6.38%
+against 4.42% observed; calibration slope is 1.02 and intercept −0.35. The
+holdout's Brier (0.0420) is slightly better than a constant (0.0425), so the
+older “worse than a constant” claim no longer holds after the label-maturity
+fix. Probabilities still must not be read as risks for the current regime.
 
 All Project 02 numbers are generated by `uv run python tasks.py train`, which
-writes `projects/02-late-delivery/reports/model_metrics.json` and the
+writes `projects/02-late-delivery/reports/model_metrics.json`, the capacity
+table, bootstrap intervals, monthly and rolling-origin results, and the
 permutation-importance table. The report quotes that file; it does not restate
 numbers by hand.

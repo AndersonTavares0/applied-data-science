@@ -144,9 +144,14 @@ delivered, and the denominator is published next to the rate.
 
 ### `mart_order_features` — one row per order, for Project 02
 
-The model-ready grain: `order_id`, `purchased_at`, and the label `is_late` with
-`days_late`. `is_late` is **NULL for the 2,965 orders that were never delivered**;
-they are excluded from training and evaluation rather than counted as on-time.
+The model-ready grain: `order_id`, `purchased_at`, delivery-outcome metadata
+(`order_status`, `delivered_to_customer_at`), and the label `is_late` with
+`days_late`. `is_late` is **NULL for 2,965 orders without an observed delivery
+timestamp**. They are mostly in flight or cancelled at the end of the dataset,
+not all “never delivered”, and are excluded from training and evaluation rather
+than counted as on-time. `order_status` and `delivered_to_customer_at` are
+forbidden model features; they exist only to enforce label maturity at the
+training cutoff.
 
 Pre-purchase columns only, because the model must be usable at checkout:
 
@@ -154,16 +159,16 @@ Pre-purchase columns only, because the model must be usable at checkout:
   `purchase_weekend`, `promise_days` (promised date − purchase date).
 - **Geography:** `customer_state`, `seller_state` (NULL when an order has more
   than one seller), `same_state` (NULL for those rows).
-- **Composition:** `category` (alphabetically first English category for
-  multi-item orders), `item_count`, `product_count`, `seller_count`,
+- **Composition:** `category` (most frequent English category for multi-item
+  orders, ties broken alphabetically), `item_count`, `product_count`, `seller_count`,
   `items_value`, `freight_value`, `order_value`, `freight_share`,
   `avg_weight_grams`, `avg_volume_cm3`, `avg_photos_qty`,
   `items_missing_dimensions`.
 - **Payment:** `payment_count`, `max_installments`, `paid_by_credit_card`,
   `paid_by_boleto`, `paid_by_voucher`.
 
-`is_late`, `days_late` and everything in the Project 02 forbidden list are
-**not** model features. The allow-list lives in
+`is_late`, `days_late`, `order_status`, `delivered_to_customer_at` and
+everything in the Project 02 forbidden list are **not** model features. The allow-list lives in
 `late_delivery.features.FEATURES`; the mart is allowed to carry the label because
 it is the training target, not an input.
 

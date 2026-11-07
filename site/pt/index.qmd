@@ -29,7 +29,7 @@ memorando de decisão de uma página e uma declaração do que os dados não sus
 <div class="project-seq">02<span class="project-status status-published">Publicado</span></div>
 <div class="project-detail">
 <h3>No momento da compra, dá para saber quais pedidos vão atrasar?</h3>
-<p>Um classificador restrito a atributos disponíveis no checkout, avaliado em uma amostra temporal. Os 10% de maior risco concentram 2,8× a participação esperada de atrasos; as probabilidades são honestas ao admitir que não estão calibradas.</p>
+<p>Um classificador restrito a atributos disponíveis no checkout, avaliado em uma amostra temporal. Os 10% de maior risco concentram 2,35× a participação esperada de atrasos; checagens com origem móvel mostram que o sinal é real, mas variável, e o score é um ranking, não uma probabilidade calibrada.</p>
 <p class="project-stack">Python, pandas, scikit-learn</p>
 <p class="project-links"><a href="reports/02-late-delivery/02-late-delivery.qmd">Ler a análise</a> <a href="reports/02-late-delivery/00-executive-memo.qmd">Memorando de decisão</a></p>
 </div>
