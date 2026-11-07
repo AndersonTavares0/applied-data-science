@@ -26,11 +26,12 @@ memorando de decisão de uma página e uma declaração do que os dados não sus
 </article>
 
 <article class="project">
-<div class="project-seq">02<span class="project-status status-wip">Em andamento</span></div>
+<div class="project-seq">02<span class="project-status status-published">Publicado</span></div>
 <div class="project-detail">
 <h3>No momento da compra, dá para saber quais pedidos vão atrasar?</h3>
-<p>Um classificador sensível a custo que usa apenas atributos disponíveis quando o pedido é feito, para não aprender em silêncio a resposta que deveria prever.</p>
+<p>Um classificador restrito a atributos disponíveis no checkout, avaliado em uma amostra temporal. Os 10% de maior risco concentram 2,35× a participação esperada de atrasos; checagens com origem móvel mostram que o sinal é real, mas variável, e o score é um ranking, não uma probabilidade calibrada.</p>
 <p class="project-stack">Python, pandas, scikit-learn</p>
+<p class="project-links"><a href="reports/02-late-delivery/02-late-delivery.qmd">Ler a análise</a> <a href="reports/02-late-delivery/00-executive-memo.qmd">Memorando de decisão</a></p>
 </div>
 </article>
 

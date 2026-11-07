@@ -35,6 +35,7 @@ anything older than the last change.
 | [0004](0004-the-customer-is-customer-unique-id.md) | The customer is `customer_unique_id`, not `customer_id` | Accepted |
 | [0005](0005-postgres-on-host-port-5433.md) | PostgreSQL runs on host port 5433 | Accepted |
 | [0006](0006-a-lane-is-a-pair-of-states.md) | Lateness is measured per seller-state to customer-state lane | Accepted |
+| [0007](0007-temporal-holdout-and-feature-allow-list.md) | The late-delivery model is judged on a temporal holdout with a feature allow-list | Accepted |
 
 ## Format
 

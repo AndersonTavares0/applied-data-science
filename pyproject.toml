@@ -28,6 +28,8 @@ dependencies = [
   # Analysis + charts for the reports.
   "matplotlib>=3.9",
   "seaborn>=0.13",
+  # Project 02: the late-delivery classifier.
+  "scikit-learn>=1.4",
   # Exploration.
   "jupyterlab>=4.2",
   "ipykernel>=6.29",
@@ -67,8 +69,14 @@ select = ["E", "F", "W", "I", "UP", "B", "SIM"]
 package = false
 
 [tool.pytest.ini_options]
-# `retail` is a plain source tree during Project 01 (packaging arrives with
-# Project 02). This makes it importable in tests without installing anything.
-pythonpath = ["projects/01-retail-analytics/src"]
-testpaths = ["projects/01-retail-analytics/tests"]
+# Each project keeps its own `src` tree and is imported via PYTHONPATH rather
+# than installed. Adding a project means adding its source root here.
+pythonpath = [
+  "projects/01-retail-analytics/src",
+  "projects/02-late-delivery/src",
+]
+testpaths = [
+  "projects/01-retail-analytics/tests",
+  "projects/02-late-delivery/tests",
+]
 addopts = "-q"
