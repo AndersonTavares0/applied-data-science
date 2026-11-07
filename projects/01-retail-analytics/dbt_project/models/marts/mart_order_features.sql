@@ -51,13 +51,25 @@ items as (
 
 -- One category per order: the most frequent category among its items. Ties are
 -- broken alphabetically so the value is deterministic across rebuilds.
+category_counts as (
+
+    select
+        order_id,
+        category_name_english as category,
+        count(*)              as item_count
+    from {{ ref('fct_order_items') }}
+    where category_name_english is not null
+    group by order_id, category_name_english
+
+),
+
 categories as (
 
     select distinct on (order_id)
         order_id,
-        category_name_english as category
-    from {{ ref('fct_order_items') }}
-    order by order_id, category_name_english
+        category
+    from category_counts
+    order by order_id, item_count desc, category
 
 ),
 
@@ -121,6 +133,12 @@ joined as (
         coalesce(p.paid_by_credit_card, false)   as paid_by_credit_card,
         coalesce(p.paid_by_boleto, false)        as paid_by_boleto,
         coalesce(p.paid_by_voucher, false)       as paid_by_voucher,
+
+        -- Outcome metadata, never features. The delivery timestamp is needed
+        -- to keep in-flight labels out of training: at the cutoff, an order
+        -- purchased earlier but not yet delivered has no observable label.
+        o.order_status,
+        o.delivered_to_customer_at,
 
         -- The label. NULL means the order was not delivered, which is a
         -- different outcome and must not be treated as on time.

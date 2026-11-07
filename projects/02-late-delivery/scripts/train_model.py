@@ -24,13 +24,20 @@ import pandas as pd  # noqa: E402
 from late_delivery.features import (  # noqa: E402
     SPLIT_CUTOFF,
     TARGET,
+    VALIDATION_CUTOFF,
+    bootstrap_metrics,
     build_model,
+    calibration_summary,
     calibration_table,
     capacity_metrics,
+    capacity_table,
     evaluate,
+    monthly_metrics,
     permutation_importance_by_raw_feature,
     prepare_features,
     prevalence_baseline,
+    rolling_origin,
+    split_train_validation,
     state_rate_baseline,
     temporal_split,
 )
@@ -133,25 +140,43 @@ def main() -> int:
 
     frame = load_features()
     train, test = temporal_split(frame, cutoff=SPLIT_CUTOFF)
+    fit_slice, validation = split_train_validation(train, cutoff=VALIDATION_CUTOFF)
     x_train, x_test = prepare_features(train), prepare_features(test)
     y_train, y_test = train[TARGET].astype(int), test[TARGET].astype(int)
 
+    excluded = frame.loc[frame[TARGET].isna()]
     print(f"train {len(train):,} orders ({y_train.mean():.2%} late) up to {SPLIT_CUTOFF}")
+    print(
+        f"  fit {len(fit_slice):,} before {VALIDATION_CUTOFF}; "
+        f"validation {len(validation):,} after it"
+    )
     print(f"test  {len(test):,} orders ({y_test.mean():.2%} late) from {SPLIT_CUTOFF}")
+    print(f"excluded {len(excluded):,} orders without an observable late label")
+
+    # Selection happens only on the validation slice. The test set is then
+    # touched once, for the selected model, and descriptively for the other.
+    validation_payloads = {}
+    for kind in ("logistic", "boosting"):
+        model = build_model(kind).fit(prepare_features(fit_slice), fit_slice[TARGET].astype(int))
+        scores = model.predict_proba(prepare_features(validation))[:, 1]
+        validation_payloads[kind] = evaluate(validation[TARGET].astype(int), scores)
+    best = max(validation_payloads, key=lambda kind: validation_payloads[kind]["average_precision"])
+    print(f"\nvalidation ({VALIDATION_CUTOFF} onward), selected {best}:")
+    print(json.dumps(validation_payloads, indent=2))
 
     payloads: dict[str, dict] = {}
     for kind in ("logistic", "boosting"):
-        model = build_model(kind)
-        model.fit(x_train, y_train)
+        model = build_model(kind).fit(x_train, y_train)
         scores = model.predict_proba(x_test)[:, 1]
         payloads[kind] = {
             "scores": scores,
             "metrics": evaluate(y_test, scores),
             "calibration": calibration_table(y_test, scores),
+            "capacity": capacity_table(y_test, scores),
         }
-        print(f"\n{kind}: {json.dumps(payloads[kind]['metrics'], indent=2)}")
+        print(f"\n{kind} on test: {json.dumps(payloads[kind]['metrics'], indent=2)}")
 
-    best = max(payloads, key=lambda kind: payloads[kind]["metrics"]["average_precision"])
+    selected = payloads[best]
     importance = permutation_importance_by_raw_feature(
         build_model(best).fit(x_train, y_train), x_test, y_test
     )
@@ -174,14 +199,48 @@ def main() -> int:
     metrics = {
         "target": TARGET,
         "split_cutoff": SPLIT_CUTOFF,
-        "train": {"n": len(train), "late_rate": float(y_train.mean())},
+        "validation_cutoff": VALIDATION_CUTOFF,
+        "train": {
+            "n": len(train),
+            "late_rate": float(y_train.mean()),
+            "fit_n": len(fit_slice),
+            "validation_n": len(validation),
+        },
         "test": {"n": len(test), "late_rate": float(y_test.mean())},
+        "excluded": {
+            "n": len(excluded),
+            "with_delivery_timestamp": int(excluded["delivered_to_customer_at"].notna().sum()),
+            "by_status": {
+                str(status): int(count)
+                for status, count in excluded["order_status"].value_counts().items()
+            },
+        },
+        "selection": {
+            "criterion": "average_precision",
+            "validation": validation_payloads,
+            "selected": best,
+        },
         "models": {
-            kind: {"metrics": payload["metrics"], "calibration": payload["calibration"]}
+            kind: {
+                "metrics": payload["metrics"],
+                "calibration": payload["calibration"],
+                "capacity": payload["capacity"],
+            }
             for kind, payload in payloads.items()
         },
+        "selected_model": {
+            "kind": best,
+            "bootstrap": bootstrap_metrics(y_test, selected["scores"], n_resamples=500, seed=0),
+            "calibration_summary": calibration_summary(y_test, selected["scores"]),
+            "monthly": monthly_metrics(test, selected["scores"]),
+        },
+        "rolling_origin": rolling_origin(
+            frame,
+            ("2017-07-01", "2017-10-01", "2018-01-01", "2018-04-01"),
+            kind=best,
+            horizon_months=3,
+        ),
         "baselines": baselines,
-        "best_model": best,
     }
     (REPORTS / "model_metrics.json").write_text(
         json.dumps(metrics, indent=2) + "\n", encoding="utf-8"

@@ -10,7 +10,7 @@ post-mortem.
 
 from __future__ import annotations
 
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
 
 import numpy as np
 import pandas as pd
@@ -28,9 +28,14 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 TARGET = "is_late"
 SPLIT_CUTOFF = "2018-04-01"
+# The final test period starts in April 2018. Model selection uses an earlier
+# temporal validation period inside training, so the test set is touched once.
+VALIDATION_CUTOFF = "2018-01-01"
 
 # Columns that exist in the mart but must never reach a model. Each one is
 # recorded after the order is placed, so including it would leak the future.
+# `delivered_to_customer_at` is metadata used only to decide whether a label
+# was observable at the training cutoff.
 FORBIDDEN_FEATURES = (
     "approved_at",
     "handed_to_carrier_at",
@@ -39,6 +44,7 @@ FORBIDDEN_FEATURES = (
     "delivery_days",
     "days_late",
     "is_late",
+    "order_status",
     "review_score",
 )
 
@@ -79,16 +85,41 @@ NUMERIC_FEATURES = tuple(name for name in FEATURES if name not in CATEGORICAL_FE
 def temporal_split(
     frame: pd.DataFrame, cutoff: str = SPLIT_CUTOFF
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Split by purchase date, keeping only orders with an observed outcome.
+    """Split by purchase date, keeping only labels observable at the cutoff.
 
     A random split would put the same period on both sides and let the model
     learn the delivery backlog of a given month rather than a general pattern.
     The temporal split is the honest approximation of using the model forward.
+
+    Training also requires delivery *before* the cutoff. An order purchased in
+    March but delivered in May had no label on 1 April, so training on it would
+    leak the future into the model that claims to predict at checkout.
     """
     delivered = frame.loc[frame[TARGET].notna()].copy()
     purchased_at = pd.to_datetime(delivered["purchased_at"])
-    is_train = purchased_at < pd.Timestamp(cutoff)
-    return delivered.loc[is_train].copy(), delivered.loc[~is_train].copy()
+    delivered_at = pd.to_datetime(delivered["delivered_to_customer_at"])
+    cutoff_at = pd.Timestamp(cutoff)
+
+    is_train = (purchased_at < cutoff_at) & (delivered_at < cutoff_at)
+    is_test = purchased_at >= cutoff_at
+    return delivered.loc[is_train].copy(), delivered.loc[is_test].copy()
+
+
+def split_train_validation(
+    train: pd.DataFrame, cutoff: str = VALIDATION_CUTOFF
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Split the training period into a fit slice and a later validation slice.
+
+    The fit slice uses labels observable at the validation cutoff, mirroring
+    `temporal_split`. The validation slice is the part of training after that
+    date; it is not used to fit the models compared during selection.
+    """
+    purchased_at = pd.to_datetime(train["purchased_at"])
+    delivered_at = pd.to_datetime(train["delivered_to_customer_at"])
+    cutoff_at = pd.Timestamp(cutoff)
+    is_fit = (purchased_at < cutoff_at) & (delivered_at < cutoff_at)
+    is_validation = purchased_at >= cutoff_at
+    return train.loc[is_fit].copy(), train.loc[is_validation].copy()
 
 
 def prepare_features(frame: pd.DataFrame) -> pd.DataFrame:
@@ -128,7 +159,7 @@ def _preprocessor(*, scale: bool) -> ColumnTransformer:
 def build_model(kind: str = "logistic") -> Pipeline:
     """Build an untuned estimator.
 
-    No hyperparameter search: with a single temporal holdout, tuning on it would
+    No hyperparameter search: with one temporal holdout, tuning on it would
     turn the reported score into a selection artefact. The two defaults are
     enough to show whether the signal exists.
     """
@@ -193,6 +224,15 @@ def capacity_metrics(
     }
 
 
+def capacity_table(
+    y_true: Iterable[int],
+    scores: Iterable[float],
+    capacities: Sequence[float] = (0.05, 0.10, 0.20),
+) -> list[dict]:
+    """Capacity trade-off for the intervention budgets a team might use."""
+    return [capacity_metrics(y_true, scores, capacity=value) for value in capacities]
+
+
 def evaluate(y_true: Iterable[int], scores: Iterable[float]) -> dict:
     """Discrimination, calibration and capacity metrics for one score vector."""
     truth = np.asarray(list(y_true), dtype=int)
@@ -206,6 +246,160 @@ def evaluate(y_true: Iterable[int], scores: Iterable[float]) -> dict:
         "mean_prediction": float(score.mean()),
         "top_decile": capacity_metrics(truth, score, capacity=0.10),
     }
+
+
+def bootstrap_metrics(
+    y_true: Iterable[int],
+    scores: Iterable[float],
+    *,
+    capacity: float = 0.10,
+    n_resamples: int = 1_000,
+    seed: int = 0,
+) -> dict:
+    """Bootstrap percentile intervals for ranking and capacity metrics.
+
+    The holdout is one sample from one period. These intervals show how much
+    the headline numbers would move under resampling; they do not remove the
+    regime-shift or single-holdout limitations.
+    """
+    truth = np.asarray(list(y_true), dtype=int)
+    score = np.asarray(list(scores), dtype=float)
+    point = evaluate(truth, score)
+    values: dict[str, list[float]] = {
+        "roc_auc": [],
+        "average_precision": [],
+        "brier": [],
+        "top_precision": [],
+        "top_recall": [],
+        "top_lift": [],
+    }
+    generator = np.random.default_rng(seed)
+    kept = 0
+    for _ in range(n_resamples):
+        index = generator.integers(0, len(truth), len(truth))
+        sample_y = truth[index]
+        if sample_y.min() == sample_y.max():
+            continue
+        sample = evaluate(sample_y, score[index])
+        values["roc_auc"].append(sample["roc_auc"])
+        values["average_precision"].append(sample["average_precision"])
+        values["brier"].append(sample["brier"])
+        values["top_precision"].append(sample["top_decile"]["precision"])
+        values["top_recall"].append(sample["top_decile"]["recall"])
+        values["top_lift"].append(sample["top_decile"]["lift"])
+        kept += 1
+
+    points = {
+        "roc_auc": point["roc_auc"],
+        "average_precision": point["average_precision"],
+        "brier": point["brier"],
+        "top_precision": point["top_decile"]["precision"],
+        "top_recall": point["top_decile"]["recall"],
+        "top_lift": point["top_decile"]["lift"],
+    }
+    return {
+        "n_resamples": kept,
+        "seed": seed,
+        **{
+            name: {
+                "point": points[name],
+                "ci_low": float(np.percentile(draws, 2.5)),
+                "ci_high": float(np.percentile(draws, 97.5)),
+            }
+            for name, draws in values.items()
+        },
+    }
+
+
+def calibration_summary(y_true: Iterable[int], scores: Iterable[float]) -> dict:
+    """Logistic intercept and slope of observed outcome on predicted logit.
+
+    A slope near one means the scores rank monotonically as probabilities; the
+    intercept captures how far the whole curve is shifted by a base-rate change.
+    """
+    truth = np.asarray(list(y_true), dtype=int)
+    score = np.clip(np.asarray(list(scores), dtype=float), 1e-6, 1 - 1e-6)
+    if truth.min() == truth.max():
+        raise ValueError("calibration_summary needs both outcomes")
+    logit = np.log(score / (1 - score)).reshape(-1, 1)
+    model = LogisticRegression(C=np.inf, solver="lbfgs", max_iter=1_000)
+    model.fit(logit, truth)
+    return {
+        "intercept": float(model.intercept_[0]),
+        "slope": float(model.coef_[0, 0]),
+        "mean_prediction": float(score.mean()),
+        "observed_rate": float(truth.mean()),
+    }
+
+
+def monthly_metrics(
+    frame: pd.DataFrame, scores: Iterable[float], *, label: str = TARGET
+) -> list[dict]:
+    """Evaluate the same fitted score month by month on the holdout."""
+    data = pd.DataFrame(
+        {
+            "month": pd.to_datetime(frame["purchased_at"]).dt.to_period("M").astype(str),
+            "y": np.asarray(frame[label], dtype=int),
+            "score": np.asarray(list(scores), dtype=float),
+        }
+    )
+    rows = []
+    for month, group in data.groupby("month", sort=True):
+        row = {"month": month, "n": len(group), "late_rate": float(group["y"].mean())}
+        if group["y"].nunique() > 1:
+            metrics = evaluate(group["y"], group["score"])
+            row.update(
+                {
+                    "roc_auc": metrics["roc_auc"],
+                    "average_precision": metrics["average_precision"],
+                    "top_decile_recall": metrics["top_decile"]["recall"],
+                }
+            )
+        rows.append(row)
+    return rows
+
+
+def rolling_origin(
+    frame: pd.DataFrame,
+    cutoffs: Sequence[str],
+    *,
+    kind: str = "logistic",
+    horizon_months: int = 3,
+) -> list[dict]:
+    """Refit on data observable at each cutoff and score the next horizon.
+
+    Each origin is a separate, honest simulation of deploying on that date.
+    The same fixed model family is used throughout; this is a stability check,
+    not another selection round.
+    """
+    purchased_at = pd.to_datetime(frame["purchased_at"])
+    delivered_at = pd.to_datetime(frame["delivered_to_customer_at"])
+    rows = []
+    for raw_cutoff in cutoffs:
+        cutoff = pd.Timestamp(raw_cutoff)
+        end = cutoff + pd.DateOffset(months=horizon_months)
+        train = frame.loc[(purchased_at < cutoff) & (delivered_at < cutoff) & frame[TARGET].notna()]
+        test = frame.loc[(purchased_at >= cutoff) & (purchased_at < end) & frame[TARGET].notna()]
+        if train.empty or test.empty:
+            continue
+        model = build_model(kind).fit(prepare_features(train), train[TARGET].astype(int))
+        scores = model.predict_proba(prepare_features(test))[:, 1]
+        metrics = evaluate(test[TARGET].astype(int), scores)
+        rows.append(
+            {
+                "cutoff": str(cutoff.date()),
+                "horizon_months": horizon_months,
+                "train_n": len(train),
+                "train_late_rate": float(train[TARGET].mean()),
+                "test_n": len(test),
+                "late_rate": metrics["late_rate"],
+                "roc_auc": metrics["roc_auc"],
+                "average_precision": metrics["average_precision"],
+                "top_decile_recall": metrics["top_decile"]["recall"],
+                "top_decile_precision": metrics["top_decile"]["precision"],
+            }
+        )
+    return rows
 
 
 def calibration_table(y_true: Iterable[int], scores: Iterable[float], bins: int = 10) -> list[dict]:
