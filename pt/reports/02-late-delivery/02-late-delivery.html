@@ -341,6 +341,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../../../pt/reports/02-late-delivery/00-executive-memo.html">
  <span class="dropdown-text">02 · Memorando de decisão</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../../../pt/reports/03-voice-of-customer/03-voice-of-customer.html">
+ <span class="dropdown-text">03 · Voz do cliente</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../pt/reports/03-voice-of-customer/00-executive-memo.html">
+ <span class="dropdown-text">03 · Memorando de decisão</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item">
@@ -425,7 +433,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>O ranking tem sinal, mas é moderado e instável entre períodos.</strong> Em uma amostra temporal de 32.150 pedidos entregues, o modelo logístico selecionado alcança <strong>ROC AUC 0,708</strong> (intervalo bootstrap de 95%: 0,695–0,720) e <strong>precisão média 0,091</strong> (0,083–0,101) contra uma taxa de atraso de 4,42%. Sinalizar os 10% de maior risco captura <strong>23,5% dos atrasos</strong> com <strong>precisão de 10,4% — 2,35× a taxa base</strong>.</li>
 <li><strong>A classe do modelo não está decidida por esta evidência.</strong> A regressão logística venceu um período interno de validação por precisão média, mas o gradient boosting foi levemente melhor na amostra final (precisão média 0,096 contra 0,091; recall no decil superior 27,5% contra 23,5%). A diferença está dentro do ruído. O relatório mostra os dois em vez de declarar um vencedor a partir do teste.</li>
 <li><strong>O score é uma fila de triagem, não uma probabilidade.</strong> A taxa de atraso da amostra é 4,42%, enquanto a previsão média do modelo selecionado é 6,38%. A inclinação de calibração é próxima de um (1,02), mas o intercepto é −0,35 na escala logit: o modelo ordena razoavelmente e superestima o nível. Uma probabilidade em produção precisaria ser recalibrada com pedidos recentes e maduros.</li>
-<li><strong>Prazo e geografia dominam.</strong> A importância por permutação coloca <code>promise_days</code> em primeiro lugar, seguido de <code>customer_state</code>, <code>seller_state</code> e <code>same_state</code>. Valor, frete, peso, pagamento e categoria acrescentam pouco depois disso.</li>
+<li><strong>Prazo e geografia dominam.</strong> A importância por permutação coloca <code>promise_days</code> em primeiro lugar, seguido de <code>customer_state</code> e <code>seller_state</code>. Valor, frete, peso, pagamento e categoria acrescentam pouco depois disso.</li>
 <li><strong>O resultado não é uma alavanca causal.</strong> <code>promise_days</code> é a própria expectativa do marketplace sobre a dificuldade. Encurtá-lo não reduziria o atraso mecanicamente; a pergunta operacional do Projeto 01 sobre o corredor São Paulo → Rio continua sendo a causal.</li>
 </ul>
 <hr>
@@ -767,19 +775,19 @@ Figura&nbsp;2: Calibração na amostra temporal. A diagonal tracejada é a calib
 <tbody>
 <tr class="odd">
 <td><code>promise_days</code></td>
-<td style="text-align: right;">0,033</td>
+<td style="text-align: right;">0,032</td>
 </tr>
 <tr class="even">
 <td><code>customer_state</code></td>
-<td style="text-align: right;">0,024</td>
+<td style="text-align: right;">0,022</td>
 </tr>
 <tr class="odd">
 <td><code>seller_state</code></td>
-<td style="text-align: right;">0,006</td>
+<td style="text-align: right;">0,005</td>
 </tr>
 <tr class="even">
-<td><code>same_state</code></td>
-<td style="text-align: right;">0,002</td>
+<td><code>seller_count</code></td>
+<td style="text-align: right;">0,001</td>
 </tr>
 <tr class="odd">
 <td><code>avg_weight_grams</code></td>
@@ -790,16 +798,16 @@ Figura&nbsp;2: Calibração na amostra temporal. A diagonal tracejada é a calib
 <td style="text-align: right;">0,001</td>
 </tr>
 <tr class="odd">
-<td><code>avg_photos_qty</code></td>
+<td><code>freight_share</code></td>
 <td style="text-align: right;">0,001</td>
 </tr>
 <tr class="even">
-<td><code>freight_share</code></td>
+<td><code>avg_photos_qty</code></td>
 <td style="text-align: right;">0,001</td>
 </tr>
 </tbody>
 </table>
-<p>A lista é curta e coincide com a conclusão do Projeto 01. O prazo é o insumo mais forte, e os dois campos de estado mais a interação entre eles carregam quase todo o resto. Valor da cesta, frete, peso, forma de pagamento e categoria acrescentam quase nada depois disso. Categoria e mês da compra têm quedas levemente negativas, o que significa que embaralhá-los não prejudicou esta amostra; eles não carregam sinal aqui.</p>
+<p>A lista é curta e coincide com a conclusão do Projeto 01. O prazo é o insumo mais forte, e a geografia carrega quase todo o resto. Valor da cesta, frete, peso, forma de pagamento e categoria acrescentam quase nada depois disso. Categoria e mês da compra têm quedas levemente negativas, o que significa que embaralhá-los não prejudicou esta amostra; eles não carregam sinal aqui.</p>
 <p>Isso <strong>não</strong> significa “aumente o prazo e o atraso desaparece”. O Projeto 01 mostrou que o prazo é definido por rota e é mais curto no corredor São Paulo → Rio do que em rotas mais longas; <code>promise_days</code> é em parte a própria expectativa do marketplace sobre a dificuldade. O modelo explora essa expectativa, não identifica uma alavanca que possa ser mudada de forma independente. A pergunta causal continua sendo a operacional do Projeto 01: por que a travessia demora tanto.</p>
 <hr>
 </section>

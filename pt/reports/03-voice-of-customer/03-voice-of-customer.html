@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt-BR" xml:lang="pt-BR"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>03 · Voz do Cliente – Retail Analytics Portfolio</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<script src="../../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-5794a8b9aef8032b13690810f19f5b31.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark-673b95e394feefee4dcea13dd3a952c6.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-5794a8b9aef8032b13690810f19f5b31.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap-79c03f229c8b8d28a1f37a0ac2d33506.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-dark-2b0ff35632f542c3d2dd2cb3eeccbf97.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../../../site_libs/bootstrap/bootstrap-79c03f229c8b8d28a1f37a0ac2d33506.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Nenhum resultado",
+    "search-matching-documents-text": "documentos correspondentes",
+    "search-copy-link-title": "Copiar link para a busca",
+    "search-hide-matches-text": "Esconder correspondências adicionais",
+    "search-more-match-text": "mais correspondência neste documento",
+    "search-more-matches-text": "mais correspondências neste documento",
+    "search-clear-button-title": "Limpar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Procurar"
+  }
+}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;600&amp;family=Source+Sans+3:ital,wght@0,400;0,600;1,400&amp;family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&amp;display=swap">
+
+
+</head>
+
+<body class="nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Pular para o conteúdo principal</a><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          toggle.setAttribute("aria-checked", alternate ? "true" : "false");
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455).
+    // Not run on load: stylesheets are set before first paint there, and
+    // scrolling would undo the scroll to a URL fragment (#14973).
+    // The one pixel nudge keeps the reader where they were.
+    const refreshSafariScrollbar = () => {
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        const scrollY = window.scrollY;
+        window.scrollTo(0, scrollY > 0 ? scrollY - 1 : 1);
+        setTimeout(() => {
+          window.scrollTo(0, scrollY);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const queryPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const darkModeDefault = queryPrefersDark.matches;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      refreshSafariScrollbar();
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    queryPrefersDark.addEventListener("change", e => {
+      if(window.localStorage.getItem("quarto-color-scheme") !== null)
+        return;
+      const alternate = e.matches
+      toggleColorMode(alternate);
+      refreshSafariScrollbar();
+      localAlternateSentinel = e.matches ? 'alternate' : 'default'; // this is used alongside local storage!
+      toggleGiscusIfUsed(alternate, darkModeDefault);
+    });
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Site">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">Retail Analytics Portfolio</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Alternar de navegação" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../pt/index.html"> 
+<span class="menu-text">Início</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-projetos" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Projetos</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-projetos">    
+        <li>
+    <a class="dropdown-item" href="../../../pt/reports/01-retail-analytics/01-business-analytics.html">
+ <span class="dropdown-text">01 · Análise de varejo</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../pt/reports/01-retail-analytics/00-executive-memo.html">
+ <span class="dropdown-text">01 · Memorando de decisão</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../pt/reports/02-late-delivery/02-late-delivery.html">
+ <span class="dropdown-text">02 · Modelo de atraso</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../pt/reports/02-late-delivery/00-executive-memo.html">
+ <span class="dropdown-text">02 · Memorando de decisão</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../pt/reports/03-voice-of-customer/03-voice-of-customer.html">
+ <span class="dropdown-text">03 · Voz do cliente</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../../pt/reports/03-voice-of-customer/00-executive-memo.html">
+ <span class="dropdown-text">03 · Memorando de decisão</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="../../../pt/about.html"> 
+<span class="menu-text">Sobre</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../index.html"> 
+<span class="menu-text">English</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+  <button type="button" role="switch" aria-checked="false" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Alternar modo escuro" aria-label="Alternar modo escuro"><i class="bi"></i></button>
+</div>
+            <div id="quarto-search" class="" title="Procurar"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
+    <h2 id="toc-title">Nesta página</h2>
+   
+  <ul>
+  <li><a href="#resumo-executivo" id="toc-resumo-executivo" class="nav-link active" data-scroll-target="#resumo-executivo">Resumo executivo</a></li>
+  <li><a href="#quem-está-no-corpus" id="toc-quem-está-no-corpus" class="nav-link" data-scroll-target="#quem-está-no-corpus">1. Quem está no corpus</a></li>
+  <li><a href="#como-os-tópicos-foram-construídos" id="toc-como-os-tópicos-foram-construídos" class="nav-link" data-scroll-target="#como-os-tópicos-foram-construídos">2. Como os tópicos foram construídos</a>
+  <ul class="collapse">
+  <li><a href="#por-que-seis-tópicos" id="toc-por-que-seis-tópicos" class="nav-link" data-scroll-target="#por-que-seis-tópicos">Por que seis tópicos</a></li>
+  <li><a href="#quão-estáveis-são-os-tópicos" id="toc-quão-estáveis-são-os-tópicos" class="nav-link" data-scroll-target="#quão-estáveis-são-os-tópicos">Quão estáveis são os tópicos?</a></li>
+  <li><a href="#reclamações-mistas-e-atribuição-dura" id="toc-reclamações-mistas-e-atribuição-dura" class="nav-link" data-scroll-target="#reclamações-mistas-e-atribuição-dura">Reclamações mistas e atribuição dura</a></li>
+  </ul></li>
+  <li><a href="#o-que-muda-quando-o-pacote-atrasa" id="toc-o-que-muda-quando-o-pacote-atrasa" class="nav-link" data-scroll-target="#o-que-muda-quando-o-pacote-atrasa">3. O que muda quando o pacote atrasa</a></li>
+  <li><a href="#o-que-os-dados-não-sustentam" id="toc-o-que-os-dados-não-sustentam" class="nav-link" data-scroll-target="#o-que-os-dados-não-sustentam">4. O que os dados não sustentam</a></li>
+  <li><a href="#reproduzir" id="toc-reproduzir" class="nav-link" data-scroll-target="#reproduzir">5. Reproduzir</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content" tabindex="-1">
+
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">03 · Voz do Cliente</h1>
+<p class="subtitle lead">Do que falam 9.139 reclamações escritas, e como os pedidos atrasados diferem</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Data de Publicação</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">novembro 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Este é o terceiro projeto sobre o conjunto de dados de e-commerce brasileiro da Olist. O Projeto 01 mediu o atraso na entrega pelo lado do pedido e encontrou ali o sinal mais forte de insatisfação. Este projeto lê o outro lado: o texto em português que os clientes realmente escreveram.</p>
+<p>A pergunta é <strong>do que os clientes reclamam, e se isso muda quando o pacote chega atrasado</strong>. A resposta curta é que muda quase por completo. As reclamações de pedidos atrasados são sobre o pacote. As reclamações de pedidos no prazo são sobre o produto.</p>
+<p>Todo número abaixo vem dos modelos testados em <code>projects/01-retail-analytics/dbt_project</code> e é produzido por um único script, <code>projects/03-voice-of-customer/scripts/analyze_reviews.py</code>, que escreve as tabelas e figuras usadas nesta página.</p>
+<hr>
+<section id="resumo-executivo" class="level2">
+<h2 class="anchored" data-anchor-id="resumo-executivo">Resumo executivo</h2>
+<ul>
+<li><strong>9.139 reclamações utilizáveis</strong> foram escritas com nota 1–2 sobre pedidos entregues: 2.711 de pedidos atrasados e 6.428 de pedidos no prazo.</li>
+<li><strong>As reclamações de pedidos atrasados são quase todas sobre a entrega.</strong> Problemas de entrega são <strong>39,8%</strong> das reclamações de atrasados contra <strong>11,0%</strong> das de pedidos no prazo (<strong>+28,8 pp</strong>). Não recebimento é <strong>25,9%</strong> contra <strong>7,5%</strong> (<strong>+18,4 pp</strong>), e demora é <strong>16,2%</strong> contra <strong>12,6%</strong> (<strong>+3,6 pp</strong>). Todos os intervalos excluem zero.</li>
+<li><strong>As reclamações de pedidos no prazo são quase todas sobre o produto.</strong> Qualidade ou “diferente do anunciado” é <strong>26,7%</strong> das reclamações no prazo contra <strong>5,6%</strong> das de atrasados (<strong>−21,1 pp</strong>). Pedido incompleto é <strong>22,8%</strong> contra <strong>4,2%</strong> (<strong>−18,6 pp</strong>), e item errado, defeito ou troca é <strong>19,4%</strong> contra <strong>8,3%</strong> (<strong>−11,1 pp</strong>).</li>
+<li><strong>Agrupando os tópicos à mão, a separação fica mais nítida.</strong> Os três tópicos de logística somam <strong>81,9%</strong> das reclamações de atrasados e <strong>31,1%</strong> das de pedidos no prazo. Os três tópicos de produto somam <strong>18,1%</strong> das reclamações de atrasados e <strong>68,9%</strong> das de pedidos no prazo. Esse agrupamento é um resumo do analista, não uma saída do modelo.</li>
+<li><strong>Isto descreve quem escreveu reclamações, não todos os compradores.</strong> Pedidos atrasados são <strong>6,8%</strong> das entregas mas <strong>29,7%</strong> do corpus de reclamações, porque são mais avaliados e muito mais avaliados mal. O relatório compara a <em>mistura</em> das reclamações, e diz isso antes de mostrar qualquer resultado.</li>
+</ul>
+<hr>
+</section>
+<section id="quem-está-no-corpus" class="level2">
+<h2 class="anchored" data-anchor-id="quem-está-no-corpus">1. Quem está no corpus</h2>
+<p>Há 99.224 linhas de avaliação, mas a maioria dos pedidos não tem comentário escrito, e os que têm são selecionados pelo desfecho. Restringindo a pedidos entregues e à avaliação mais recente de cada pedido, chega-se à população abaixo.</p>
+<!-- Source: reports/review_scope.json -->
+<table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 26%">
+<col style="width: 26%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Desfecho</th>
+<th style="text-align: right;">Pedidos</th>
+<th style="text-align: right;">Com comentário</th>
+<th style="text-align: right;">Comentários de 1–2 estrelas</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>No prazo</td>
+<td style="text-align: right;">89.941</td>
+<td style="text-align: right;">35.138 (39,07%)</td>
+<td style="text-align: right;">6.490 (7,22%)</td>
+</tr>
+<tr class="even">
+<td>Atrasado</td>
+<td style="text-align: right;">6.535</td>
+<td style="text-align: right;">3.762 (57,57%)</td>
+<td style="text-align: right;">2.747 (42,04%)</td>
+</tr>
+<tr class="odd">
+<td><strong>Todos os entregues</strong></td>
+<td style="text-align: right;"><strong>96.476</strong></td>
+<td style="text-align: right;"><strong>38.900 (40,32%)</strong></td>
+<td style="text-align: right;"><strong>9.237 (9,57%)</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>A seleção é o primeiro resultado, não uma ressalva acrescentada no final.</strong> Um pedido atrasado tem 1,47 vez mais chance de receber uma avaliação escrita do que um pedido no prazo, e uma avaliação de 1–2 estrelas tem 5,8 vezes mais chance. Pedidos atrasados são 6,8% das entregas mas 29,7% das reclamações que podemos ler.</p>
+<p>Isso torna duas perguntas diferentes:</p>
+<ul>
+<li><em>“Que fração dos pedidos atrasados gera reclamação?”</em> é uma pergunta sobre comportamento de avaliação, e este conjunto de dados só a responde para quem escolheu escrever.</li>
+<li><em>“Entre as reclamações que existem, sobre o que são as de pedidos atrasados?”</em> é uma pergunta sobre o texto, e é a que este projeto responde.</li>
+</ul>
+<p>O corpus é a segunda pergunta. Ele contém 9.237 comentários de 1–2 estrelas; 9.139 mantêm ao menos dois tokens após a normalização (98 veredictos de uma palavra como <em>“ruim”</em> ou <em>“péssimo”</em> são descartados). Outras 3.039 avaliações de 1–2 estrelas não têm comentário escrito e nunca entram.</p>
+<hr>
+</section>
+<section id="como-os-tópicos-foram-construídos" class="level2">
+<h2 class="anchored" data-anchor-id="como-os-tópicos-foram-construídos">2. Como os tópicos foram construídos</h2>
+<p>O método é deliberadamente simples e fixado antes de olhar o desfecho.</p>
+<ol type="1">
+<li><strong>Uma avaliação por pedido entregue</strong>, a mais recente por <code>review_created_at</code> e depois <code>review_id</code>. É a mesma regra que <code>fct_orders</code> usa. Juntar as 99.224 linhas de avaliação diretamente duplicaria 547 pedidos e inflaria todos os denominadores.</li>
+<li><strong>Manter avaliações de 1–2 estrelas com comentário.</strong> A nota é o sinal negativo. O modelo não precisa descobrir sentimento; precisa descrever sobre o que é a reclamação.</li>
+<li><strong>Normalizar de forma conservadora.</strong> Minúsculas, remoção de links, dígitos e pontuação, acentos preservados, e remoção de palavras funcionais do português e de nomes de vendedores. A negação fica: <code>não</code> é a diferença entre <code>recebi</code> e <code>não recebi</code>, e removê-la juntou “recebi” e “nunca recebi” em um ajuste anterior.</li>
+<li><strong>Ajustar LDA com seis tópicos</strong> sobre unigramas e bigramas (<code>min_df=20</code>, <code>max_df=0,5</code>, <code>random_state=0</code>, <code>max_iter=30</code>). O desfecho de entrega não é entrada; ele é juntado depois que os tópicos são ajustados.</li>
+<li><strong>Atribuir cada reclamação ao tópico de maior peso</strong> e rotular os tópicos a partir dos termos mais frequentes. O script verifica se cada tópico ainda contém seu termo âncora e falha se uma atualização de biblioteca reordenar os tópicos.</li>
+</ol>
+<section id="por-que-seis-tópicos" class="level3">
+<h3 class="anchored" data-anchor-id="por-que-seis-tópicos">Por que seis tópicos</h3>
+<p>Seis não foi escolhido pela perplexidade. A perplexidade cai à medida que tópicos são adicionados e é menor em k=8, enquanto a coerência UMass — se os termos principais de um tópico aparecem juntos no corpus — é maior em k=6 entre os sete candidatos testados. A coerência é o critério porque a perplexidade principalmente recompensa distribuir probabilidade sobre palavras frequentes; ela não diz se um tópico é legível.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Tópicos</th>
+<th style="text-align: right;">Coerência UMass média (10 termos)</th>
+<th style="text-align: right;">Perplexidade</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">−2,699</td>
+<td style="text-align: right;">333,05</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">−2,699</td>
+<td style="text-align: right;">332,39</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;"><strong>6</strong></td>
+<td style="text-align: right;"><strong>−2,677</strong></td>
+<td style="text-align: right;"><strong>332,92</strong></td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">−2,691</td>
+<td style="text-align: right;">329,96</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">−2,745</td>
+<td style="text-align: right;">329,04</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">−2,850</td>
+<td style="text-align: right;">330,69</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">−2,833</td>
+<td style="text-align: right;">330,43</td>
+</tr>
+</tbody>
+</table>
+<p>A margem sobre k=4, k=5 e k=7 é pequena: a coerência sozinha não prova que seis é o número verdadeiro, apenas que é o melhor dos candidatos neste corpus e pré-processamento. Os rótulos continuam sendo uma interpretação humana dos termos, e dois pares se sobrepõem: “problema de entrega” e “demora” tratam de entrega, e “não recebido” e “demora” compartilham vocabulário.</p>
+</section>
+<section id="quão-estáveis-são-os-tópicos" class="level3">
+<h3 class="anchored" data-anchor-id="quão-estáveis-são-os-tópicos">Quão estáveis são os tópicos?</h3>
+<p>Reajustar com outras quatro sementes (1–4) dá um índice Rand ajustado médio de <strong>0,258</strong> contra a partição publicada com semente 0 (faixa 0,234–0,283), e sobreposição Jaccard média dos 10 termos principais de <strong>0,413</strong> (faixa 0,176–0,818 após correspondência um-a-um). Isso é baixo: a partição exata não é estável entre inicializações. Os valores por tópico mostram o que sobrevive e o que não sobrevive:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Tópico</th>
+<th style="text-align: right;">Jaccard médio dos termos principais entre sementes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Qualidade / diferente</td>
+<td style="text-align: right;">0,255</td>
+</tr>
+<tr class="even">
+<td>Não recebido</td>
+<td style="text-align: right;">0,581</td>
+</tr>
+<tr class="odd">
+<td>Pedido incompleto</td>
+<td style="text-align: right;">0,548</td>
+</tr>
+<tr class="even">
+<td>Problema de entrega</td>
+<td style="text-align: right;">0,509</td>
+</tr>
+<tr class="odd">
+<td>Atraso / longa espera</td>
+<td style="text-align: right;">0,292</td>
+</tr>
+<tr class="even">
+<td>Item errado / troca</td>
+<td style="text-align: right;">0,292</td>
+</tr>
+</tbody>
+</table>
+<p>O agrupamento logística/produto é mais robusto que as fronteiras exatas. Em cada semente alternativa, todo tópico de logística tem participação de atrasados entre 27% e 67%, enquanto todo tópico de produto fica entre 6% e 25%. A conclusão principal — reclamações de atrasados tratam da entrega, reclamações no prazo tratam do produto — sobrevive; os seis rótulos específicos e os percentuais exatos não devem ser lidos como categorias fixas.</p>
+</section>
+<section id="reclamações-mistas-e-atribuição-dura" class="level3">
+<h3 class="anchored" data-anchor-id="reclamações-mistas-e-atribuição-dura">Reclamações mistas e atribuição dura</h3>
+<p>O LDA retorna uma distribuição sobre tópicos para cada reclamação; as tabelas acima usam apenas o maior peso. Isso é uma simplificação mensurável: <strong>22,7%</strong> das reclamações têm o maior peso abaixo de 0,5, <strong>7,5%</strong> abaixo de 0,4, e <strong>31,7%</strong> têm um segundo tópico em 0,3 ou mais. A entropia normalizada média é 0,522 numa escala de 0–1. Uma reclamação sobre um pedido atrasado, danificado e incompleto frequentemente tem massa substancial em mais de um tema.</p>
+<p>Os rótulos foram verificados lendo as reclamações de maior peso de cada tópico. Os temas são reconhecíveis no texto bruto: danificado ou diferente da foto (qualidade), ainda esperando um mês depois (não recebido), pediu dois e recebeu um (pedido incompleto), prazo vencido ou rastreio diz entregue mas nada chegou (problema de entrega), “quase um mês, outros sites são mais rápidos” (atraso), e voltagem ou item errado sem troca (item errado/troca). Essas paráfrases são evidência qualitativa para os rótulos, não um substituto da comparação quantitativa.</p>
+<!-- Source: reports/topic_terms.csv -->
+<table class="caption-top table">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 30%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Tópico</th>
+<th>Termos mais frequentes (após normalização)</th>
+<th style="text-align: right;">Reclamações</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Qualidade ou diferente do anunciado</td>
+<td>produto, veio, nao, qualidade, cor, gostei, diferente, quero</td>
+<td style="text-align: right;">1.866</td>
+</tr>
+<tr class="even">
+<td>Problema de entrega (prazo ou transportadora)</td>
+<td>produto, entregue, entrega, prazo, dia, chegou, não entregue, não chegou</td>
+<td style="text-align: right;">1.784</td>
+</tr>
+<tr class="odd">
+<td>Pedido incompleto (itens faltando)</td>
+<td>comprei, recebi, apenas, dois, produtos, pedido, duas, nota</td>
+<td style="text-align: right;">1.581</td>
+</tr>
+<tr class="even">
+<td>Item errado, defeito ou troca</td>
+<td>produto, veio, comprei, contato, outro, troca, errado, defeito</td>
+<td style="text-align: right;">1.475</td>
+</tr>
+<tr class="odd">
+<td>Atraso e longa espera</td>
+<td>produto, estou, recomendo, loja, entrega, não recomendo, compra, aguardando</td>
+<td style="text-align: right;">1.251</td>
+</tr>
+<tr class="even">
+<td>Não recebido (ainda esperando)</td>
+<td>recebi, não recebi, produto, ainda, recebi produto, ainda não, nao, produto ainda</td>
+<td style="text-align: right;">1.182</td>
+</tr>
+</tbody>
+</table>
+<p>As palavras são evidência do que cada tópico trata, não uma explicação causal. “Correios” aparece no tópico de problema de entrega, mas o conjunto de dados não tem identificador de transportadora, então o tópico não estabelece quem causou o atraso.</p>
+<hr>
+</section>
+</section>
+<section id="o-que-muda-quando-o-pacote-atrasa" class="level2">
+<h2 class="anchored" data-anchor-id="o-que-muda-quando-o-pacote-atrasa">3. O que muda quando o pacote atrasa</h2>
+<p>A comparação é composicional: a participação de cada tópico nas reclamações de atrasados contra sua participação nas reclamações de pedidos no prazo. Os dois denominadores são populações diferentes (2.711 reclamações de atrasados e 6.428 de pedidos no prazo), e a diferença é em pontos percentuais.</p>
+<!-- Source: reports/topic_prevalence.csv -->
+<table class="caption-top table">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+<col style="width: 14%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Tópico</th>
+<th style="text-align: right;">Todas as reclamações</th>
+<th style="text-align: right;">Participação em atrasados</th>
+<th style="text-align: right;">Participação em no prazo</th>
+<th style="text-align: right;">Diferença</th>
+<th style="text-align: right;">IC 95%</th>
+<th style="text-align: right;">q (BH)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Qualidade ou diferente do anunciado</td>
+<td style="text-align: right;">1.866 (20,4%)</td>
+<td style="text-align: right;">5,6%</td>
+<td style="text-align: right;">26,7%</td>
+<td style="text-align: right;">−21,1 pp</td>
+<td style="text-align: right;">−22,5 a −19,7</td>
+<td style="text-align: right;">&lt; 0,001</td>
+</tr>
+<tr class="even">
+<td>Problema de entrega (prazo ou transportadora)</td>
+<td style="text-align: right;">1.784 (19,5%)</td>
+<td style="text-align: right;">39,8%</td>
+<td style="text-align: right;">11,0%</td>
+<td style="text-align: right;">+28,8 pp</td>
+<td style="text-align: right;">+26,8 a +30,8</td>
+<td style="text-align: right;">&lt; 0,001</td>
+</tr>
+<tr class="odd">
+<td>Pedido incompleto (itens faltando)</td>
+<td style="text-align: right;">1.581 (17,3%)</td>
+<td style="text-align: right;">4,2%</td>
+<td style="text-align: right;">22,8%</td>
+<td style="text-align: right;">−18,6 pp</td>
+<td style="text-align: right;">−19,8 a −17,3</td>
+<td style="text-align: right;">&lt; 0,001</td>
+</tr>
+<tr class="even">
+<td>Item errado, defeito ou troca</td>
+<td style="text-align: right;">1.475 (16,1%)</td>
+<td style="text-align: right;">8,3%</td>
+<td style="text-align: right;">19,4%</td>
+<td style="text-align: right;">−11,1 pp</td>
+<td style="text-align: right;">−12,5 a −9,7</td>
+<td style="text-align: right;">&lt; 0,001</td>
+</tr>
+<tr class="odd">
+<td>Atraso e longa espera</td>
+<td style="text-align: right;">1.251 (13,7%)</td>
+<td style="text-align: right;">16,2%</td>
+<td style="text-align: right;">12,6%</td>
+<td style="text-align: right;">+3,6 pp</td>
+<td style="text-align: right;">+2,0 a +5,2</td>
+<td style="text-align: right;">&lt; 0,001</td>
+</tr>
+<tr class="even">
+<td>Não recebido (ainda esperando)</td>
+<td style="text-align: right;">1.182 (12,9%)</td>
+<td style="text-align: right;">25,9%</td>
+<td style="text-align: right;">7,5%</td>
+<td style="text-align: right;">+18,4 pp</td>
+<td style="text-align: right;">+16,7 a +20,2</td>
+<td style="text-align: right;">&lt; 0,001</td>
+</tr>
+</tbody>
+</table>
+<div id="fig-gap" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Gráfico de barras horizontais da diferença na participação de cada tópico de reclamação entre pedidos atrasados e no prazo. Problema de entrega, não recebido e demora são positivos; qualidade, pedido incompleto e item errado são negativos. O intervalo de 95% de cada barra exclui zero.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-gap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../../reports/03-voice-of-customer/figures/pt/topic_gap.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Gráfico de barras horizontais da diferença na participação de cada tópico de reclamação entre pedidos atrasados e no prazo. Problema de entrega, não recebido e demora são positivos; qualidade, pedido incompleto e item errado são negativos. O intervalo de 95% de cada barra exclui zero.">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-gap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;1: Tópicos sobrerrepresentados e sub-representados nas reclamações de pedidos atrasados. Barras laranja são mais comuns em atrasados; barras cinza são mais comuns em pedidos no prazo. Os intervalos são de 95% para duas proporções.
+</figcaption>
+</figure>
+</div>
+<div id="fig-mix" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Barras horizontais pareadas mostrando a participação de cada tópico nas reclamações de pedidos atrasados e no prazo. Problema de entrega, não recebido e demora dominam o grupo atrasado; qualidade, pedido incompleto e item errado dominam o grupo no prazo.">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-mix-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="../../../reports/03-voice-of-customer/figures/pt/topic_mix.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Barras horizontais pareadas mostrando a participação de cada tópico nas reclamações de pedidos atrasados e no prazo. Problema de entrega, não recebido e demora dominam o grupo atrasado; qualidade, pedido incompleto e item errado dominam o grupo no prazo.">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-mix-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;2: A mistura de reclamações dentro de cada desfecho. Reclamações de atrasados são majoritariamente de logística; as de pedidos no prazo, de produto.
+</figcaption>
+</figure>
+</div>
+<p><strong>As reclamações de atrasados são sobre o pacote.</strong> Problema de entrega, não recebimento e demora juntos são 81,9% das reclamações de atrasados, contra 31,1% das de pedidos no prazo. A maior diferença isolada é “problema de entrega”, com +28,8 pp.&nbsp;É o que o Projeto 01 encontrou nos carimbos de tempo de entrega, agora dito nas palavras dos próprios clientes: quando um pedido atrasa, a reclamação é sobre a entrega, não sobre a mercadoria.</p>
+<p><strong>As reclamações de pedidos no prazo são sobre o produto.</strong> Só qualidade ou “diferente do anunciado” é 26,7% das reclamações no prazo. Pedido incompleto é 22,8%, e item errado, defeito ou troca é 19,4%. São 1.715, 1.466 e 1.249 reclamações, respectivamente, e ocorrem em pedidos que cumpriram o prazo. Quem recebe a cor errada, um item faltando ou um produto danificado reclama do produto mesmo quando o pacote chegou na data.</p>
+<p><strong>A implicação operacional são duas filas, não uma.</strong> Reduzir o atraso removeria a maior fonte de reclamações de atrasados, mas não tocaria nas reclamações de produto e completude que dominam o grupo no prazo. Os dois problemas têm donos e correções diferentes. É uma conclusão mais útil do que uma única nota de sentimento, e só é visível porque o corpus foi dividido por desfecho depois de os tópicos serem ajustados.</p>
+<hr>
+</section>
+<section id="o-que-os-dados-não-sustentam" class="level2">
+<h2 class="anchored" data-anchor-id="o-que-os-dados-não-sustentam">4. O que os dados não sustentam</h2>
+<ul>
+<li><strong>Nenhuma afirmação causal.</strong> Um tópico ser mais comum entre reclamações de atrasados é uma associação entre um desfecho de entrega e o assunto de uma reclamação. Os dados não mostram que o atraso causou uma reclamação específica, e o corpus selecionado torna até a associação descritiva de quem reclama.</li>
+<li><strong>Nenhuma afirmação sobre todos os clientes.</strong> 57,6% dos pedidos atrasados têm comentário, contra 39,1% dos pedidos no prazo. Quem escreve não é uma amostra aleatória, e nada aqui estima a mistura de reclamações da maioria silenciosa.</li>
+<li><strong>Nenhuma afirmação sobre experiência positiva.</strong> Apenas avaliações de 1–2 estrelas são modeladas. A análise diz do que reclamaram os insatisfeitos, não o que valorizaram os satisfeitos.</li>
+<li><strong>Tópicos são uma simplificação.</strong> Seis tópicos, atribuição dura, recursos de saco de palavras, rótulos subjetivos e categorias sobrepostas. A verificação de estabilidade acima mostra que a partição exata não é estável, embora o agrupamento logística/produto seja. Uma reclamação sobre um pedido atrasado, danificado e incompleto é forçada em um único tópico, e 22,7% das reclamações têm o maior peso abaixo de 0,5. Outros valores de k produziriam uma partição diferente, não necessariamente errada.</li>
+<li><strong>Um marketplace e um período.</strong> Olist, de setembro de 2016 a outubro de 2018. O vocabulário e a operação de entrega são específicos dele.</li>
+<li><strong>O rótulo é a promessa, não o escaneamento da transportadora.</strong> <code>is_late</code> significa que o carimbo de entrega é posterior à data prometida. O conjunto de dados não tem identificador de transportadora, rota nem armazém, então “problema de entrega” não pode ser atribuído a um responsável.</li>
+</ul>
+<hr>
+</section>
+<section id="reproduzir" class="level2">
+<h2 class="anchored" data-anchor-id="reproduzir">5. Reproduzir</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python tasks.py topics     <span class="co"># ajusta o modelo, escreve tabelas e figuras</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run pytest                     <span class="co"># 29 testes, sem banco de dados nem rede</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<p>O script lê os modelos construídos, então a ordem no pipeline é <code>load → dbt-build → topics</code>. Ele escreve:</p>
+<ul>
+<li><code>projects/03-voice-of-customer/reports/review_scope.json</code> — escopo e metadados do modelo, incluindo perplexidade e peso médio dos tópicos por desfecho.</li>
+<li><code>projects/03-voice-of-customer/reports/topic_terms.csv</code> — os doze termos principais de cada tópico.</li>
+<li><code>projects/03-voice-of-customer/reports/topic_prevalence.csv</code> — a tabela acima, com p-valores exatos e limites de confiança.</li>
+<li><code>projects/03-voice-of-customer/reports/topic_selection.csv</code> — coerência e perplexidade para k=4–10; o script para se a coerência deixar de escolher k=6.</li>
+<li><code>site/reports/03-voice-of-customer/figures/*.png</code> — as duas figuras, em inglês e português.</li>
+</ul>
+<p>O modelo é determinístico dada a versão fixada do scikit-learn, a semente e o corpus fixo. As âncoras dos tópicos são verificadas em tempo de execução, então uma atualização de biblioteca que reordene os tópicos faz a tarefa falhar em vez de renomeá-los em silêncio.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const toggle = window.document.createElement('button');
+      toggle.type = "button";
+      toggle.setAttribute("role", "switch");
+      toggle.setAttribute("aria-checked", "false");
+      toggle.classList.add('top-right');
+      toggle.classList.add('quarto-color-scheme-toggle');
+      toggle.setAttribute("aria-label", "Alternar modo escuro");
+      toggle.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      toggle.appendChild(i);
+      // Put the toggle in a landmark of its own, so that landmark navigation
+      // can reach it.
+      //
+      // The container is always a fresh direct child of body, and the toggle is
+      // never moved into page furniture that the theme or the author controls.
+      // The toggle is positioned against the page, so any ancestor that
+      // establishes a containing block captures it: a positioned element or a
+      // grid for position: absolute, and transform, filter, will-change or
+      // contain for position: fixed. A direct child of body has none of these
+      // to inherit, and the shift when one appears is silent and visual.
+      //
+      // ARIA says a document should have at most one banner, and axe reports a
+      // duplicate whether or not the banners carry distinct labels. So use a
+      // header when the page has no banner yet, and a named region otherwise.
+      //
+      // A header is a banner wherever it sits, unless it is inside sectioning
+      // content, so this cannot just look at the children of body: a custom
+      // page layout wraps the title block header in a plain div. An explicit
+      // role="banner" always counts.
+      const sectioning = 'article, aside, main, nav, section, [role="article"], [role="complementary"], [role="main"], [role="navigation"], [role="region"]';
+      const hasBanner = Array.from(
+        window.document.querySelectorAll('header:not([role]), [role="banner"]')
+      ).some(function(el) {
+        return el.hasAttribute("role") || el.closest(sectioning) === null;
+      });
+      const container = window.document.createElement(hasBanner ? "div" : "header");
+      if (hasBanner) {
+        container.setAttribute("role", "region");
+        container.setAttribute("aria-label", "Alternar modo escuro");
+      }
+      container.classList.add('quarto-color-scheme-toggle-container');
+      container.appendChild(toggle);
+      window.document.body.appendChild(container);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiada");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiada");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/AndersonTavares0\.github\.io\/ds-portfolio\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+          if (!link.classList.contains('no-external-icon')) {
+          }
+        }
+      }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
+          if (lineIds.length > 0) {
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            placeBand(gutterDiv, el, lastEl);
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Código deslocável","output":"Saída deslocável"};
+  </script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>Built with Quarto. Data © Olist.</p>
+</div>   
+    <div class="nav-footer-center">
+      &nbsp;
+    </div>
+    <div class="nav-footer-right">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="https://github.com/AndersonTavares0/ds-portfolio">
+<p>GitHub</p>
+</a>
+  </li>  
+</ul>
+    </div>
+  </div>
+</footer>
+
+
+
+
+</body></html>

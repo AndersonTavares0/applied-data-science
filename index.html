@@ -341,6 +341,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="./reports/02-late-delivery/00-executive-memo.html">
  <span class="dropdown-text">02 · Decision memo</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="./reports/03-voice-of-customer/03-voice-of-customer.html">
+ <span class="dropdown-text">03 · Voice of the customer</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./reports/03-voice-of-customer/00-executive-memo.html">
+ <span class="dropdown-text">03 · Decision memo</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item">
@@ -420,17 +428,20 @@ Python, pandas, scikit-learn
 </article>
 <article class="project">
 <div class="project-seq">
-03<span class="project-status status-planned">Planned</span>
+03<span class="project-status status-published">Published</span>
 </div>
 <div class="project-detail">
 <h3 class="anchored">
 What do 99,000 Portuguese-language reviews complain about?
 </h3>
 <p>
-Sentiment and topic modelling, to check from the customer’s side what project 01 finds from the delivery side: whether the complaints are about the parcel or the product.
+Topic modelling of 9,139 written 1–2 star complaints. Late complaints are about the parcel: delivery problems, non-receipt and delay are 81.9% of them. On-time complaints are about the product: quality, completeness and wrong items are 68.9%. The report states the selection before the result.
 </p>
 <p class="project-stack">
 Python, NLP, topic modelling
+</p>
+<p class="project-links">
+<a href="./reports/03-voice-of-customer/03-voice-of-customer.html">Read the analysis</a> <a href="./reports/03-voice-of-customer/00-executive-memo.html">One-page decision memo</a>
 </p>
 </div>
 </article>
@@ -440,7 +451,7 @@ Python, NLP, topic modelling
 <h2 class="anchored" data-anchor-id="how-this-is-built">How this is built</h2>
 <p>Every project here runs from a clean clone.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python tasks.py setup      <span class="co"># dependencies + database + dataset</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python tasks.py pipeline   <span class="co"># load, build, charts, tests, render</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python tasks.py pipeline   <span class="co"># load, build, charts, topics, tests, render</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The dataset comes from a revision-pinned mirror and is checked against expected file sizes on download, so a change to the source data fails the build instead of quietly moving a published number.</p>
 
 

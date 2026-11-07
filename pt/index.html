@@ -341,6 +341,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../pt/reports/02-late-delivery/00-executive-memo.html">
  <span class="dropdown-text">02 · Memorando de decisão</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../pt/reports/03-voice-of-customer/03-voice-of-customer.html">
+ <span class="dropdown-text">03 · Voz do cliente</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../pt/reports/03-voice-of-customer/00-executive-memo.html">
+ <span class="dropdown-text">03 · Memorando de decisão</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item">
@@ -420,17 +428,20 @@ Python, pandas, scikit-learn
 </article>
 <article class="project">
 <div class="project-seq">
-03<span class="project-status status-planned">Planejado</span>
+03<span class="project-status status-published">Publicado</span>
 </div>
 <div class="project-detail">
 <h3 class="anchored">
-Do que 99,000 avaliações em português reclamam?
+Do que 99.000 avaliações em português reclamam?
 </h3>
 <p>
-Análise de sentimento e modelagem de tópicos, para conferir pelo lado do cliente o que o projeto 01 encontra pelo lado da entrega: se as reclamações são sobre o pacote ou sobre o produto.
+Modelagem de tópicos de 9.139 reclamações escritas de 1–2 estrelas. As de pedidos atrasados são sobre o pacote: problema de entrega, não recebimento e demora são 81,9% delas. As de pedidos no prazo são sobre o produto: qualidade, completude e item errado são 68,9%. O relatório declara a seleção antes do resultado.
 </p>
 <p class="project-stack">
 Python, PLN, modelagem de tópicos
+</p>
+<p class="project-links">
+<a href="../pt/reports/03-voice-of-customer/03-voice-of-customer.html">Ler a análise</a> <a href="../pt/reports/03-voice-of-customer/00-executive-memo.html">Memorando de decisão</a>
 </p>
 </div>
 </article>
@@ -440,7 +451,7 @@ Python, PLN, modelagem de tópicos
 <h2 class="anchored" data-anchor-id="como-isto-é-construído">Como isto é construído</h2>
 <p>Todo projeto aqui roda a partir de um clone limpo.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python tasks.py setup      <span class="co"># dependências + banco + dados</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python tasks.py pipeline   <span class="co"># carga, build, gráficos, site</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python tasks.py pipeline   <span class="co"># carga, build, gráficos, tópicos, site</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <p>O conjunto de dados vem de um espelho com revisão fixada e é conferido contra os tamanhos de arquivo esperados no download, então uma mudança nos dados de origem quebra o build em vez de mover um número publicado em silêncio.</p>
 
 
