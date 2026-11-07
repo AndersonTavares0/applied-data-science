@@ -433,7 +433,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>9.139 reclamações utilizáveis</strong> foram escritas com nota 1–2 sobre pedidos entregues: 2.711 de pedidos atrasados e 6.428 de pedidos no prazo.</li>
 <li><strong>As reclamações de pedidos atrasados são quase todas sobre a entrega.</strong> Problemas de entrega são <strong>39,8%</strong> das reclamações de atrasados contra <strong>11,0%</strong> das de pedidos no prazo (<strong>+28,8 pp</strong>). Não recebimento é <strong>25,9%</strong> contra <strong>7,5%</strong> (<strong>+18,4 pp</strong>), e demora é <strong>16,2%</strong> contra <strong>12,6%</strong> (<strong>+3,6 pp</strong>). Todos os intervalos excluem zero.</li>
 <li><strong>As reclamações de pedidos no prazo são quase todas sobre o produto.</strong> Qualidade ou “diferente do anunciado” é <strong>26,7%</strong> das reclamações no prazo contra <strong>5,6%</strong> das de atrasados (<strong>−21,1 pp</strong>). Pedido incompleto é <strong>22,8%</strong> contra <strong>4,2%</strong> (<strong>−18,6 pp</strong>), e item errado, defeito ou troca é <strong>19,4%</strong> contra <strong>8,3%</strong> (<strong>−11,1 pp</strong>).</li>
-<li><strong>Agrupando os tópicos à mão, a separação fica mais nítida.</strong> Os três tópicos de logística somam <strong>81,9%</strong> das reclamações de atrasados e <strong>31,1%</strong> das de pedidos no prazo. Os três tópicos de produto somam <strong>18,1%</strong> das reclamações de atrasados e <strong>68,9%</strong> das de pedidos no prazo. Esse agrupamento é um resumo do analista, não uma saída do modelo.</li>
+<li><strong>Agrupando os tópicos à mão, a separação fica mais nítida.</strong> Entrega e não recebimento somam <strong>65,7%</strong> das reclamações de atrasados e <strong>18,5%</strong> das de pedidos no prazo. Os três tópicos de produto somam <strong>18,1%</strong> das reclamações de atrasados e <strong>68,9%</strong> das de pedidos no prazo. O tópico misto de demora (16,2% vs 12,6%) é reportado separadamente. Esse agrupamento é um resumo do analista, não uma saída do modelo.</li>
 <li><strong>Isto descreve quem escreveu reclamações, não todos os compradores.</strong> Pedidos atrasados são <strong>6,8%</strong> das entregas mas <strong>29,7%</strong> do corpus de reclamações, porque são mais avaliados e muito mais avaliados mal. O relatório compara a <em>mistura</em> das reclamações, e diz isso antes de mostrar qualquer resultado.</li>
 </ul>
 <hr>
@@ -499,54 +499,77 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ol>
 <section id="por-que-seis-tópicos" class="level3">
 <h3 class="anchored" data-anchor-id="por-que-seis-tópicos">Por que seis tópicos</h3>
-<p>Seis não foi escolhido pela perplexidade. A perplexidade cai à medida que tópicos são adicionados e é menor em k=8, enquanto a coerência UMass — se os termos principais de um tópico aparecem juntos no corpus — é maior em k=6 entre os sete candidatos testados. A coerência é o critério porque a perplexidade principalmente recompensa distribuir probabilidade sobre palavras frequentes; ela não diz se um tópico é legível.</p>
+<p>Seis é uma escolha semântica pré-especificada, não um ótimo de coerência. A coerência UMass — se os termos principais de um tópico aparecem juntos no corpus — depende da inicialização: no seed 0 é maior em k=6, mas a média entre seeds é maior em k=4. A tabela repete cada candidato nos seeds 0, 1 e 2:</p>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: right;">Tópicos</th>
-<th style="text-align: right;">Coerência UMass média (10 termos)</th>
-<th style="text-align: right;">Perplexidade</th>
+<th style="text-align: right;">Coerência seed 0</th>
+<th style="text-align: right;">Coerência média</th>
+<th style="text-align: right;">DP entre seeds</th>
+<th style="text-align: right;">Perplexidade média</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: right;">4</td>
 <td style="text-align: right;">−2,699</td>
-<td style="text-align: right;">333,05</td>
+<td style="text-align: right;"><strong>−2,628</strong></td>
+<td style="text-align: right;">0,067</td>
+<td style="text-align: right;">340,09</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">5</td>
 <td style="text-align: right;">−2,699</td>
-<td style="text-align: right;">332,39</td>
+<td style="text-align: right;">−2,692</td>
+<td style="text-align: right;">0,026</td>
+<td style="text-align: right;">343,68</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;"><strong>6</strong></td>
 <td style="text-align: right;"><strong>−2,677</strong></td>
-<td style="text-align: right;"><strong>332,92</strong></td>
+<td style="text-align: right;">−2,739</td>
+<td style="text-align: right;">0,056</td>
+<td style="text-align: right;">342,69</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">7</td>
 <td style="text-align: right;">−2,691</td>
-<td style="text-align: right;">329,96</td>
+<td style="text-align: right;">−2,755</td>
+<td style="text-align: right;">0,118</td>
+<td style="text-align: right;">340,17</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">8</td>
 <td style="text-align: right;">−2,745</td>
-<td style="text-align: right;">329,04</td>
+<td style="text-align: right;">−2,752</td>
+<td style="text-align: right;">0,023</td>
+<td style="text-align: right;">336,73</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">9</td>
 <td style="text-align: right;">−2,850</td>
-<td style="text-align: right;">330,69</td>
+<td style="text-align: right;">−2,845</td>
+<td style="text-align: right;">0,100</td>
+<td style="text-align: right;">341,89</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">10</td>
 <td style="text-align: right;">−2,833</td>
-<td style="text-align: right;">330,43</td>
+<td style="text-align: right;">−2,871</td>
+<td style="text-align: right;">0,043</td>
+<td style="text-align: right;">338,90</td>
 </tr>
 </tbody>
 </table>
-<p>A margem sobre k=4, k=5 e k=7 é pequena: a coerência sozinha não prova que seis é o número verdadeiro, apenas que é o melhor dos candidatos neste corpus e pré-processamento. Os rótulos continuam sendo uma interpretação humana dos termos, e dois pares se sobrepõem: “problema de entrega” e “demora” tratam de entrega, e “não recebido” e “demora” compartilham vocabulário.</p>
+<p>As diferenças são pequenas diante da variação entre seeds, e k=4 funde reclamações de produto e de troca em um só tópico. Seis preserva as distinções entre produto/troca e não recebimento/defeito que a pergunta de negócio precisa, então é o modelo reportado — mas não é o único melhor número. Quem pondera apenas coerência escolheria quatro. Os rótulos também continuam sendo uma interpretação humana dos termos, e dois pares se sobrepõem: “problema de entrega” e “demora” tratam de entrega, e “não recebido” e “demora” compartilham vocabulário.</p>
 </section>
 <section id="quão-estáveis-são-os-tópicos" class="level3">
 <h3 class="anchored" data-anchor-id="quão-estáveis-são-os-tópicos">Quão estáveis são os tópicos?</h3>
@@ -585,7 +608,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<p>O agrupamento logística/produto é mais robusto que as fronteiras exatas. Em cada semente alternativa, todo tópico de logística tem participação de atrasados entre 27% e 67%, enquanto todo tópico de produto fica entre 6% e 25%. A conclusão principal — reclamações de atrasados tratam da entrega, reclamações no prazo tratam do produto — sobrevive; os seis rótulos específicos e os percentuais exatos não devem ser lidos como categorias fixas.</p>
+<p>O contraste entrega/produto é mais robusto que as fronteiras exatas. Em cada semente alternativa, todo tópico ligado à entrega (incluindo o tópico misto de demora) tem participação de atrasados entre 27% e 67%, enquanto todo tópico de produto fica entre 6% e 25%. A conclusão principal — reclamações de atrasados tratam da entrega, reclamações no prazo tratam do produto — sobrevive; os seis rótulos específicos e os percentuais exatos não devem ser lidos como categorias fixas.</p>
 </section>
 <section id="reclamações-mistas-e-atribuição-dura" class="level3">
 <h3 class="anchored" data-anchor-id="reclamações-mistas-e-atribuição-dura">Reclamações mistas e atribuição dura</h3>
@@ -653,7 +676,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p>Os rótulos são legíveis, mas não confiáveis no nível individual: 20 de 30 eram claramente consistentes, 5 eram parcialmente consistentes e 5 eram dominados por outro tema. O tópico de atraso foi o mais fraco — três das cinco reclamações sorteadas tratavam principalmente de qualidade do produto ou item errado —, o que combina com sua baixa estabilidade entre sementes. Esta é a leitura de um analista, não uma codificação humana independente, e 30 reclamações não estimam a acurácia dos rótulos com precisão útil. A auditoria sustenta a leitura ampla do corpus, não a atribuição exata de uma reclamação individual.</p>
-<p>Usar a distribuição completa de tópicos, e não apenas o maior peso, leva à mesma leitura. No corpus, os três tópicos de logística respondem por <strong>75,1%</strong> do peso médio das reclamações de pedidos atrasados contra <strong>36,9%</strong> das reclamações no prazo; os três tópicos de produto respondem por <strong>24,9%</strong> contra <strong>63,1%</strong>. As diferenças por atribuição dura na tabela são maiores, mas a direção não depende de forçar cada reclamação em um único tópico.</p>
+<p>Usar a distribuição completa de tópicos, e não apenas o maior peso, leva à mesma leitura. No corpus, entrega e não recebimento respondem por <strong>58,9%</strong> do peso médio das reclamações de pedidos atrasados contra <strong>22,8%</strong> das reclamações no prazo; os três tópicos de produto respondem por <strong>24,9%</strong> contra <strong>63,1%</strong>. O tópico misto de demora responde por 16,2% contra 14,1%. As diferenças por atribuição dura na tabela são maiores, mas a direção não depende de forçar cada reclamação em um único tópico.</p>
 <!-- Source: reports/topic_terms.csv -->
 <table class="caption-top table">
 <colgroup>
@@ -787,7 +810,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<div id="fig-gap" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Gráfico de barras horizontais da diferença na participação de cada tópico de reclamação entre pedidos atrasados e no prazo. Problema de entrega, não recebido e demora são positivos; qualidade, pedido incompleto e item errado são negativos. O intervalo de 95% de cada barra exclui zero.">
+<div id="fig-gap" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Gráfico de barras horizontais da diferença na participação de cada tópico de reclamação entre pedidos atrasados e no prazo. Problema de entrega, não recebido e demora são positivos; qualidade, pedido incompleto e item errado são negativos. O intervalo de 95% de cada barra exclui zero." data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-gap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="../../../reports/03-voice-of-customer/figures/pt/topic_gap.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Gráfico de barras horizontais da diferença na participação de cada tópico de reclamação entre pedidos atrasados e no prazo. Problema de entrega, não recebido e demora são positivos; qualidade, pedido incompleto e item errado são negativos. O intervalo de 95% de cada barra exclui zero.">
@@ -797,7 +820,7 @@ Figura&nbsp;1: Tópicos sobrerrepresentados e sub-representados nas reclamaçõe
 </figcaption>
 </figure>
 </div>
-<div id="fig-mix" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Barras horizontais pareadas mostrando a participação de cada tópico nas reclamações de pedidos atrasados e no prazo. Problema de entrega, não recebido e demora dominam o grupo atrasado; qualidade, pedido incompleto e item errado dominam o grupo no prazo.">
+<div id="fig-mix" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Barras horizontais pareadas mostrando a participação de cada tópico nas reclamações de pedidos atrasados e no prazo. Problema de entrega, não recebido e demora dominam o grupo atrasado; qualidade, pedido incompleto e item errado dominam o grupo no prazo." data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-mix-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="../../../reports/03-voice-of-customer/figures/pt/topic_mix.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Barras horizontais pareadas mostrando a participação de cada tópico nas reclamações de pedidos atrasados e no prazo. Problema de entrega, não recebido e demora dominam o grupo atrasado; qualidade, pedido incompleto e item errado dominam o grupo no prazo.">
@@ -807,7 +830,7 @@ Figura&nbsp;2: A mistura de reclamações dentro de cada desfecho. Reclamações
 </figcaption>
 </figure>
 </div>
-<p><strong>As reclamações de atrasados são sobre o pacote.</strong> Problema de entrega, não recebimento e demora juntos são 81,9% das reclamações de atrasados, contra 31,1% das de pedidos no prazo. A maior diferença isolada é “problema de entrega”, com +28,8 pp.&nbsp;É o que o Projeto 01 encontrou nos carimbos de tempo de entrega, agora dito nas palavras dos próprios clientes: quando um pedido atrasa, a reclamação é sobre a entrega, não sobre a mercadoria.</p>
+<p><strong>As reclamações de atrasados são sobre o pacote.</strong> Problema de entrega e não recebimento juntos são <strong>65,7%</strong> das reclamações de atrasados, contra <strong>18,5%</strong> das de pedidos no prazo. A maior diferença isolada é “problema de entrega”, com +28,8 pp.&nbsp;O tópico de demora acrescenta apenas +3,6 pp e teve auditoria manual mista, então é reportado separadamente e não entra na logística. É o que o Projeto 01 encontrou nos carimbos de tempo de entrega, agora dito nas palavras dos próprios clientes: quando um pedido atrasa, a reclamação é sobre a entrega, não sobre a mercadoria.</p>
 <p><strong>As reclamações de pedidos no prazo são sobre o produto.</strong> Só qualidade ou “diferente do anunciado” é 26,7% das reclamações no prazo. Pedido incompleto é 22,8%, e item errado, defeito ou troca é 19,4%. São 1.715, 1.466 e 1.249 reclamações, respectivamente, e ocorrem em pedidos que cumpriram o prazo. Quem recebe a cor errada, um item faltando ou um produto danificado reclama do produto mesmo quando o pacote chegou na data.</p>
 <p><strong>A implicação operacional são duas filas, não uma.</strong> Reduzir o atraso removeria a maior fonte de reclamações de atrasados, mas não tocaria nas reclamações de produto e completude que dominam o grupo no prazo. Os dois problemas têm donos e correções diferentes. É uma conclusão mais útil do que uma única nota de sentimento, e só é visível porque o corpus foi dividido por desfecho depois de os tópicos serem ajustados.</p>
 <hr>
@@ -827,13 +850,14 @@ Figura&nbsp;2: A mistura de reclamações dentro de cada desfecho. Reclamações
 <section id="reproduzir" class="level2">
 <h2 class="anchored" data-anchor-id="reproduzir">5. Reproduzir</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python tasks.py topics     <span class="co"># ajusta o modelo, escreve tabelas e figuras</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run pytest                     <span class="co"># 40 testes, sem banco de dados nem rede</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run pytest                     <span class="co"># 53 testes, sem banco de dados nem rede</span></span></code></pre></div><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></div>
 <p>O script lê os modelos construídos, então a ordem no pipeline é <code>load → dbt-build → topics</code>. Ele escreve:</p>
 <ul>
 <li><code>projects/03-voice-of-customer/reports/review_scope.json</code> — escopo e metadados do modelo, incluindo perplexidade e peso médio dos tópicos por desfecho.</li>
 <li><code>projects/03-voice-of-customer/reports/topic_terms.csv</code> — os doze termos principais de cada tópico.</li>
 <li><code>projects/03-voice-of-customer/reports/topic_prevalence.csv</code> — a tabela acima, com p-valores exatos e limites de confiança.</li>
-<li><code>projects/03-voice-of-customer/reports/topic_selection.csv</code> — coerência e perplexidade para k=4–10; o script para se a coerência deixar de escolher k=6.</li>
+<li><code>projects/03-voice-of-customer/reports/topic_groups.csv</code> — o agrupamento em três blocos, com participações por atribuição dura e pesos suaves.</li>
+<li><code>projects/03-voice-of-customer/reports/topic_selection.csv</code> — coerência e perplexidade para k=4–10 nos seeds 0–2. Seis é pré-selecionado por granularidade semântica; o script reporta o melhor k no seed 0 e na média, mas não falha quando diferem.</li>
 <li><code>site/reports/03-voice-of-customer/figures/*.png</code> — as duas figuras, em inglês e português.</li>
 </ul>
 <p>O modelo é determinístico dada a versão fixada do scikit-learn, a semente e o corpus fixo. As âncoras dos tópicos são verificadas em tempo de execução, então uma atualização de biblioteca que reordene os tópicos faz a tarefa falhar em vez de renomeá-los em silêncio.</p>

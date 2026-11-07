@@ -430,8 +430,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="executive-summary" class="level2">
 <h2 class="anchored" data-anchor-id="executive-summary">Executive summary</h2>
 <ul>
-<li><strong>The ranking has signal, but it is moderate and unstable across periods.</strong> On a temporal holdout of 32,150 delivered orders, the selected logistic model reaches <strong>ROC AUC 0.708</strong> (95% bootstrap interval 0.695–0.720) and <strong>average precision 0.091</strong> (0.083–0.101) against a 4.42% late rate. Flagging the riskiest 10% captures <strong>23.5% of late orders</strong> at <strong>10.4% precision — 2.35× the base rate</strong>.</li>
-<li><strong>The model class is not settled by this evidence.</strong> Logistic regression won an inner validation period on average precision, but gradient boosting scored slightly better on the final holdout (AP 0.103 vs 0.091; top-decile recall 28.6% vs 23.5%). The difference is small, and a single holdout cannot establish a reliable ranking between them. The report shows both rather than declaring a winner from the test set.</li>
+<li><strong>The ranking has signal, but it is moderate and unstable across periods.</strong> On a temporal holdout of 32,150 delivered orders, the selected logistic model reaches <strong>ROC AUC 0.708</strong> (95% bootstrap interval 0.695–0.722) and <strong>average precision 0.091</strong> (0.083–0.100) against a 4.42% late rate. Flagging the riskiest 10% captures <strong>23.5% of late orders</strong> at <strong>10.4% precision — 2.35× the base rate</strong>.</li>
+<li><strong>The model class is not settled by this evidence.</strong> Logistic regression won the rolling-origin comparison (mean AP 0.138 vs 0.102), but gradient boosting scored better on the final holdout (AP 0.103 vs 0.091). A paired bootstrap over holdout rows puts the logistic-minus-boosting AP difference at <strong>−0.0125 (95% interval −0.0215 to −0.0035)</strong>. That interval describes rows within this period, not period-to-period variation; one holdout cannot settle the choice. The report shows both rather than declaring a winner from the test set.</li>
 <li><strong>The score is a triage queue, not a probability.</strong> The holdout late rate is 4.42%, while the selected model’s mean prediction is 6.38%. Its calibration slope is near one (1.02) but its intercept is −0.35 on the logit scale: it ranks reasonably and overpredicts the level. A deployed probability would need recalibration on recent, matured orders.</li>
 <li><strong>Promise length and geography dominate.</strong> Permutation importance ranks <code>promise_days</code> first, then <code>customer_state</code> and <code>seller_state</code>. Basket value, freight, weight, payment method and category contribute little once those are known.</li>
 <li><strong>The result is not a causal lever.</strong> <code>promise_days</code> is the marketplace’s own expectation of difficulty. Shortening it would not mechanically reduce lateness; Project 01’s operational question about the São Paulo → Rio crossing remains the causal one.</li>
@@ -485,7 +485,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Target:</strong> <code>is_late</code>, defined in Project 01 as the delivery date being strictly after the promised date. Orders without an observed delivery timestamp have no label and are excluded. That is not the same as “never delivered”: the 2,965 excluded orders are mostly still in flight or cancelled at the end of the dataset (1,107 shipped, 619 cancelled, 609 unavailable, 314 invoiced, 301 processing, 8 delivered with an incomplete timestamp, and a few earlier statuses).</p>
 <p><strong>Split:</strong> purchases before <strong>2018-04-01</strong> are the training period; purchases on or after that date are the test period (32,150 orders, 4.42% late). A random split would put the same months on both sides and let the model learn a specific backlog instead of a pattern.</p>
 <p><strong>Label maturity:</strong> a training order must have been both purchased and delivered before the cutoff. Without that rule, 3,852 orders purchased before April but delivered after it would contribute labels that did not exist on the deployment date. The mature training set has <strong>60,474 orders and a 5.97% late rate</strong>.</p>
-<p><strong>Model selection:</strong> the training period is split again at <strong>2018-01-01</strong>. Models are fitted before that date (41,202 orders) and compared on January–March 2018 (16,783 orders, 6.91% late). Average precision selects logistic regression (0.127 vs 0.101 for boosting). The selected model is then refitted on the full mature training set and evaluated once on the April–August holdout. Both models are reported on the holdout as a sensitivity check, not used to re-select.</p>
+<p><strong>Model selection:</strong> rolling origin. At 2017-07-01, 2017-10-01 and 2018-01-01, each model is fitted on labels matured before the origin and scored on the next three months. A test label is required to have matured within three months after the horizon, so an order that arrives late is not silently dropped from the evaluation. Average precision across the three origins selects logistic regression (<strong>0.138 vs 0.102</strong> for boosting). An earlier single validation period (fit before 2018-01, validate January–March 2018, 16,783 orders, 6.91% late) is still reported for description only; it is not the selection criterion. The selected model is refitted on the full mature training set and evaluated once on the April–August holdout. Both models are reported on the holdout as a sensitivity check, not used to re-select.</p>
 <p><strong>Metrics:</strong> ROC AUC and average precision for ranking; Brier score and a calibration summary for probabilities; precision, recall and lift at 5%, 10% and 20% review capacities. The base rate is 4.42%, so accuracy is useless here — predicting “not late” for every order is 95.6% accurate.</p>
 <hr>
 </section>
@@ -536,24 +536,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">—</td>
 <td style="text-align: right;">—</td>
 <td style="text-align: right;">0.0425</td>
-<td style="text-align: right;">4.1%*</td>
-<td style="text-align: right;">9.2%*</td>
-<td style="text-align: right;">0.92×*</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
 </tr>
 <tr class="even">
 <td>Customer-state rate</td>
 <td style="text-align: right;">—</td>
 <td style="text-align: right;">—</td>
 <td style="text-align: right;">0.0427</td>
-<td style="text-align: right;">4.8%</td>
-<td style="text-align: right;">10.8%</td>
-<td style="text-align: right;">1.08×</td>
+<td style="text-align: right;">5.1%</td>
+<td style="text-align: right;">11.6%</td>
+<td style="text-align: right;">1.16×</td>
 </tr>
 </tbody>
 </table>
-<p>* A constant score cannot rank; the top-decile figures are an arbitrary slice of a tie and are shown only to make the comparison explicit.</p>
-<p>The two models are close enough that the holdout does not distinguish them. The selected logistic model has a slightly better Brier score than the constant baseline (0.0420 vs 0.0425), but its advantage in ranking is the real result. Gradient boosting is better at the very top of the queue; logistic regression is easier to interpret and was chosen without looking at the holdout. A production team should treat the model class as an open choice and decide it with a rolling evaluation, not with this single test period.</p>
-<div id="fig-pr" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Precision-recall curves for logistic regression and gradient boosting on the 32,150-order temporal holdout. Both sit above the 4.42 percent base-rate line, with gradient boosting slightly higher at the top of the ranking.">
+<p>A constant score cannot rank, so it has no meaningful top-decile metrics; the earlier table reported an arbitrary tie slice, which made the baseline look better than it was. Its Brier score remains a valid check on the probability level.</p>
+<p>The two models are close on AUC, but the paired difference in average precision is real within this holdout: boosting is better at the top of the queue. Logistic regression is easier to interpret and won the rolling-origin comparison without looking at the April–August test. That disagreement is the honest result: a production team should treat the model class as an open choice and decide it with a longer rolling evaluation, not with this single test period.</p>
+<div id="fig-pr" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Precision-recall curves for logistic regression and gradient boosting on the 32,150-order temporal holdout. Both sit above the 4.42 percent base-rate line, with gradient boosting slightly higher at the top of the ranking." data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-pr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="figures/precision_recall.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Precision-recall curves for logistic regression and gradient boosting on the 32,150-order temporal holdout. Both sit above the 4.42 percent base-rate line, with gradient boosting slightly higher at the top of the ranking.">
@@ -612,13 +612,13 @@ Figure&nbsp;1: Precision–recall curve for both models on the temporal holdout.
 </tbody>
 </table>
 <p>The queue degrades gracefully: doubling the review budget from 10% to 20% finds another 276 late orders, but precision falls from 10.4% to 9.5%. The right capacity is a cost decision the dataset cannot make for us.</p>
-<p>Bootstrap intervals (500 resamples) put the 10% operating point at 9.3–11.5% precision, 21.6–25.6% recall and 2.16–2.56× lift. Those intervals describe sampling noise within this holdout; they do not cover the regime change between periods.</p>
+<p>Bootstrap intervals (500 resamples) put the 10% operating point at 9.4–11.5% precision, 21.5–25.6% recall and 2.15–2.56× lift. Those intervals describe sampling noise within this holdout; they do not cover the regime change between periods.</p>
 <hr>
 </section>
 </section>
 <section id="calibration-and-why-the-probability-is-not-the-product" class="level2">
 <h2 class="anchored" data-anchor-id="calibration-and-why-the-probability-is-not-the-product">4. Calibration, and why the probability is not the product</h2>
-<div id="fig-cal" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Calibration plot comparing predicted and observed late-delivery rates in ten score bins. Both models predict higher late rates than are observed in the holdout, especially in the highest bins.">
+<div id="fig-cal" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Calibration plot comparing predicted and observed late-delivery rates in ten score bins. Both models predict higher late rates than are observed in the holdout, especially in the highest bins." data-fig-align="center">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-cal-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="figures/calibration.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Calibration plot comparing predicted and observed late-delivery rates in ten score bins. Both models predict higher late rates than are observed in the holdout, especially in the highest bins.">
@@ -724,42 +724,33 @@ Figure&nbsp;2: Calibration on the temporal holdout. The dashed diagonal is perfe
 <tr class="odd">
 <td>2017-07</td>
 <td style="text-align: right;">13,111</td>
-<td style="text-align: right;">12,215</td>
+<td style="text-align: right;">12,214</td>
 <td style="text-align: right;">3.37%</td>
-<td style="text-align: right;">0.615</td>
+<td style="text-align: right;">0.614</td>
 <td style="text-align: right;">0.059</td>
 <td style="text-align: right;">20.1%</td>
 </tr>
 <tr class="even">
 <td>2017-10</td>
 <td style="text-align: right;">24,833</td>
-<td style="text-align: right;">17,279</td>
-<td style="text-align: right;">8.69%</td>
+<td style="text-align: right;">17,272</td>
+<td style="text-align: right;">8.66%</td>
 <td style="text-align: right;">0.586</td>
-<td style="text-align: right;">0.111</td>
+<td style="text-align: right;">0.110</td>
 <td style="text-align: right;">14.2%</td>
 </tr>
 <tr class="odd">
 <td>2018-01</td>
 <td style="text-align: right;">41,202</td>
-<td style="text-align: right;">20,628</td>
-<td style="text-align: right;">12.89%</td>
-<td style="text-align: right;">0.675</td>
+<td style="text-align: right;">20,624</td>
+<td style="text-align: right;">12.87%</td>
+<td style="text-align: right;">0.674</td>
 <td style="text-align: right;">0.245</td>
 <td style="text-align: right;">25.0%</td>
 </tr>
-<tr class="even">
-<td>2018-04</td>
-<td style="text-align: right;">60,474</td>
-<td style="text-align: right;">19,643</td>
-<td style="text-align: right;">4.17%</td>
-<td style="text-align: right;">0.752</td>
-<td style="text-align: right;">0.119</td>
-<td style="text-align: right;">35.1%</td>
-</tr>
 </tbody>
 </table>
-<p>The ranking is positive in every window but ranges from weak (AUC 0.59) to useful (AUC 0.75). That is the honest uncertainty around a single headline number, and it argues for monitoring rather than a one-off deployment claim.</p>
+<p>The ranking is positive in every window but ranges from weak (AUC 0.59) to useful (AUC 0.67). These test populations require labels to have matured within three months after the horizon, so they are not identical to the headline test set. That is the honest uncertainty around a single headline number, and it argues for monitoring rather than a one-off deployment claim.</p>
 <hr>
 </section>
 <section id="what-the-model-is-using" class="level2">
@@ -814,7 +805,7 @@ Figure&nbsp;2: Calibration on the temporal holdout. The dashed diagonal is perfe
 <section id="limitations" class="level2">
 <h2 class="anchored" data-anchor-id="limitations">7. Limitations</h2>
 <ul>
-<li><strong>One holdout, and a moving regime.</strong> The test period contains the 2018-02/03 backlog and the abrupt improvement after it. Monthly and rolling-origin results show AUC from 0.59 to 0.75. A production decision needs a longer rolling evaluation, not this single split.</li>
+<li><strong>One holdout, and a moving regime.</strong> The test period contains the 2018-02/03 backlog and the abrupt improvement after it. Monthly and rolling-origin results show AUC from 0.59 to 0.67. The rolling-origin test populations are label-matured subsets, so they are not identical to the headline test set. A production decision needs a longer rolling evaluation, not this single split.</li>
 <li><strong>Excluded orders are not a random sample.</strong> 2,965 orders have no observable late label. Most are in flight or cancelled at the end of the dataset. The model is evaluated on delivered orders, so it says nothing about whether a cancelled order would have been late.</li>
 <li><strong>No carrier or warehouse identifier.</strong> The dataset stops at seller and state. The most plausible operational cause of lateness is therefore not in the model.</li>
 <li><strong>The label is the promise, not the customer’s expectation.</strong> An order can be “late” against an aggressive promise and still arrive when the customer expected it. Project 01 shows the review gap is real, but the label inherits the promise’s definition.</li>

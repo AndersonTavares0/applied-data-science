@@ -433,7 +433,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>9,139 usable complaints</strong> were written on 1–2 stars about delivered orders: 2,711 from late orders and 6,428 from on-time orders.</li>
 <li><strong>Late complaints are overwhelmingly about delivery.</strong> Delivery problems are <strong>39.8%</strong> of late complaints against <strong>11.0%</strong> of on-time complaints (<strong>+28.8 pp</strong>). Non-receipt is <strong>25.9%</strong> against <strong>7.5%</strong> (<strong>+18.4 pp</strong>), and delay is <strong>16.2%</strong> against <strong>12.6%</strong> (<strong>+3.6 pp</strong>). Every interval excludes zero.</li>
 <li><strong>On-time complaints are overwhelmingly about the product.</strong> Quality or “not as described” is <strong>26.7%</strong> of on-time complaints against <strong>5.6%</strong> of late ones (<strong>−21.1 pp</strong>). Incomplete orders are <strong>22.8%</strong> against <strong>4.2%</strong> (<strong>−18.6 pp</strong>), and wrong item, defect or return is <strong>19.4%</strong> against <strong>8.3%</strong> (<strong>−11.1 pp</strong>).</li>
-<li><strong>Grouping the topics by hand makes the split starker.</strong> The three logistics topics account for <strong>81.9%</strong> of late complaints and <strong>31.1%</strong> of on-time complaints. The three product topics account for <strong>18.1%</strong> of late complaints and <strong>68.9%</strong> of on-time complaints. That grouping is an analyst’s summary, not a model output.</li>
+<li><strong>Grouping the topics by hand makes the split starker.</strong> Delivery and non-receipt together account for <strong>65.7%</strong> of late complaints and <strong>18.5%</strong> of on-time complaints. The three product topics account for <strong>18.1%</strong> of late complaints and <strong>68.9%</strong> of on-time complaints. The remaining delay topic is mixed and is not counted as logistics. That grouping is an analyst’s summary, not a model output.</li>
 <li><strong>This is a description of people who wrote complaints, not of all buyers.</strong> Late orders are <strong>6.8%</strong> of deliveries but <strong>29.7%</strong> of the complaint corpus, because late orders are both more likely to be reviewed and much more likely to be reviewed badly. The report compares the <em>mix</em> of complaints, and says so before showing any result.</li>
 </ul>
 <hr>
@@ -499,54 +499,77 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ol>
 <section id="why-six-topics" class="level3">
 <h3 class="anchored" data-anchor-id="why-six-topics">Why six topics</h3>
-<p>Six was not chosen by perplexity. Perplexity falls as topics are added and is lowest at k=8, while UMass coherence — whether the top terms of a topic appear together in the corpus — is highest at k=6 among the seven candidates tested. Coherence is the criterion because perplexity mostly rewards spreading probability over frequent words; it does not say whether a topic is readable.</p>
+<p>Six is a prespecified semantic choice, not a coherence optimum. UMass coherence — whether the top terms of a topic appear together in the corpus — depends on the initialisation: at seed 0 it is highest at k=6, but the seed-averaged score is highest at k=4. The table below repeats every candidate over seeds 0, 1 and 2:</p>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: right;">Topics</th>
-<th style="text-align: right;">Mean UMass coherence (top 10 terms)</th>
-<th style="text-align: right;">Perplexity</th>
+<th style="text-align: right;">Seed-0 coherence</th>
+<th style="text-align: right;">Mean coherence</th>
+<th style="text-align: right;">SD across seeds</th>
+<th style="text-align: right;">Mean perplexity</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: right;">4</td>
 <td style="text-align: right;">−2.699</td>
-<td style="text-align: right;">333.05</td>
+<td style="text-align: right;"><strong>−2.628</strong></td>
+<td style="text-align: right;">0.067</td>
+<td style="text-align: right;">340.09</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">5</td>
 <td style="text-align: right;">−2.699</td>
-<td style="text-align: right;">332.39</td>
+<td style="text-align: right;">−2.692</td>
+<td style="text-align: right;">0.026</td>
+<td style="text-align: right;">343.68</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;"><strong>6</strong></td>
 <td style="text-align: right;"><strong>−2.677</strong></td>
-<td style="text-align: right;"><strong>332.92</strong></td>
+<td style="text-align: right;">−2.739</td>
+<td style="text-align: right;">0.056</td>
+<td style="text-align: right;">342.69</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">7</td>
 <td style="text-align: right;">−2.691</td>
-<td style="text-align: right;">329.96</td>
+<td style="text-align: right;">−2.755</td>
+<td style="text-align: right;">0.118</td>
+<td style="text-align: right;">340.17</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">8</td>
 <td style="text-align: right;">−2.745</td>
-<td style="text-align: right;">329.04</td>
+<td style="text-align: right;">−2.752</td>
+<td style="text-align: right;">0.023</td>
+<td style="text-align: right;">336.73</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">9</td>
 <td style="text-align: right;">−2.850</td>
-<td style="text-align: right;">330.69</td>
+<td style="text-align: right;">−2.845</td>
+<td style="text-align: right;">0.100</td>
+<td style="text-align: right;">341.89</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">10</td>
 <td style="text-align: right;">−2.833</td>
-<td style="text-align: right;">330.43</td>
+<td style="text-align: right;">−2.871</td>
+<td style="text-align: right;">0.043</td>
+<td style="text-align: right;">338.90</td>
 </tr>
 </tbody>
 </table>
-<p>The margin over k=4, k=5 and k=7 is small: coherence alone does not prove that six is the one true number, only that it is the best of the candidates under this corpus and preprocessing. The labels remain a human interpretation of the terms, and two pairs overlap: “delivery problem” and “delay” both concern delivery, and “not received” and “delay” share vocabulary.</p>
+<p>The differences are small relative to the seed spread, and k=4 merges product and return complaints into one topic. Six keeps the product/return and non-receipt/defect distinctions that the business question needs, so it is the reported model — but it is not the unique best count. A reviewer who weights coherence alone would choose four. The labels also remain a human interpretation of the terms, and two pairs overlap: “delivery problem” and “delay” both concern delivery, and “not received” and “delay” share vocabulary.</p>
 </section>
 <section id="how-stable-are-the-topics" class="level3">
 <h3 class="anchored" data-anchor-id="how-stable-are-the-topics">How stable are the topics?</h3>
@@ -585,7 +608,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<p>The logistics/product grouping is more robust than the exact boundaries. In each alternative seed, every logistics topic has a late share between 27% and 67%, while every product topic stays between 6% and 25%. The main finding — late complaints are about delivery, on-time complaints about the product — survives; the six specific labels and the exact percentages should not be read as fixed categories.</p>
+<p>The delivery/product contrast is more robust than the exact boundaries. In each alternative seed, every delivery-related topic (including the mixed delay topic) has a late share between 27% and 67%, while every product topic stays between 6% and 25%. The main finding — late complaints are about delivery, on-time complaints about the product — survives; the six specific labels and the exact percentages should not be read as fixed categories.</p>
 </section>
 <section id="mixed-complaints-and-hard-assignment" class="level3">
 <h3 class="anchored" data-anchor-id="mixed-complaints-and-hard-assignment">Mixed complaints and hard assignment</h3>
@@ -653,7 +676,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 <p>The labels are readable but not reliable at the individual level: 20 of 30 were clearly consistent, 5 were partly consistent, and 5 were dominated by another theme. The delay topic was the weakest — three of its five sampled complaints were mainly about product quality or wrong items — which matches its low seed stability. This is one analyst’s review, not independent human coding, and 30 complaints cannot estimate label accuracy with useful precision. It supports the broad reading of the corpus, not the exact assignment of an individual complaint.</p>
-<p>Using the full topic distribution instead of only the largest weight gives the same picture. Across the corpus, the three logistics topics account for <strong>75.1%</strong> of the mean topic weight in late complaints against <strong>36.9%</strong> in on-time complaints; the three product topics account for <strong>24.9%</strong> against <strong>63.1%</strong>. The hard-assignment gaps in the table are larger, but the direction does not depend on forcing each complaint into one topic.</p>
+<p>Using the full topic distribution instead of only the largest weight gives the same picture. Delivery and non-receipt carry <strong>58.9%</strong> of the mean topic weight in late complaints against <strong>22.8%</strong> in on-time complaints; the three product topics carry <strong>24.9%</strong> against <strong>63.1%</strong>. The mixed delay topic carries 16.2% against 14.1%. The hard-assignment gaps in the table are larger, but the direction does not depend on forcing each complaint into one topic.</p>
 <!-- Source: reports/topic_terms.csv -->
 <table class="caption-top table">
 <colgroup>
@@ -787,7 +810,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<div id="fig-gap" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Horizontal bar chart of the difference in each complaint topic's share between late and on-time orders. Delivery problem, not received and delay are positive; quality, incomplete order and wrong item are negative. Every bar's 95% interval excludes zero." data-fig-align="center">
+<div id="fig-gap" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Horizontal bar chart of the difference in each complaint topic's share between late and on-time orders. Delivery problem, not received and delay are positive; quality, incomplete order and wrong item are negative. Every bar's 95% interval excludes zero.">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-gap-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="figures/topic_gap.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Horizontal bar chart of the difference in each complaint topic's share between late and on-time orders. Delivery problem, not received and delay are positive; quality, incomplete order and wrong item are negative. Every bar's 95% interval excludes zero.">
@@ -797,7 +820,7 @@ Figure&nbsp;1: Topics over- and under-represented among late complaints. Orange 
 </figcaption>
 </figure>
 </div>
-<div id="fig-mix" class="quarto-float quarto-figure quarto-figure-center anchored" alt="Paired horizontal bars showing each topic's share of late complaints and of on-time complaints. Delivery problem, not received and delay dominate the late group; quality, incomplete order and wrong item dominate the on-time group." data-fig-align="center">
+<div id="fig-mix" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Paired horizontal bars showing each topic's share of late complaints and of on-time complaints. Delivery problem, not received and delay dominate the late group; quality, incomplete order and wrong item dominate the on-time group.">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-mix-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <img src="figures/topic_mix.png" class="img-fluid quarto-figure quarto-figure-center figure-img" alt="Paired horizontal bars showing each topic's share of late complaints and of on-time complaints. Delivery problem, not received and delay dominate the late group; quality, incomplete order and wrong item dominate the on-time group.">
@@ -807,7 +830,7 @@ Figure&nbsp;2: The complaint mix within each outcome. Late complaints are mostly
 </figcaption>
 </figure>
 </div>
-<p><strong>The late complaints are about the parcel.</strong> Delivery problem, non-receipt and delay together are 81.9% of late complaints, against 31.1% of on-time complaints. The largest single gap is “delivery problem” at +28.8 pp.&nbsp;This is what Project 01 found from delivery timestamps, now said in the customers’ own words: when an order is late, the complaint is about the delivery, not about the merchandise.</p>
+<p><strong>The late complaints are about the parcel.</strong> Delivery problem and non-receipt together are <strong>65.7%</strong> of late complaints, against <strong>18.5%</strong> of on-time complaints. The largest single gap is “delivery problem” at +28.8 pp.&nbsp;The delay topic adds only +3.6 pp and its manual audit was mixed, so it is reported separately rather than counted as logistics. This is what Project 01 found from delivery timestamps, now said in the customers’ own words: when an order is late, the complaint is about the delivery, not about the merchandise.</p>
 <p><strong>The on-time complaints are about the product.</strong> Quality or “not as described” alone is 26.7% of on-time complaints. Incomplete orders are 22.8%, and wrong item, defect or return is 19.4%. These are 1,715, 1,466 and 1,249 complaints respectively, and they occur on orders that met the promise. A customer who receives the wrong colour, a missing item or a damaged product complains about the product even when the parcel arrived on time.</p>
 <p><strong>The operational implication is two queues, not one.</strong> Reducing lateness would remove the largest source of late complaints, but it would not touch the product and completeness complaints that dominate the on-time group. The two problems have different owners and different fixes. That is a more useful conclusion than a single sentiment score, and it is visible only because the corpus was split by outcome after the topics were fitted.</p>
 <hr>
@@ -827,13 +850,14 @@ Figure&nbsp;2: The complaint mix within each outcome. Late complaints are mostly
 <section id="reproduce-it" class="level2">
 <h2 class="anchored" data-anchor-id="reproduce-it">5. Reproduce it</h2>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python tasks.py topics     <span class="co"># fit the model, write tables and figures</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run pytest                     <span class="co"># 40 tests, no database or network needed</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run pytest                     <span class="co"># 53 tests, no database or network needed</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>The script reads the built marts, so the pipeline order is <code>load → dbt-build → topics</code>. It writes:</p>
 <ul>
 <li><code>projects/03-voice-of-customer/reports/review_scope.json</code> — scope and model metadata, including perplexity and mean topic weight by outcome.</li>
 <li><code>projects/03-voice-of-customer/reports/topic_terms.csv</code> — the twelve top terms for each topic.</li>
 <li><code>projects/03-voice-of-customer/reports/topic_prevalence.csv</code> — the table above, with exact p-values and confidence bounds.</li>
-<li><code>projects/03-voice-of-customer/reports/topic_selection.csv</code> — coherence and perplexity for k=4–10; the script stops if coherence no longer selects k=6.</li>
+<li><code>projects/03-voice-of-customer/reports/topic_groups.csv</code> — the three-way grouping, with hard-assignment shares and soft topic weights.</li>
+<li><code>projects/03-voice-of-customer/reports/topic_selection.csv</code> — coherence and perplexity for k=4–10 at seeds 0–2. Six is preselected for semantic granularity; the script reports the seed-0 and seed-averaged best counts but does not fail when they differ.</li>
 <li><code>site/reports/03-voice-of-customer/figures/*.png</code> — the two figures, in English and Portuguese.</li>
 </ul>
 <p>The model is deterministic given the pinned scikit-learn version, the seed and the fixed corpus. The topic anchors are checked at runtime, so a library upgrade that reorders the topics fails the task instead of silently relabelling them.</p>

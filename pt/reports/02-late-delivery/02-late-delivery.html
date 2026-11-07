@@ -430,7 +430,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="resumo-executivo" class="level2">
 <h2 class="anchored" data-anchor-id="resumo-executivo">Resumo executivo</h2>
 <ul>
-<li><strong>O ranking tem sinal, mas é moderado e instável entre períodos.</strong> Em uma amostra temporal de 32.150 pedidos entregues, o modelo logístico selecionado alcança <strong>ROC AUC 0,708</strong> (intervalo bootstrap de 95%: 0,695–0,720) e <strong>precisão média 0,091</strong> (0,083–0,101) contra uma taxa de atraso de 4,42%. Sinalizar os 10% de maior risco captura <strong>23,5% dos atrasos</strong> com <strong>precisão de 10,4% — 2,35× a taxa base</strong>.</li>
+<li><strong>O ranking tem sinal, mas é moderado e instável entre períodos.</strong> Em uma amostra temporal de 32.150 pedidos entregues, o modelo logístico selecionado alcança <strong>ROC AUC 0,708</strong> (intervalo bootstrap de 95%: 0,695–0,722) e <strong>precisão média 0,091</strong> (0,083–0,100) contra uma taxa de atraso de 4,42%. Sinalizar os 10% de maior risco captura <strong>23,5% dos atrasos</strong> com <strong>precisão de 10,4% — 2,35× a taxa base</strong>.</li>
 <li><strong>A classe do modelo não está decidida por esta evidência.</strong> A regressão logística venceu um período interno de validação por precisão média, mas o gradient boosting foi levemente melhor na amostra final (precisão média 0,103 contra 0,091; recall no decil superior 28,6% contra 23,5%). A diferença é pequena e uma única amostra temporal não estabelece um ranking confiável entre os dois. O relatório mostra ambos em vez de declarar um vencedor a partir do teste.</li>
 <li><strong>O score é uma fila de triagem, não uma probabilidade.</strong> A taxa de atraso da amostra é 4,42%, enquanto a previsão média do modelo selecionado é 6,38%. A inclinação de calibração é próxima de um (1,02), mas o intercepto é −0,35 na escala logit: o modelo ordena razoavelmente e superestima o nível. Uma probabilidade em produção precisaria ser recalibrada com pedidos recentes e maduros.</li>
 <li><strong>Prazo e geografia dominam.</strong> A importância por permutação coloca <code>promise_days</code> em primeiro lugar, seguido de <code>customer_state</code> e <code>seller_state</code>. Valor, frete, peso, pagamento e categoria acrescentam pouco depois disso.</li>
@@ -485,7 +485,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Alvo:</strong> <code>is_late</code>, definido no Projeto 01 como a data de entrega estritamente posterior à data prometida. Pedidos sem data de entrega observada não têm rótulo e ficam de fora. Isso não é o mesmo que “nunca entregue”: os 2.965 pedidos excluídos estão majoritariamente em trânsito ou cancelados no fim do conjunto (1.107 enviados, 619 cancelados, 609 indisponíveis, 314 faturados, 301 em processamento, 8 entregues com data incompleta e alguns status anteriores).</p>
 <p><strong>Divisão:</strong> compras antes de <strong>2018-04-01</strong> formam o período de treino; compras a partir dessa data formam o teste (32.150 pedidos, 4,42% atrasados). Uma divisão aleatória colocaria os mesmos meses dos dois lados e deixaria o modelo aprender um backlog específico em vez de um padrão.</p>
 <p><strong>Maturação do rótulo:</strong> um pedido de treino precisa ter sido comprado e entregue antes do corte. Sem essa regra, 3.852 pedidos comprados antes de abril mas entregues depois contribuiriam com rótulos que não existiam na data de implantação. O conjunto de treino maduro tem <strong>60.474 pedidos e taxa de atraso de 5,97%</strong>.</p>
-<p><strong>Seleção de modelo:</strong> o período de treino é dividido novamente em <strong>2018-01-01</strong>. Os modelos são ajustados antes dessa data (41.202 pedidos) e comparados em janeiro–março de 2018 (16.783 pedidos, 6,91% atrasados). A precisão média seleciona a regressão logística (0,127 contra 0,101 do boosting). O modelo selecionado é reajustado em todo o treino maduro e avaliado uma única vez na amostra de abril–agosto. Os dois modelos são reportados no teste como checagem de sensibilidade, não para re-selecionar.</p>
+<p><strong>Seleção de modelo:</strong> origem móvel. Em 2017-07-01, 2017-10-01 e 2018-01-01, cada modelo é ajustado com rótulos maduros antes da origem e avaliado nos três meses seguintes. O rótulo de teste precisa ter amadurecido até três meses depois do horizonte, para que um pedido que chega atrasado não seja silenciosamente excluído da avaliação. A precisão média nas três origens seleciona a regressão logística (<strong>0,138 contra 0,102</strong> do boosting). Um período interno único de validação (ajuste antes de 2018-01, validação em janeiro–março de 2018, 16.783 pedidos, 6,91% atrasados) continua reportado apenas para descrição; não é o critério de seleção. O modelo selecionado é reajustado em todo o treino maduro e avaliado uma única vez na amostra de abril–agosto. Os dois modelos são reportados no teste como checagem de sensibilidade, não para re-selecionar.</p>
 <p><strong>Métricas:</strong> ROC AUC e precisão média para ranking; Brier e resumo de calibração para probabilidades; precisão, recall e lift em capacidades de 5%, 10% e 20% de revisão. A taxa base é 4,42%, então acurácia é inútil aqui — prever “não atrasado” para todo pedido acerta 95,6%.</p>
 <hr>
 </section>
@@ -536,23 +536,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">—</td>
 <td style="text-align: right;">—</td>
 <td style="text-align: right;">0,0425</td>
-<td style="text-align: right;">4,1%*</td>
-<td style="text-align: right;">9,2%*</td>
-<td style="text-align: right;">0,92×*</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
+<td style="text-align: right;">—</td>
 </tr>
 <tr class="even">
 <td>Taxa por estado do cliente</td>
 <td style="text-align: right;">—</td>
 <td style="text-align: right;">—</td>
 <td style="text-align: right;">0,0427</td>
-<td style="text-align: right;">4,8%</td>
-<td style="text-align: right;">10,8%</td>
-<td style="text-align: right;">1,08×</td>
+<td style="text-align: right;">5,1%</td>
+<td style="text-align: right;">11,6%</td>
+<td style="text-align: right;">1,16×</td>
 </tr>
 </tbody>
 </table>
-<p>* Um score constante não ordena; os números do decil superior são uma fatia arbitrária de um empate e aparecem apenas para tornar a comparação explícita.</p>
-<p>Os dois modelos são próximos o suficiente para que a amostra não os distinga. A regressão logística selecionada tem Brier levemente melhor que a constante (0,0420 contra 0,0425), mas sua vantagem no ranking é o resultado real. O gradient boosting é melhor no topo da fila; a regressão logística é mais fácil de interpretar e foi escolhida sem olhar o teste. Uma equipe de produção deveria tratar a classe do modelo como uma escolha aberta e decidi-la com avaliação móvel, não com este único período.</p>
+<p>Um score constante não ordena, então não tem métricas de decil superior com sentido; a versão anterior reportava uma fatia arbitrária de um empate, o que fazia a baseline parecer melhor do que era. O Brier continua válido como verificação do nível da probabilidade.</p>
+<p>Os dois modelos são próximos em AUC, mas a diferença pareada em precisão média é real dentro desta amostra: o boosting é melhor no topo da fila. A regressão logística é mais fácil de interpretar e venceu a comparação com origem móvel sem olhar o teste de abril–agosto. Essa discordância é o resultado honesto: uma equipe de produção deveria tratar a classe do modelo como uma escolha aberta e decidi-la com uma avaliação móvel mais longa, não com este único período.</p>
 <div id="fig-pr" class="quarto-float quarto-figure quarto-figure-center anchored" data-fig-align="center" alt="Curvas de precisão-recall da regressão logística e do gradient boosting na amostra temporal de 32.150 pedidos. Ambas ficam acima da linha de taxa base de 4,42 por cento, com o gradient boosting levemente acima no topo do ranking.">
 <figure class="quarto-float quarto-float-fig figure">
 <div aria-describedby="fig-pr-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
@@ -612,7 +612,7 @@ Figura&nbsp;1: Curva de precisão–recall dos dois modelos na amostra temporal.
 </tbody>
 </table>
 <p>A fila degrada de forma suave: dobrar o orçamento de 10% para 20% encontra mais 276 atrasos, mas a precisão cai de 10,4% para 9,5%. A capacidade certa é uma decisão de custo que o conjunto não permite tomar.</p>
-<p>Intervalos bootstrap (500 reamostragens) colocam o ponto de 10% em 9,3–11,5% de precisão, 21,6–25,6% de recall e 2,16–2,56× de lift. Esses intervalos descrevem o ruído amostral dentro desta amostra; não cobrem a mudança de regime entre períodos.</p>
+<p>Intervalos bootstrap (500 reamostragens) colocam o ponto de 10% em 9,4–11,5% de precisão, 21,5–25,6% de recall e 2,15–2,56× de lift. Esses intervalos descrevem o ruído amostral dentro desta amostra; não cobrem a mudança de regime entre períodos.</p>
 <hr>
 </section>
 </section>
@@ -724,42 +724,33 @@ Figura&nbsp;2: Calibração na amostra temporal. A diagonal tracejada é a calib
 <tr class="odd">
 <td>2017-07</td>
 <td style="text-align: right;">13.111</td>
-<td style="text-align: right;">12.215</td>
+<td style="text-align: right;">12.214</td>
 <td style="text-align: right;">3,37%</td>
-<td style="text-align: right;">0,615</td>
+<td style="text-align: right;">0,614</td>
 <td style="text-align: right;">0,059</td>
 <td style="text-align: right;">20,1%</td>
 </tr>
 <tr class="even">
 <td>2017-10</td>
 <td style="text-align: right;">24.833</td>
-<td style="text-align: right;">17.279</td>
-<td style="text-align: right;">8,69%</td>
+<td style="text-align: right;">17.272</td>
+<td style="text-align: right;">8,66%</td>
 <td style="text-align: right;">0,586</td>
-<td style="text-align: right;">0,111</td>
+<td style="text-align: right;">0,110</td>
 <td style="text-align: right;">14,2%</td>
 </tr>
 <tr class="odd">
 <td>2018-01</td>
 <td style="text-align: right;">41.202</td>
-<td style="text-align: right;">20.628</td>
-<td style="text-align: right;">12,89%</td>
-<td style="text-align: right;">0,675</td>
+<td style="text-align: right;">20.624</td>
+<td style="text-align: right;">12,87%</td>
+<td style="text-align: right;">0,674</td>
 <td style="text-align: right;">0,245</td>
 <td style="text-align: right;">25,0%</td>
 </tr>
-<tr class="even">
-<td>2018-04</td>
-<td style="text-align: right;">60.474</td>
-<td style="text-align: right;">19.643</td>
-<td style="text-align: right;">4,17%</td>
-<td style="text-align: right;">0,752</td>
-<td style="text-align: right;">0,119</td>
-<td style="text-align: right;">35,1%</td>
-</tr>
 </tbody>
 </table>
-<p>O ranking é positivo em todas as janelas, mas varia de fraco (AUC 0,59) a útil (AUC 0,75). Essa é a incerteza honesta em torno de um número de manchete, e argumenta por monitoramento em vez de uma alegação única de implantação.</p>
+<p>O ranking é positivo em todas as janelas, mas varia de fraco (AUC 0,59) a útil (AUC 0,67). Essas populações de teste exigem rótulos maduros até três meses após o horizonte, então não são idênticas à amostra de manchete. Essa é a incerteza honesta em torno de um número de manchete, e argumenta por monitoramento em vez de uma alegação única de implantação.</p>
 <hr>
 </section>
 <section id="o-que-o-modelo-está-usando" class="level2">
@@ -814,7 +805,7 @@ Figura&nbsp;2: Calibração na amostra temporal. A diagonal tracejada é a calib
 <section id="limitações" class="level2">
 <h2 class="anchored" data-anchor-id="limitações">7. Limitações</h2>
 <ul>
-<li><strong>Uma amostra, e um regime em movimento.</strong> O período de teste contém o backlog de fevereiro/março de 2018 e a melhora abrupta depois dele. Os resultados mensais e de origem móvel mostram AUC de 0,59 a 0,75. Uma decisão de produção precisa de uma avaliação móvel mais longa, não desta única divisão.</li>
+<li><strong>Uma amostra, e um regime em movimento.</strong> O período de teste contém o backlog de fevereiro/março de 2018 e a melhora abrupta depois dele. Os resultados mensais e de origem móvel mostram AUC de 0,59 a 0,67. As populações de origem móvel são subconjuntos com rótulos maduros, não idênticos à amostra de manchete. Uma decisão de produção precisa de uma avaliação móvel mais longa, não desta única divisão.</li>
 <li><strong>Os pedidos excluídos não são uma amostra aleatória.</strong> 2.965 pedidos não têm rótulo de atraso observável. A maioria está em trânsito ou cancelada no fim do conjunto. O modelo é avaliado em pedidos entregues, então não diz nada sobre se um pedido cancelado teria atrasado.</li>
 <li><strong>Sem identificador de transportadora ou armazém.</strong> O conjunto para no vendedor e no estado. A causa operacional mais plausível do atraso, portanto, não está no modelo.</li>
 <li><strong>O rótulo é a promessa, não a expectativa do cliente.</strong> Um pedido pode estar “atrasado” contra uma promessa agressiva e ainda chegar quando o cliente esperava. O Projeto 01 mostra que a diferença de avaliação é real, mas o rótulo herda a definição da promessa.</li>

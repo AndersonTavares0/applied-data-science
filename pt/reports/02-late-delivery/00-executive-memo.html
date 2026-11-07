@@ -384,11 +384,11 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="a-descoberta">A descoberta</h2>
 <ul>
 <li>Treinado em <strong>60.474 pedidos maduros</strong> antes de abril de 2018 e testado em <strong>32.150</strong> depois, o modelo logístico selecionado alcança <strong>ROC AUC 0,708</strong> e <strong>precisão média 0,091</strong> contra uma taxa base de <strong>4,42%</strong>.</li>
-<li>Sinalizar os <strong>10% do topo (3.215 pedidos)</strong> captura <strong>23,5% de todos os atrasos</strong> com <strong>precisão de 10,4%</strong>, um <strong>lift de 2,35×</strong>. Uma baseline por estado do cliente captura 10,8% na mesma capacidade. Com 5% de capacidade, a precisão é 10,8% e o recall 12,2%; com 20%, a precisão é 9,5% e o recall 42,9%.</li>
+<li>Sinalizar os <strong>10% do topo (3.215 pedidos)</strong> captura <strong>23,5% de todos os atrasos</strong> com <strong>precisão de 10,4%</strong>, um <strong>lift de 2,35×</strong>. Uma baseline por estado do cliente captura 11,6% na mesma capacidade, apenas 1,16× a taxa base. Com 5% de capacidade, a precisão é 10,8% e o recall 12,2%; com 20%, a precisão é 9,5% e o recall 42,9%.</li>
 <li><strong>A classe do modelo não está decidida.</strong> A regressão logística venceu um período interno de validação por precisão média, mas o gradient boosting foi levemente melhor na amostra final (precisão média 0,103, recall 28,6%). A diferença é pequena e uma única amostra temporal não resolve a escolha. Trate o modelo como um ranker promissor, não como uma escolha final.</li>
 <li><strong>O nível não está calibrado para o próximo período.</strong> O risco médio previsto é 6,38% contra 4,42% observados, embora a inclinação de calibração seja próxima de um (1,02). O ranking está aproximadamente certo; o nível está alto demais.</li>
 <li><strong>Prazo e geografia fazem o trabalho.</strong> <code>promise_days</code>, estado do cliente e estado do vendedor dominam. Valor da cesta, frete, peso, pagamento e categoria acrescentam pouco.</li>
-<li><strong>O sinal não é estável o suficiente para prometer um lift fixo.</strong> A AUC mensal na amostra varia de 0,61 a 0,79, e as origens móveis de 0,59 a 0,75.</li>
+<li><strong>O sinal não é estável o suficiente para prometer um lift fixo.</strong> A AUC mensal na amostra varia de 0,61 a 0,79, e as origens móveis de 0,59 a 0,67.</li>
 </ul>
 </section>
 <section id="o-que-ele-pode-ver" class="level2">
@@ -401,7 +401,7 @@ ul.task-list li input[type="checkbox"] {
 <ol type="1">
 <li><strong>Pilote o ranking como fila de triagem.</strong> A cada semana, pegue os pedidos abertos de maior score até a capacidade da equipe e confira o status na transportadora. Meça a taxa de atraso na fatia revisada contra a não revisada; esse é o único teste que importa.</li>
 <li><strong>Não exponha o score como probabilidade para o cliente.</strong> Se uma for necessária, recalibre com pedidos entregues recentes e reveja mensalmente. O score atual ordena adequadamente e prevê mal o nível.</li>
-<li><strong>Faça uma avaliação móvel antes de se comprometer.</strong> A amostra única não basta: a AUC varia de 0,59 a 0,75 entre origens, e julho–agosto de 2018 é mais fraco que abril. Uma fila que só funciona em um backlog não é um produto.</li>
+<li><strong>Faça uma avaliação móvel antes de se comprometer.</strong> A amostra única não basta: a AUC varia de 0,59 a 0,67 entre origens, e julho–agosto de 2018 é mais fraco que abril. Uma fila que só funciona em um backlog não é um produto.</li>
 <li><strong>Mantenha a pergunta operacional do Projeto 01 em primeiro lugar.</strong> O modelo confirma que o prazo e o par de estados vendedor–cliente carregam o sinal. Ele não diz que mudar o prazo causa um resultado melhor; a pergunta do corredor segue sendo a causal.</li>
 </ol>
 </section>
@@ -413,7 +413,7 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>Se um identificador de transportadora ou armazém ficar disponível</strong>, ele deve ser testado antes de qualquer nova engenharia de atributos; é a causa ausente mais provável.</li>
 </ul>
 <hr>
-<p><em>Todos os números vêm de <code>projects/02-late-delivery/reports/model_metrics.json</code> e são reproduzíveis com <code>uv run python tasks.py train</code>. O intervalo bootstrap de 95% para a precisão no decil superior é 9,3–11,5%, para o recall 21,6–25,6% e para o lift 2,16–2,56×.</em></p>
+<p><em>Todos os números vêm de <code>projects/02-late-delivery/reports/model_metrics.json</code> e são reproduzíveis com <code>uv run python tasks.py train</code>. O intervalo bootstrap de 95% para a precisão no decil superior é 9,4–11,5%, para o recall 21,5–25,6% e para o lift 2,15–2,56×.</em></p>
 
 
 </section>
