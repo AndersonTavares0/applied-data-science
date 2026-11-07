@@ -311,7 +311,7 @@ purpose.
 **Results on the holdout.** Selected logistic: AUC 0.708 (0.695–0.720), AP 0.091
 (0.083–0.101), Brier 0.0420, top-decile precision 10.4% (9.3–11.5%), recall
 23.5% (21.6–25.6%) and lift 2.35× (2.16–2.56×). Gradient boosting scores AP
-0.097 and top-decile recall 28.4%, so the model class is not settled by this
+0.103 and top-decile recall 28.6%, so the model class is not settled by this
 holdout.
 
 **Calibration is a level shift, not a broken ranking.** Mean prediction is 6.38%

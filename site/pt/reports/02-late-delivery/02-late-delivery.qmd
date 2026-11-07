@@ -31,8 +31,8 @@ são, e `uv run python tasks.py train` as reconstrói.
   **precisão de 10,4% — 2,35× a taxa base**.
 - **A classe do modelo não está decidida por esta evidência.** A regressão
   logística venceu um período interno de validação por precisão média, mas o
-  gradient boosting foi levemente melhor na amostra final (precisão média 0,097
-  contra 0,091; recall no decil superior 28,4% contra 23,5%). A diferença é
+  gradient boosting foi levemente melhor na amostra final (precisão média 0,103
+  contra 0,091; recall no decil superior 28,6% contra 23,5%). A diferença é
   pequena e uma única amostra temporal não estabelece um ranking confiável entre
   os dois. O relatório mostra ambos em vez de declarar um vencedor a partir do
   teste.
@@ -127,9 +127,9 @@ atrasado” para todo pedido acerta 95,6%.
 | Modelo | ROC AUC | Precisão média | Brier | Precisão topo 10% | Recall topo 10% | Lift |
 |---|---:|---:|---:|---:|---:|---:|
 | Regressão logística (selecionada) | 0,708 | 0,091 | 0,0420 | 10,4% | 23,5% | 2,35× |
-| Gradient boosting | 0,705 | 0,097 | 0,0415 | 12,5% | 28,4% | 2,84× |
-| Constante (prevalência de treino) | — | — | 0,0425 | 4,0%* | 8,9%* | 0,89×* |
-| Taxa por estado do cliente | — | — | 0,0427 | 4,8% | 10,9% | 1,09× |
+| Gradient boosting | 0,708 | 0,103 | 0,0413 | 12,6% | 28,6% | 2,86× |
+| Constante (prevalência de treino) | — | — | 0,0425 | 4,1%* | 9,2%* | 0,92×* |
+| Taxa por estado do cliente | — | — | 0,0427 | 4,8% | 10,8% | 1,08× |
 
 \* Um score constante não ordena; os números do decil superior são uma fatia
 arbitrária de um empate e aparecem apenas para tornar a comparação explícita.
@@ -228,11 +228,11 @@ one-hot que ela vira dentro do pipeline.
 
 | Atributo | Queda na precisão média |
 |---|---:|
-| `promise_days` | 0,032 |
-| `customer_state` | 0,022 |
+| `promise_days` | 0,033 |
+| `customer_state` | 0,021 |
 | `seller_state` | 0,005 |
+| `same_state` | 0,003 |
 | `seller_count` | 0,001 |
-| `avg_weight_grams` | 0,001 |
 | `items_value` | 0,001 |
 | `freight_share` | 0,001 |
 | `avg_photos_qty` | 0,001 |

@@ -70,7 +70,9 @@ STRINGS = {
         "pr_title": "Precisão–recall na amostra temporal",
     },
 }
-QUERY = "SELECT * FROM analytics_marts.mart_order_features"
+# Stable row order: the boosting model's internal early-stopping split depends
+# on it, so an unordered read makes the reported metrics drift between runs.
+QUERY = "SELECT * FROM analytics_marts.mart_order_features ORDER BY order_id"
 
 
 def load_features() -> pd.DataFrame:
