@@ -37,6 +37,114 @@
       2
     ],
     "perplexity": 332.92,
+    "coherence": {
+      "metric": "UMass, top 10 terms",
+      "mean": -2.6766,
+      "per_topic": [
+        -3.1446,
+        -2.6679,
+        -2.3848,
+        -2.4604,
+        -2.7475,
+        -2.6545
+      ]
+    },
+    "selection": [
+      {
+        "topics": 4,
+        "mean_coherence": -2.6986,
+        "perplexity": 333.0509
+      },
+      {
+        "topics": 5,
+        "mean_coherence": -2.6993,
+        "perplexity": 332.3916
+      },
+      {
+        "topics": 6,
+        "mean_coherence": -2.6766,
+        "perplexity": 332.9202
+      },
+      {
+        "topics": 7,
+        "mean_coherence": -2.6912,
+        "perplexity": 329.9575
+      },
+      {
+        "topics": 8,
+        "mean_coherence": -2.745,
+        "perplexity": 329.038
+      },
+      {
+        "topics": 9,
+        "mean_coherence": -2.8495,
+        "perplexity": 330.6914
+      },
+      {
+        "topics": 10,
+        "mean_coherence": -2.8326,
+        "perplexity": 330.4323
+      }
+    ],
+    "stability": {
+      "reference_seed": 0,
+      "seeds": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "mean_jaccard": 0.4125961864932453,
+      "min_jaccard": 0.17647058823529413,
+      "max_jaccard": 0.8181818181818182,
+      "mean_adjusted_rand": 0.2583119015735066,
+      "min_adjusted_rand": 0.23381388001540954,
+      "max_adjusted_rand": 0.28307351713401935,
+      "per_topic_jaccard": [
+        0.2549019607843137,
+        0.580919080919081,
+        0.5476190476190476,
+        0.5088036963036963,
+        0.29166666666666663,
+        0.29166666666666663
+      ],
+      "by_seed": [
+        {
+          "seed": 1,
+          "mean_jaccard": 0.3294728147669324,
+          "adjusted_rand": 0.23381388001540954
+        },
+        {
+          "seed": 2,
+          "mean_jaccard": 0.489996114996115,
+          "adjusted_rand": 0.267052243696968
+        },
+        {
+          "seed": 3,
+          "mean_jaccard": 0.4577922077922078,
+          "adjusted_rand": 0.28307351713401935
+        },
+        {
+          "seed": 4,
+          "mean_jaccard": 0.37312360841772607,
+          "adjusted_rand": 0.2493079654476296
+        }
+      ]
+    },
+    "soft_assignment": {
+      "max_weight_quantiles": {
+        "p10": 0.42535517499353565,
+        "p25": 0.5109179037071352,
+        "p50": 0.6335576147856036,
+        "p75": 0.7942522413690796,
+        "p90": 0.8808079222925711
+      },
+      "share_max_below_0_5_pct": 22.672064777327936,
+      "share_max_below_0_4_pct": 7.484407484407485,
+      "share_second_at_least_0_3_pct": 31.68836853047379,
+      "share_second_at_least_0_25_pct": 44.87361855782908,
+      "mean_normalized_entropy": 0.5215000052148461
+    },
     "mean_weight_by_outcome": {
       "late": [
         0.0705,

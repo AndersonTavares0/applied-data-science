@@ -27,7 +27,15 @@ sys.path.insert(0, str(PROJECT / "src"))
 
 from voice.stats import topic_prevalence  # noqa: E402
 from voice.text import MIN_TOKENS, normalize_text  # noqa: E402
-from voice.topics import fit_topic_model, top_terms, topic_terms_frame  # noqa: E402
+from voice.topics import (  # noqa: E402
+    coherence_by_topic_count,
+    fit_topic_model,
+    soft_assignment_summary,
+    top_terms,
+    topic_stability,
+    topic_terms_frame,
+    umass_coherence,
+)
 
 TOPIC_COUNT = 6
 SEED = 0
@@ -229,8 +237,9 @@ def main() -> int:
     if corpus.empty:
         raise SystemExit("no usable low-star comments found")
 
+    texts = corpus["clean"].tolist()
     vectorizer, model, weights = fit_topic_model(
-        corpus["clean"].tolist(), n_topics=TOPIC_COUNT, seed=SEED, max_iter=30
+        texts, n_topics=TOPIC_COUNT, seed=SEED, max_iter=30
     )
     corpus["topic"] = weights.argmax(axis=1)
     terms = top_terms(vectorizer, model, n=12)
@@ -261,6 +270,17 @@ def main() -> int:
         ]
     ].sort_values("share_pct", ascending=False)
 
+    selection = coherence_by_topic_count(texts, topic_counts=(4, 5, 6, 7, 8, 9, 10), seed=SEED)
+    best_topics = int(selection.loc[selection["mean_coherence"].idxmax(), "topics"])
+    if best_topics != TOPIC_COUNT:
+        raise SystemExit(
+            f"coherence selects {best_topics} topics, not {TOPIC_COUNT}; "
+            "re-check TOPIC_COUNT and TOPIC_LABELS before publishing"
+        )
+    stability = topic_stability(texts, n_topics=TOPIC_COUNT, seeds=(0, 1, 2, 3, 4), max_iter=30)
+    soft = soft_assignment_summary(weights)
+    coherence = umass_coherence(vectorizer, model, texts)
+
     scope = build_scope(frame, corpus)
     scope["model"] = {
         "method": "Latent Dirichlet Allocation",
@@ -270,7 +290,15 @@ def main() -> int:
         "min_df": 20,
         "max_df": 0.5,
         "ngram_range": [1, 2],
-        "perplexity": round(float(model.perplexity(vectorizer.transform(corpus["clean"]))), 2),
+        "perplexity": round(float(model.perplexity(vectorizer.transform(texts))), 2),
+        "coherence": {
+            "metric": "UMass, top 10 terms",
+            "mean": round(float(np.mean(coherence)), 4),
+            "per_topic": [round(float(value), 4) for value in coherence],
+        },
+        "selection": selection.round(4).to_dict(orient="records"),
+        "stability": stability,
+        "soft_assignment": soft,
         "mean_weight_by_outcome": {
             "late": np.round(weights[corpus["is_late"].to_numpy()].mean(axis=0), 4).tolist(),
             "on_time": np.round(weights[~corpus["is_late"].to_numpy()].mean(axis=0), 4).tolist(),
@@ -283,6 +311,7 @@ def main() -> int:
     topic_terms_frame(vectorizer, model, TOPIC_LABELS, n=12).to_csv(
         REPORT_DIR / "topic_terms.csv", index=False
     )
+    selection.to_csv(REPORT_DIR / "topic_selection.csv", index=False, float_format="%.6g")
     table.to_csv(REPORT_DIR / "topic_prevalence.csv", index=False, float_format="%.6g")
 
     plot_gap(table, "en", FIGURE_DIR / "topic_gap.png")
@@ -304,7 +333,19 @@ def main() -> int:
         f"({scope['corpus']['dropped_short_comments']:,} too short), "
         f"{scope['corpus']['late_share_pct']:.2f}% from late orders"
     )
-    print(f"perplexity: {scope['model']['perplexity']:.2f}\n")
+    print(
+        f"perplexity: {scope['model']['perplexity']:.2f}; "
+        f"mean coherence: {scope['model']['coherence']['mean']:.3f} "
+        f"(best k={best_topics} across {len(selection)} candidates)"
+    )
+    print(
+        f"stability: mean ARI {stability['mean_adjusted_rand']:.3f}, "
+        f"mean top-term Jaccard {stability['mean_jaccard']:.3f}"
+    )
+    print(
+        f"mixed documents: {soft['share_max_below_0_5_pct']:.1f}% have max topic weight < 0.5; "
+        f"{soft['share_second_at_least_0_3_pct']:.1f}% have a second topic >= 0.3\n"
+    )
     display = table.copy()
     for column in ("share_pct", "late_share_pct", "on_time_share_pct", "diff_pp"):
         display[column] = display[column].round(1)

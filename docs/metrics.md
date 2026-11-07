@@ -268,9 +268,15 @@ only — the delivery label is joined afterwards and is not an input. Features a
 unigrams and bigrams, `min_df=20`, `max_df=0.5`, `random_state=0`,
 `learning_method="batch"`, `max_iter=30`, a conservative Portuguese stopword
 list, and tokens of at least three letters. Each complaint is assigned to the
-topic with the largest weight (hard assignment). Perplexity is **332.92** on the
-fitted corpus; it is reported as a descriptive fit statistic, not as evidence
-that six is the uniquely correct number of topics.
+topic with the largest weight (hard assignment). UMass coherence (top 10 terms)
+is **−2.677** at k=6, higher than k=4–5 and k=7–10 on the same corpus, so six is
+the best of those candidates by a small margin. Perplexity is **332.92** and is
+reported only as a descriptive fit statistic; it is not used to choose k. Refits
+with seeds 1–4 give a mean adjusted Rand index of **0.258** and mean top-term
+Jaccard of **0.413** against the seed-0 partition, so the exact topic boundaries
+are not stable even though the broad logistics/product grouping is. Hard
+assignment is also a summary: **22.7%** of complaints have a largest topic weight
+below 0.5, and **31.7%** have a second topic at or above 0.3.
 
 **Topic share.** `share_pct` = complaints assigned to a topic ÷ all 9,139
 complaints. `late_share_pct` and `on_time_share_pct` use a different denominator

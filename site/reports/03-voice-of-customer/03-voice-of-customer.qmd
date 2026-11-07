@@ -107,11 +107,71 @@ The method is deliberately simple and fixed before looking at the outcome.
    from their top terms. The script checks that every topic still contains its
    anchor term and fails if a library upgrade reorders them.
 
-Six topics was a judgement made by reading the terms and sample comments, not an
-estimate of the one true number. Perplexity on the fitted corpus is 332.92; it is
-reported as a fit statistic, not as proof that six is optimal. The labels are
-subjective and two pairs overlap: "delivery problem" and "delay" both concern
-delivery, and "not received" and "delay" share vocabulary.
+### Why six topics
+
+Six was not chosen by perplexity. Perplexity falls as topics are added and is
+lowest at k=8, while UMass coherence — whether the top terms of a topic appear
+together in the corpus — is highest at k=6 among the seven candidates tested.
+Coherence is the criterion because perplexity mostly rewards spreading
+probability over frequent words; it does not say whether a topic is readable.
+
+| Topics | Mean UMass coherence (top 10 terms) | Perplexity |
+|---:|---:|---:|
+| 4 | −2.699 | 333.05 |
+| 5 | −2.699 | 332.39 |
+| **6** | **−2.677** | **332.92** |
+| 7 | −2.691 | 329.96 |
+| 8 | −2.745 | 329.04 |
+| 9 | −2.850 | 330.69 |
+| 10 | −2.833 | 330.43 |
+
+The margin over k=4, k=5 and k=7 is small: coherence alone does not prove that
+six is the one true number, only that it is the best of the candidates under this
+corpus and preprocessing. The labels remain a human interpretation of the terms,
+and two pairs overlap: "delivery problem" and "delay" both concern delivery, and
+"not received" and "delay" share vocabulary.
+
+### How stable are the topics?
+
+Refitting with four other seeds (1–4) gives a mean adjusted Rand index of
+**0.258** against the published seed-0 partition (range 0.234–0.283), and mean
+top-10-term Jaccard overlap of **0.413** (range 0.176–0.818 after one-to-one
+matching). That is low: the exact partition is not stable across initialisations.
+The per-topic Jaccard values show what survives and what does not:
+
+| Topic | Mean top-term Jaccard across seeds |
+|---|---:|
+| Quality / not as described | 0.255 |
+| Not received | 0.581 |
+| Incomplete order | 0.548 |
+| Delivery problem | 0.509 |
+| Delay / long wait | 0.292 |
+| Wrong item / return | 0.292 |
+
+The logistics/product grouping is more robust than the exact boundaries. In each
+alternative seed, every logistics topic has a late share between 27% and 67%,
+while every product topic stays between 6% and 25%. The main finding — late
+complaints are about delivery, on-time complaints about the product — survives;
+the six specific labels and the exact percentages should not be read as fixed
+categories.
+
+### Mixed complaints and hard assignment
+
+LDA returns a distribution over topics for every complaint; the tables above use
+only the largest weight. That is a simplification, and it is measurable: **22.7%**
+of complaints have a largest topic weight below 0.5, **7.5%** below 0.4, and
+**31.7%** have a second topic at or above 0.3. The mean normalised entropy is
+0.522 on a 0–1 scale. A complaint about a late, damaged, incomplete order often
+has substantial mass on more than one theme.
+
+The labels themselves were checked by reading the highest-weight complaints for
+each topic. The themes are recognisable in the raw text: damaged or different
+from the photo (quality), still waiting a month later (not received), ordered two
+and received one (incomplete), promised date passed or tracking says delivered
+but nothing arrived (delivery problem), "almost a month, other sites are faster"
+(delay), and wrong voltage or wrong item with no exchange (wrong item/return).
+Those paraphrases are qualitative evidence for the labels, not a substitute for
+the quantitative comparison.
 
 ```{=html}
 <!-- Source: reports/topic_terms.csv -->
@@ -191,9 +251,12 @@ outcome after the topics were fitted.
   The analysis says what dissatisfied people complained about, not what satisfied
   people valued.
 - **Topics are a simplification.** Six topics, hard assignment, bag-of-words
-  features, subjective labels, and overlapping categories. A complaint about a
-  late, damaged, incomplete order is forced into one topic. Different values of
-  k would produce a different but not necessarily wrong partition.
+  features, subjective labels, and overlapping categories. The seed-stability
+  check above shows that the exact partition is not stable even though the broad
+  logistics/product grouping is. A complaint about a late, damaged, incomplete
+  order is forced into one topic, and 22.7% of complaints have a largest weight
+  below 0.5. Different values of k would produce a different but not necessarily
+  wrong partition.
 - **One marketplace and one period.** Olist, September 2016 to October 2018. The
   vocabulary and the delivery operation are specific to it.
 - **The label is the promise, not the carrier scan.** `is_late` means the
@@ -207,7 +270,7 @@ outcome after the topics were fitted.
 
 ```bash
 uv run python tasks.py topics     # fit the model, write tables and figures
-uv run pytest                     # 25 tests, no database or network needed
+uv run pytest                     # 29 tests, no database or network needed
 ```
 
 The script reads the built marts, so the pipeline order is
@@ -219,6 +282,8 @@ The script reads the built marts, so the pipeline order is
   for each topic.
 - `projects/03-voice-of-customer/reports/topic_prevalence.csv` — the table above,
   with exact p-values and confidence bounds.
+- `projects/03-voice-of-customer/reports/topic_selection.csv` — coherence and
+  perplexity for k=4–10; the script stops if coherence no longer selects k=6.
 - `site/reports/03-voice-of-customer/figures/*.png` — the two figures, in English
   and Portuguese.
 

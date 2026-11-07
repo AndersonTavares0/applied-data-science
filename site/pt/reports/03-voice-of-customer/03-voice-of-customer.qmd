@@ -111,11 +111,73 @@ O método é deliberadamente simples e fixado antes de olhar o desfecho.
    contém seu termo âncora e falha se uma atualização de biblioteca reordenar os
    tópicos.
 
-Seis tópicos foram um julgamento feito lendo os termos e comentários de exemplo,
-não uma estimativa do número verdadeiro. A perplexidade no corpus ajustado é
-332,92; ela é reportada como estatística de ajuste, não como prova de que seis é
-ótimo. Os rótulos são subjetivos e dois pares se sobrepõem: "problema de entrega"
-e "demora" tratam de entrega, e "não recebido" e "demora" compartilham vocabulário.
+### Por que seis tópicos
+
+Seis não foi escolhido pela perplexidade. A perplexidade cai à medida que tópicos
+são adicionados e é menor em k=8, enquanto a coerência UMass — se os termos
+principais de um tópico aparecem juntos no corpus — é maior em k=6 entre os sete
+candidatos testados. A coerência é o critério porque a perplexidade
+principalmente recompensa distribuir probabilidade sobre palavras frequentes; ela
+não diz se um tópico é legível.
+
+| Tópicos | Coerência UMass média (10 termos) | Perplexidade |
+|---:|---:|---:|
+| 4 | −2,699 | 333,05 |
+| 5 | −2,699 | 332,39 |
+| **6** | **−2,677** | **332,92** |
+| 7 | −2,691 | 329,96 |
+| 8 | −2,745 | 329,04 |
+| 9 | −2,850 | 330,69 |
+| 10 | −2,833 | 330,43 |
+
+A margem sobre k=4, k=5 e k=7 é pequena: a coerência sozinha não prova que seis é
+o número verdadeiro, apenas que é o melhor dos candidatos neste corpus e
+pré-processamento. Os rótulos continuam sendo uma interpretação humana dos
+termos, e dois pares se sobrepõem: "problema de entrega" e "demora" tratam de
+entrega, e "não recebido" e "demora" compartilham vocabulário.
+
+### Quão estáveis são os tópicos?
+
+Reajustar com outras quatro sementes (1–4) dá um índice Rand ajustado médio de
+**0,258** contra a partição publicada com semente 0 (faixa 0,234–0,283), e
+sobreposição Jaccard média dos 10 termos principais de **0,413** (faixa
+0,176–0,818 após correspondência um-a-um). Isso é baixo: a partição exata não é
+estável entre inicializações. Os valores por tópico mostram o que sobrevive e o
+que não sobrevive:
+
+| Tópico | Jaccard médio dos termos principais entre sementes |
+|---|---:|
+| Qualidade / diferente | 0,255 |
+| Não recebido | 0,581 |
+| Pedido incompleto | 0,548 |
+| Problema de entrega | 0,509 |
+| Atraso / longa espera | 0,292 |
+| Item errado / troca | 0,292 |
+
+O agrupamento logística/produto é mais robusto que as fronteiras exatas. Em cada
+semente alternativa, todo tópico de logística tem participação de atrasados entre
+27% e 67%, enquanto todo tópico de produto fica entre 6% e 25%. A conclusão
+principal — reclamações de atrasados tratam da entrega, reclamações no prazo
+tratam do produto — sobrevive; os seis rótulos específicos e os percentuais exatos
+não devem ser lidos como categorias fixas.
+
+### Reclamações mistas e atribuição dura
+
+O LDA retorna uma distribuição sobre tópicos para cada reclamação; as tabelas
+acima usam apenas o maior peso. Isso é uma simplificação mensurável: **22,7%** das
+reclamações têm o maior peso abaixo de 0,5, **7,5%** abaixo de 0,4, e **31,7%**
+têm um segundo tópico em 0,3 ou mais. A entropia normalizada média é 0,522 numa
+escala de 0–1. Uma reclamação sobre um pedido atrasado, danificado e incompleto
+frequentemente tem massa substancial em mais de um tema.
+
+Os rótulos foram verificados lendo as reclamações de maior peso de cada tópico.
+Os temas são reconhecíveis no texto bruto: danificado ou diferente da foto
+(qualidade), ainda esperando um mês depois (não recebido), pediu dois e recebeu um
+(pedido incompleto), prazo vencido ou rastreio diz entregue mas nada chegou
+(problema de entrega), "quase um mês, outros sites são mais rápidos" (atraso), e
+voltagem ou item errado sem troca (item errado/troca). Essas paráfrases são
+evidência qualitativa para os rótulos, não um substituto da comparação
+quantitativa.
 
 ```{=html}
 <!-- Source: reports/topic_terms.csv -->
@@ -197,10 +259,12 @@ tópicos serem ajustados.
   estrelas são modeladas. A análise diz do que reclamaram os insatisfeitos, não o
   que valorizaram os satisfeitos.
 - **Tópicos são uma simplificação.** Seis tópicos, atribuição dura, recursos de
-  saco de palavras, rótulos subjetivos e categorias sobrepostas. Uma reclamação
-  sobre um pedido atrasado, danificado e incompleto é forçada em um único tópico.
-  Outros valores de k produziriam uma partição diferente, não necessariamente
-  errada.
+  saco de palavras, rótulos subjetivos e categorias sobrepostas. A verificação de
+  estabilidade acima mostra que a partição exata não é estável, embora o
+  agrupamento logística/produto seja. Uma reclamação sobre um pedido atrasado,
+  danificado e incompleto é forçada em um único tópico, e 22,7% das reclamações
+  têm o maior peso abaixo de 0,5. Outros valores de k produziriam uma partição
+  diferente, não necessariamente errada.
 - **Um marketplace e um período.** Olist, de setembro de 2016 a outubro de 2018.
   O vocabulário e a operação de entrega são específicos dele.
 - **O rótulo é a promessa, não o escaneamento da transportadora.** `is_late`
@@ -214,7 +278,7 @@ tópicos serem ajustados.
 
 ```bash
 uv run python tasks.py topics     # ajusta o modelo, escreve tabelas e figuras
-uv run pytest                     # 25 testes, sem banco de dados nem rede
+uv run pytest                     # 29 testes, sem banco de dados nem rede
 ```
 
 O script lê os modelos construídos, então a ordem no pipeline é
@@ -226,6 +290,8 @@ O script lê os modelos construídos, então a ordem no pipeline é
   principais de cada tópico.
 - `projects/03-voice-of-customer/reports/topic_prevalence.csv` — a tabela acima,
   com p-valores exatos e limites de confiança.
+- `projects/03-voice-of-customer/reports/topic_selection.csv` — coerência e
+  perplexidade para k=4–10; o script para se a coerência deixar de escolher k=6.
 - `site/reports/03-voice-of-customer/figures/*.png` — as duas figuras, em inglês
   e português.
 

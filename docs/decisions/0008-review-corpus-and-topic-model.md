@@ -27,15 +27,19 @@ those orders and inflates every denominator.
 2. **Read the complaints, not the praise.** Analyse only 1–2 star reviews with a
    comment of at least two normalised tokens. The star rating is the negative
    signal; the topic model describes what the complaint is about.
-3. **Fit the topics without the outcome.** LDA with six topics sees only the
-   complaint text. Delivery outcome is joined after fitting, so the topics cannot
-   be chosen to separate late from on-time orders.
+3. **Fit the topics without the outcome.** LDA sees only the complaint text.
+   Delivery outcome is joined after fitting, so the topics cannot be chosen to
+   separate late from on-time orders. Six topics is the best of k=4–10 by UMass
+   coherence, not by perplexity; the margin is small and the choice is recorded
+   as a candidate comparison, not an optimum.
 4. **Compare composition, with uncertainty.** Report each topic's share of late
    complaints and of on-time complaints, the difference in percentage points, a
    95% interval, and a Benjamini–Hochberg adjusted p-value across the six topics.
 5. **Check the labels against the fitted model.** Each topic is labelled from its
    top terms, and the script fails if a topic no longer contains its anchor term,
-   so a library upgrade cannot silently publish mismatched labels.
+   so a library upgrade cannot silently publish mismatched labels. Refits with
+   four other seeds report ARI and top-term Jaccard; the report states that the
+   exact partition is unstable even though the logistics/product contrast is not.
 
 ## What it costs
 
@@ -47,14 +51,16 @@ those orders and inflates every denominator.
 - **The corpus is selected by outcome.** 57.57% of late orders comment against
   39.07% of on-time orders. Topic shares describe complainers, and cannot be
   projected onto all customers or all orders.
-- **Six topics is a judgement, not an estimate.** Other values of k are
-  defensible; the report shows the six-topic solution because it separated the
-  complaint axes the data actually contains. Perplexity is reported but is not
-  used to claim an optimum.
+- **Six topics is the best candidate, not the true number.** UMass coherence is
+  highest at k=6 among k=4–10, but the margin over k=4, k=5 and k=7 is small.
+  Perplexity is lower at k=8 and is not used to claim an optimum. Refits with
+  seeds 1–4 give mean ARI 0.258 and mean top-term Jaccard 0.413; the broad
+  logistics/product grouping survives, the exact boundaries do not.
 - **The labels are subjective and the topics overlap.** "Delivery problem" and
   "Delay and long wait" both concern delivery; "Not received" and "Delay" share
   vocabulary. Hard assignment to the largest weight hides complaints that mix
-  product and delivery issues.
+  product and delivery issues: 22.7% have a largest weight below 0.5 and 31.7%
+  have a second topic at or above 0.3.
 - **A bag of words does not understand a sentence.** Keeping `não` preserves the
   common `não recebi` bigram, but the model cannot represent scope, irony or
   which product a complaint refers to.
