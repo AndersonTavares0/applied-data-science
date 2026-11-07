@@ -93,8 +93,8 @@ O método é deliberadamente simples e fixado antes de olhar o desfecho.
 
 1. **Uma avaliação por pedido entregue**, a mais recente por `review_created_at` e
    depois `review_id`. É a mesma regra que `fct_orders` usa. Juntar as 99.224
-   linhas de avaliação diretamente duplicaria 547 pedidos e inflaria todos os
-   denominadores.
+   linhas de avaliação diretamente acrescentaria 551 linhas duplicadas em 547
+   pedidos e inflaria todos os denominadores.
 2. **Manter avaliações de 1–2 estrelas com comentário.** A nota é o sinal
    negativo. O modelo não precisa descobrir sentimento; precisa descrever sobre o
    que é a reclamação.
@@ -170,14 +170,34 @@ têm um segundo tópico em 0,3 ou mais. A entropia normalizada média é 0,522 n
 escala de 0–1. Uma reclamação sobre um pedido atrasado, danificado e incompleto
 frequentemente tem massa substancial em mais de um tema.
 
-Os rótulos foram verificados lendo as reclamações de maior peso de cada tópico.
 Os temas são reconhecíveis no texto bruto: danificado ou diferente da foto
 (qualidade), ainda esperando um mês depois (não recebido), pediu dois e recebeu um
 (pedido incompleto), prazo vencido ou rastreio diz entregue mas nada chegou
 (problema de entrega), "quase um mês, outros sites são mais rápidos" (atraso), e
-voltagem ou item errado sem troca (item errado/troca). Essas paráfrases são
-evidência qualitativa para os rótulos, não um substituto da comparação
-quantitativa.
+voltagem ou item errado sem troca (item errado/troca).
+
+Para testar se essa legibilidade se mantém além dos exemplos de maior peso, eu
+sorteei cinco reclamações por tópico, de forma estratificada e aleatória (30 no
+total, semente 20261107), e li cada uma.
+
+| Tópico | Claramente consistente | Parcialmente consistente | Dominado por outro tema |
+|---|---:|---:|---:|
+| Qualidade / diferente | 5 | 0 | 0 |
+| Não recebido | 3 | 2 | 0 |
+| Pedido incompleto | 4 | 0 | 1 |
+| Problema de entrega | 3 | 1 | 1 |
+| Atraso / longa espera | 2 | 0 | 3 |
+| Item errado / troca | 3 | 2 | 0 |
+| **Total** | **20** | **5** | **5** |
+
+Os rótulos são legíveis, mas não confiáveis no nível individual: 20 de 30 eram
+claramente consistentes, 5 eram parcialmente consistentes e 5 eram dominados por
+outro tema. O tópico de atraso foi o mais fraco — três das cinco reclamações
+sorteadas tratavam principalmente de qualidade do produto ou item errado —, o que
+combina com sua baixa estabilidade entre sementes. Esta é a leitura de um analista,
+não uma codificação humana independente, e 30 reclamações não estimam a acurácia
+dos rótulos com precisão útil. A auditoria sustenta a leitura ampla do corpus, não
+a atribuição exata de uma reclamação individual.
 
 Usar a distribuição completa de tópicos, e não apenas o maior peso, leva à mesma
 leitura. No corpus, os três tópicos de logística respondem por **75,1%** do peso

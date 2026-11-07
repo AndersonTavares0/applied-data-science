@@ -36,9 +36,9 @@ ranking; não prometa o percentual.**
   precisão é 10,8% e o recall 12,2%; com 20%, a precisão é 9,5% e o recall 42,9%.
 - **A classe do modelo não está decidida.** A regressão logística venceu um
   período interno de validação por precisão média, mas o gradient boosting foi
-  levemente melhor na amostra final (precisão média 0,096, recall 27,5%). A
-  diferença está dentro do ruído. Trate o modelo como um ranker promissor, não
-  como uma escolha final.
+  levemente melhor na amostra final (precisão média 0,097, recall 28,4%). A
+  diferença é pequena e uma única amostra temporal não resolve a escolha. Trate
+  o modelo como um ranker promissor, não como uma escolha final.
 - **O nível não está calibrado para o próximo período.** O risco médio previsto é
   6,38% contra 4,42% observados, embora a inclinação de calibração seja próxima
   de um (1,02). O ranking está aproximadamente certo; o nível está alto demais.

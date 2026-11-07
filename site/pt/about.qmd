@@ -18,7 +18,7 @@ significa.
 | Área | Ferramentas |
 |---|---|
 | Consulta e modelagem | PostgreSQL, dbt, SQL avançado (funções de janela, CTEs) |
-| Análise | Python (pandas, matplotlib, seaborn), raciocínio estatístico |
+| Análise | Python (pandas, scikit-learn, matplotlib, seaborn), raciocínio estatístico, modelagem de tópicos |
 | Engenharia | Git, Docker, pytest, GitHub Actions, `uv` |
 | Comunicação | Quarto, redação técnica, memorandos de decisão |
 

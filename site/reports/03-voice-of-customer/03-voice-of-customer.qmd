@@ -92,7 +92,8 @@ The method is deliberately simple and fixed before looking at the outcome.
 
 1. **One review per delivered order**, the latest by `review_created_at` and then
    `review_id`. This is the same rule `fct_orders` uses. Joining all 99,224 review
-   rows directly would double-count 547 orders and inflate every denominator.
+   rows directly would add 551 duplicate rows across 547 orders and inflate every
+   denominator.
 2. **Keep 1–2 star reviews with a comment.** The star rating is the negative
    signal. The model is not asked to discover sentiment; it is asked to describe
    what the complaint is about.
@@ -164,14 +165,33 @@ of complaints have a largest topic weight below 0.5, **7.5%** below 0.4, and
 0.522 on a 0–1 scale. A complaint about a late, damaged, incomplete order often
 has substantial mass on more than one theme.
 
-The labels themselves were checked by reading the highest-weight complaints for
-each topic. The themes are recognisable in the raw text: damaged or different
-from the photo (quality), still waiting a month later (not received), ordered two
-and received one (incomplete), promised date passed or tracking says delivered
-but nothing arrived (delivery problem), "almost a month, other sites are faster"
-(delay), and wrong voltage or wrong item with no exchange (wrong item/return).
-Those paraphrases are qualitative evidence for the labels, not a substitute for
-the quantitative comparison.
+The themes are recognisable in the raw text: damaged or different from the photo
+(quality), still waiting a month later (not received), ordered two and received
+one (incomplete), promised date passed or tracking says delivered but nothing
+arrived (delivery problem), "almost a month, other sites are faster" (delay), and
+wrong voltage or wrong item with no exchange (wrong item/return).
+
+To test whether that readability holds beyond the highest-weight examples, I drew
+a stratified random sample of five complaints per topic (30 total, seed
+20261107) and read each one.
+
+| Topic | Clearly consistent | Partly consistent | Dominated by another theme |
+|---|---:|---:|---:|
+| Quality / not as described | 5 | 0 | 0 |
+| Not received | 3 | 2 | 0 |
+| Incomplete order | 4 | 0 | 1 |
+| Delivery problem | 3 | 1 | 1 |
+| Delay / long wait | 2 | 0 | 3 |
+| Wrong item / return | 3 | 2 | 0 |
+| **Total** | **20** | **5** | **5** |
+
+The labels are readable but not reliable at the individual level: 20 of 30 were
+clearly consistent, 5 were partly consistent, and 5 were dominated by another
+theme. The delay topic was the weakest — three of its five sampled complaints
+were mainly about product quality or wrong items — which matches its low seed
+stability. This is one analyst's review, not independent human coding, and 30
+complaints cannot estimate label accuracy with useful precision. It supports the
+broad reading of the corpus, not the exact assignment of an individual complaint.
 
 Using the full topic distribution instead of only the largest weight gives the
 same picture. Across the corpus, the three logistics topics account for **75.1%**
