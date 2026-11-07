@@ -60,7 +60,9 @@ those orders and inflates every denominator.
   "Delay and long wait" both concern delivery; "Not received" and "Delay" share
   vocabulary. Hard assignment to the largest weight hides complaints that mix
   product and delivery issues: 22.7% have a largest weight below 0.5 and 31.7%
-  have a second topic at or above 0.3.
+  have a second topic at or above 0.3. Aggregating full weights preserves the
+  direction: logistics topics are 75.1% of late complaint weight vs 36.9% of
+  on-time; product topics are 24.9% vs 63.1%.
 - **A bag of words does not understand a sentence.** Keeping `não` preserves the
   common `não recebi` bigram, but the model cannot represent scope, irony or
   which product a complaint refers to.

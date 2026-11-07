@@ -26,6 +26,7 @@ project:
   output-dir: .build-pt
 
 website:
+  title: "Portfólio de Ciência de Dados Aplicada"
   navbar:
     background: light
     search: true

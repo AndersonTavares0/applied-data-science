@@ -179,6 +179,13 @@ voltagem ou item errado sem troca (item errado/troca). Essas paráfrases são
 evidência qualitativa para os rótulos, não um substituto da comparação
 quantitativa.
 
+Usar a distribuição completa de tópicos, e não apenas o maior peso, leva à mesma
+leitura. No corpus, os três tópicos de logística respondem por **75,1%** do peso
+médio das reclamações de pedidos atrasados contra **36,9%** das reclamações no
+prazo; os três tópicos de produto respondem por **24,9%** contra **63,1%**. As
+diferenças por atribuição dura na tabela são maiores, mas a direção não depende
+de forçar cada reclamação em um único tópico.
+
 ```{=html}
 <!-- Source: reports/topic_terms.csv -->
 ```

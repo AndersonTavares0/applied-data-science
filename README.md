@@ -1,9 +1,11 @@
-# Retail Analytics Portfolio
+# Applied Data Science Portfolio
 
 [![CI](https://github.com/AndersonTavares0/ds-portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/AndersonTavares0/ds-portfolio/actions/workflows/ci.yml)
 [![Live report](https://img.shields.io/badge/live-report-1f6feb)](https://AndersonTavares0.github.io/ds-portfolio/)
 
 Analytics on the Olist Brazilian e-commerce dataset: 99,441 orders placed between September 2016 and October 2018, across nine related tables. Three projects on one dataset, each shipping a written analysis, a one-page decision memo, and a statement of what the data cannot support.
+
+The repository slug stays `ds-portfolio` so existing links keep working; the public title reflects the wider scope — measurement, prediction and text analysis, not only retail reporting.
 
 The thread through all three is one finding: **late delivery is the strongest signal of customer dissatisfaction in this marketplace.** An order that arrives late averages 2.27 stars out of 5. One that arrives on time averages 4.29. Project 01 measures that. Project 02 predicts it from what is known at the moment of purchase. Project 03 reads the 9,139 written complaints customers left, and finds that late and on-time customers complain about different things: the parcel, and the product.
 
@@ -49,7 +51,7 @@ The full analysis is in [Project 02](https://AndersonTavares0.github.io/ds-portf
 - **On-time complaints are about the product.** Quality or "not as described", incomplete orders and wrong items are **68.9%** of on-time complaints against **18.1%** of late ones. Quality alone is 26.7% against 5.6% (−21.1 pp), incomplete orders 22.8% against 4.2% (−18.6 pp), and wrong item or return 19.4% against 8.3% (−11.1 pp).
 - **The corpus is selected, and the report says so first.** 9,139 complaints come from delivered orders with a written 1–2 star review. Late orders are 6.8% of deliveries but 29.7% of those complaints: 57.6% of late orders receive a comment against 39.1% of on-time ones, and 42.0% receive a low-star comment against 7.2%. The comparison is compositional, not a customer survey, and carries no causal claim.
 
-The analysis fits six LDA topics on the complaint text without using the delivery outcome, then compares topic shares with 95% intervals and Benjamini–Hochberg correction. Coherence selects k=6 among 4–10, but seed refits show the exact boundaries are unstable, so the report treats the six labels as a readable summary rather than fixed categories. It is in [the report](site/reports/03-voice-of-customer/03-voice-of-customer.qmd), with [a one-page memo](site/reports/03-voice-of-customer/00-executive-memo.qmd).
+The analysis fits six LDA topics on the complaint text without using the delivery outcome, then compares topic shares with 95% intervals and Benjamini–Hochberg correction. Coherence selects k=6 among 4–10, but seed refits show the exact boundaries are unstable, so the report treats the six labels as a readable summary rather than fixed categories. A soft-assignment check reaches the same conclusion: logistics topics carry 75.1% of late complaint weight against 36.9% of on-time weight, while product topics carry 24.9% against 63.1%. It is in [the report](https://AndersonTavares0.github.io/ds-portfolio/reports/03-voice-of-customer/03-voice-of-customer.html), with [a one-page memo](https://AndersonTavares0.github.io/ds-portfolio/reports/03-voice-of-customer/00-executive-memo.html).
 
 ## How it is built
 
@@ -135,10 +137,11 @@ One folder is one purpose. `site/` is what gets published, `projects/` is the an
 | SQL and dimensional modelling | `projects/01-retail-analytics/dbt_project/models/` |
 | Data quality as code | `projects/01-retail-analytics/dbt_project/models/**/schema.yml`, `.../dbt_project/tests/` |
 | Python data engineering | `projects/01-retail-analytics/src/retail/` |
+| Predictive modelling and evaluation | `projects/02-late-delivery/src/late_delivery/` |
 | NLP and statistical comparison | `projects/03-voice-of-customer/src/voice/` |
 | Reproducible pipelines | `tasks.py`, `.github/workflows/` |
-| Testing without a database | `projects/01-retail-analytics/tests/`, `projects/03-voice-of-customer/tests/` |
-| Communicating a result | `site/reports/01-retail-analytics/`, `site/reports/03-voice-of-customer/` |
+| Testing without a database | `projects/01-retail-analytics/tests/`, `projects/02-late-delivery/tests/`, `projects/03-voice-of-customer/tests/` |
+| Communicating a result | `site/reports/01-retail-analytics/`, `site/reports/02-late-delivery/`, `site/reports/03-voice-of-customer/` |
 
 ## Documentation
 

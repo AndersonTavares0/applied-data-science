@@ -360,7 +360,10 @@ with seeds 1–4 give a mean adjusted Rand index of **0.258** and mean top-term
 Jaccard of **0.413** against the seed-0 partition, so the exact topic boundaries
 are not stable even though the broad logistics/product grouping is. Hard
 assignment is also a summary: **22.7%** of complaints have a largest topic weight
-below 0.5, and **31.7%** have a second topic at or above 0.3.
+below 0.5, and **31.7%** have a second topic at or above 0.3. Aggregating the full
+weights instead of the hard assignment gives the same direction: logistics topics
+carry **75.1%** of late complaint weight against **36.9%** of on-time weight, and
+product topics **24.9%** against **63.1%**.
 
 **Topic share.** `share_pct` = complaints assigned to a topic ÷ all 9,139
 complaints. `late_share_pct` and `on_time_share_pct` use a different denominator
