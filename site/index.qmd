@@ -34,11 +34,12 @@ of what the data cannot support.
 </article>
 
 <article class="project">
-<div class="project-seq">03<span class="project-status status-planned">Planned</span></div>
+<div class="project-seq">03<span class="project-status status-published">Published</span></div>
 <div class="project-detail">
 <h3>What do 99,000 Portuguese-language reviews complain about?</h3>
-<p>Sentiment and topic modelling, to check from the customer's side what project 01 finds from the delivery side: whether the complaints are about the parcel or the product.</p>
+<p>Topic modelling of 9,139 written 1–2 star complaints. Late complaints are about the parcel: delivery problems, non-receipt and delay are 81.9% of them. On-time complaints are about the product: quality, completeness and wrong items are 68.9%. The report states the selection before the result.</p>
 <p class="project-stack">Python, NLP, topic modelling</p>
+<p class="project-links"><a href="reports/03-voice-of-customer/03-voice-of-customer.qmd">Read the analysis</a> <a href="reports/03-voice-of-customer/00-executive-memo.qmd">One-page decision memo</a></p>
 </div>
 </article>
 
@@ -50,7 +51,7 @@ Every project here runs from a clean clone.
 
 ```bash
 uv run python tasks.py setup      # dependencies + database + dataset
-uv run python tasks.py pipeline   # load, build, charts, tests, render
+uv run python tasks.py pipeline   # load, build, charts, topics, tests, render
 ```
 
 The dataset comes from a revision-pinned mirror and is checked against expected

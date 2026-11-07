@@ -14,6 +14,7 @@ project:
     - index.qmd
     - about.qmd
     - reports/01-retail-analytics/*.qmd
+    - reports/03-voice-of-customer/*.qmd
 
 website:
   navbar:
@@ -28,6 +29,10 @@ website:
             text: "01 · Retail analytics"
           - href: reports/01-retail-analytics/00-executive-memo.qmd
             text: "01 · Decision memo"
+          - href: reports/03-voice-of-customer/03-voice-of-customer.qmd
+            text: "03 · Voice of the customer"
+          - href: reports/03-voice-of-customer/00-executive-memo.qmd
+            text: "03 · Decision memo"
       - href: about.qmd
         text: About
     right:
