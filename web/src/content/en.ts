@@ -36,7 +36,7 @@ export const en: SiteContent = {
       'The first Applied Data Science collection: 99,441 Olist orders and three connected studies in measurement, prediction and complaint text, each with its limitations stated.',
     eyebrow: 'Collection 01 · Olist e-commerce operations',
     title: 'E-commerce Operations & Customer Experience',
-    subtitle: 'A Reproducible Data Science Study',
+    subtitle: 'Reproducible Studies in Data Science',
     lead:
       'One Brazilian marketplace, 99,441 orders between September 2016 and October 2018, and three studies that ask what happened, what can be ranked at checkout, and what customers wrote when the parcel went wrong.',
     stats: [
@@ -91,7 +91,7 @@ export const en: SiteContent = {
     metaDescription:
       'Late delivery is the strongest signal of customer dissatisfaction in this marketplace. Measured across 99,441 orders, predicted honestly, and explained through 9,139 written complaints.',
     eyebrow: 'Applied Data Science · Anderson Tavares',
-    subtitle: 'A Reproducible Data Science Study',
+    subtitle: 'Reproducible Studies in Data Science',
     title: 'Late delivery is the strongest signal of customer dissatisfaction.',
     lead:
       'I measured it across 99,441 Olist orders. Then I asked the two questions that follow: can a model see the risk at checkout, and what do customers actually write when the parcel goes wrong?',
@@ -102,7 +102,7 @@ export const en: SiteContent = {
     collectionCard: {
       eyebrow: 'First collection · Olist e-commerce operations',
       title: 'E-commerce Operations & Customer Experience',
-      subtitle: 'A Reproducible Data Science Study',
+      subtitle: 'Reproducible Studies in Data Science',
       body:
         'Applied Data Science collects reproducible studies built on real operational data. The first collection follows 99,441 Olist orders through measurement, prediction and the customers’ own words.',
       cta: 'Explore the collection',
@@ -728,7 +728,7 @@ export const en: SiteContent = {
       'Code is MIT. The Olist dataset is CC BY-NC-SA 4.0, non-commercial, and is not redistributed here. All published numbers are aggregates from the tested marts; no raw review text is reproduced.',
   },
   footer: {
-    line: 'Applied Data Science — A Reproducible Data Science Study. First collection: Olist e-commerce operations.',
+    line: 'Applied Data Science — Reproducible Studies in Data Science. First collection: Olist e-commerce operations.',
     source: 'Source and reproduction',
     licence: 'Code MIT · Data CC BY-NC-SA 4.0',
     note: 'Built as a static site. No tracking, no cookies, no analytics.',

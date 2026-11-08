@@ -6,7 +6,7 @@ one is a bug.
 
 ## What this repository is
 
-Applied Data Science — a reproducible data science portfolio of studies built on real operational data. The first collection is **Olist e-commerce operations** (*E-commerce Operations & Customer Experience*). The thesis of that collection, stated once:
+Applied Data Science — a portfolio of reproducible studies in data science built on real operational data. The first collection is **Olist e-commerce operations** (*E-commerce Operations & Customer Experience*). The thesis of that collection, stated once:
 
 > In this marketplace, late delivery is the strongest signal of customer
 > dissatisfaction, and it is concentrated on the crossing between São Paulo and

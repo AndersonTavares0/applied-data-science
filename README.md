@@ -1,6 +1,6 @@
 # Applied Data Science
 
-**A Reproducible Data Science Study**
+**Reproducible Studies in Data Science**
 
 [![CI](https://github.com/AndersonTavares0/applied-data-science/actions/workflows/ci.yml/badge.svg)](https://github.com/AndersonTavares0/applied-data-science/actions/workflows/ci.yml)
 [![Publish](https://github.com/AndersonTavares0/applied-data-science/actions/workflows/publish.yml/badge.svg)](https://github.com/AndersonTavares0/applied-data-science/actions/workflows/publish.yml)

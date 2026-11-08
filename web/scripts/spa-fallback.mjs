@@ -12,14 +12,14 @@ const site = 'https://AndersonTavares0.github.io/applied-data-science'
 const routes = [
   {
     path: '',
-    title: 'Applied Data Science — A Reproducible Data Science Study',
+    title: 'Applied Data Science — Reproducible Studies in Data Science',
     description:
       'Applied Data Science: late delivery is the strongest signal of customer dissatisfaction in this marketplace. Measured across 99,441 Olist orders, predicted honestly, and explained through 9,139 written complaints.',
     lang: 'en',
   },
   {
     path: 'pt',
-    title: 'Applied Data Science — Um estudo reproduzível em ciência de dados',
+    title: 'Applied Data Science — Estudos Reproduzíveis em Ciência de Dados',
     description:
       'Applied Data Science: o atraso na entrega é o sinal mais forte de insatisfação do cliente neste marketplace. Medido em 99.441 pedidos da Olist, previsto com honestidade e explicado por 9.139 reclamações escritas.',
     lang: 'pt-BR',
