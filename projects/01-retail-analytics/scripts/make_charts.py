@@ -14,6 +14,7 @@ Run it with `uv run python tasks.py charts`, which is what sets `PYTHONPATH` so
 that `retail` is importable.
 """
 
+# ruff: noqa: E501
 from __future__ import annotations
 
 import sys
@@ -29,143 +30,179 @@ matplotlib.use("Agg")
 import matplotlib.dates as mdates  # noqa: E402
 import matplotlib.pyplot as plt  # noqa: E402
 import pandas as pd  # noqa: E402
+from matplotlib.lines import Line2D  # noqa: E402
+from matplotlib.patches import Patch  # noqa: E402
+from matplotlib.ticker import FuncFormatter  # noqa: E402
+from retail.chart_style import (  # noqa: E402
+    ACCENT,
+    MUTED,
+    PRIMARY,
+    SOFT,
+    add_source,
+    add_title,
+    apply_style,
+    brl_millions,
+    reference_line,
+    style_axes,
+)
 from retail.config import REPO_ROOT, get_settings  # noqa: E402
 from retail.io import build_engine  # noqa: E402
 
-# The English figures live at `figures/` and the Portuguese ones at `figures/pt/`,
-# so the Portuguese reports climb one directory further. Keeping both under one
-# figures directory means the two language builds share nothing but the data.
 FIGURES_DIR = REPO_ROOT / "site" / "reports" / "01-retail-analytics" / "figures"
 LANGS = ("en", "pt")
 
-# One place for the palette, so every chart in the report looks like it belongs to
-# the same document. These are the light values from `site/theme/theme.scss`; the dark
-# bundle is only used for the page, and the figures keep their white ground.
-PRIMARY = "#1f6fb2"
-ACCENT = "#d97706"
-MUTED = "#c4cdd5"
-SOFT = "#6b7a88"
-INK = "#1f2933"
+apply_style()
 
-plt.rcParams.update(
-    {
-        "figure.dpi": 110,
-        "savefig.dpi": 150,
-        "figure.facecolor": "white",
-        "savefig.facecolor": "white",
-        "font.family": "sans-serif",
-        # The first family matplotlib can find wins. DejaVu Sans ships with
-        # matplotlib, so anything listed after it is unreachable — which is how
-        # "Segoe UI" ended up dead code behind it, with every figure falling back
-        # to DejaVu. Keep the always-present family last.
-        "font.sans-serif": ["Source Sans 3", "Segoe UI", "Arial", "DejaVu Sans"],
-        "font.size": 10,
-        "axes.titlesize": 12.5,
-        "axes.titleweight": "semibold",
-        "axes.titlelocation": "left",
-        "axes.titlepad": 12,
-        "axes.titlecolor": INK,
-        "axes.labelsize": 10,
-        "axes.labelcolor": SOFT,
-        "text.color": INK,
-        "xtick.color": SOFT,
-        "ytick.color": SOFT,
-        "xtick.labelsize": 9,
-        "ytick.labelsize": 9.5,
-        "axes.spines.top": False,
-        "axes.spines.right": False,
-        "axes.spines.left": False,
-        "axes.edgecolor": MUTED,
-        "axes.grid": True,
-        "axes.axisbelow": True,
-        "grid.color": MUTED,
-        "grid.alpha": 0.5,
-        "grid.linewidth": 0.7,
-        "figure.autolayout": False,
-    }
-)
+# Human labels for the marketplace's snake_case category vocabulary. Keeping the
+# raw value in the data and the readable label in the chart avoids translating
+# the key that the SQL and the data dictionary use.
+CATEGORY_LABELS = {
+    "health_beauty": "Health & beauty",
+    "watches_gifts": "Watches & gifts",
+    "bed_bath_table": "Bed, bath & table",
+    "sports_leisure": "Sports & leisure",
+    "computers_accessories": "Computers & accessories",
+    "furniture_decor": "Furniture & decor",
+    "cool_stuff": "Cool stuff",
+    "housewares": "Housewares",
+    "auto": "Auto",
+    "garden_tools": "Garden tools",
+    "toys": "Toys",
+    "baby": "Baby",
+}
+CATEGORY_LABELS_PT = {
+    "health_beauty": "Saúde & beleza",
+    "watches_gifts": "Relógios & presentes",
+    "bed_bath_table": "Cama, mesa & banho",
+    "sports_leisure": "Esporte & lazer",
+    "computers_accessories": "Informática & acessórios",
+    "furniture_decor": "Móveis & decoração",
+    "cool_stuff": "Utilidades",
+    "housewares": "Casa & cozinha",
+    "auto": "Automotivo",
+    "garden_tools": "Jardim & ferramentas",
+    "toys": "Brinquedos",
+    "baby": "Bebê",
+}
 
-
-# Every string a reader sees. Anything that is a value from the database — an
-# order status, a state code, a category name — is deliberately absent: those are
-# data, and translating them would break the link to the models and the raw
-# tables. Only the labels the chart itself supplies are translated.
 STRINGS = {
     "en": {
         "revenue_title": "Monthly revenue",
-        "revenue_y": "Revenue (thousands of R$)",
-        "revenue_note": "Edge months excluded (Sep 2016, Sep–Oct 2018): {orders} orders.",
+        "revenue_sub": "Gross payment value, excluding the three near-empty edge months",
+        "revenue_note": "Excluded: Sep 2016 and Sep–Oct 2018 ({orders} orders). Bars are months, not a continuous series.",
+        "revenue_ylabel": "Revenue (R$ millions)",
         "black_friday": "Black Friday",
-        "categories_title": "The 12 categories that carry the revenue",
-        "categories_x": "Item revenue (thousands of R$)",
-        "avg_item": "avg item R$ {value:,.0f}",
-        "delivery_title": "Where satisfaction goes",
-        "delivery_y": "Average review score",
-        "share_le2": "{value:.0f}%\nscore ≤2",
+        "categories_title": "The categories that carry the marketplace",
+        "categories_sub": "Top 12 by item revenue; share is of all item revenue",
+        "categories_note": "Labels show item revenue and average item price. Freight is excluded.",
+        "delivery_title": "Average review score by delivery outcome",
+        "delivery_sub": "Mean of the latest review per delivered order; lower is worse",
+        "delivery_note": "Bars show mean score and share of reviews at 2 stars or below. n is the number of orders.",
+        "share_le2": "{value:.0f}%\n≤2 stars",
         "buckets": {
-            "on time": "on time",
-            "late: up to 7 days": "late\n0-7 days",
-            "late: 8 to 14 days": "late\n8-14 days",
-            "late: more than 14 days": "late\n>14 days",
-            "not delivered: cancelled or unavailable": "cancelled or\nunavailable",
-            "not delivered: still open": "still open\nat snapshot",
-            "delivered: missing timestamp": "delivered,\nno timestamp",
+            "on time": "On time",
+            "late: up to 7 days": "Late\n0–7 days",
+            "late: 8 to 14 days": "Late\n8–14 days",
+            "late: more than 14 days": "Late\n>14 days",
+            "not delivered: cancelled or unavailable": "Cancelled or\nunavailable",
+            "not delivered: still open": "Still open\nat snapshot",
+            "delivered: missing timestamp": "Delivered,\nno timestamp",
         },
-        "state_title": "Late delivery by state (states with at least 1,000 deliveries)",
-        "state_x": "Deliveries arriving after the promised date (%)",
-        "state_label": "{pct:.1f}% ({orders:,})",
-        "lane_title": "Late delivery by lane (lanes with at least 900 deliveries)",
-        "lane_x": "Deliveries arriving after the promised date (%)",
+        "state_title": "Late delivery by customer state",
+        "state_sub": "States with at least 1,000 delivered orders; dashed line is the national rate",
+        "state_note": "Late = delivered after the promised date. n is the number of delivered orders.",
+        "state_label": "{pct:.1f}%  ({orders:,})",
+        "lane_title": "Late delivery by seller → customer lane",
+        "lane_sub": "Lanes with at least 900 delivered orders; dashed line is the national rate",
+        "lane_note": "Blue = seller and customer in the same state. Late = delivered after the promised date.",
         "lane_label": "{pct:.1f}%  ({orders:,})",
-        "lane_note": "Blue = the seller and the customer are in the same state.",
-        "cohort_title": "Retention after the first order",
-        "cohort_x": "Months after the customer's first order",
-        "cohort_y": "Customers who ordered again (%)",
-        "repeat_title": "How often a customer comes back",
-        "repeat_x": "Orders placed",
-        "repeat_y": "Customers (log scale)",
+        "cohort_title": "Repeat purchase in the next calendar month",
+        "cohort_sub": "Share of each cohort ordering again, by calendar-month offset",
+        "cohort_note": "Eligible customers shown under each offset. This is not 30-day retention; later offsets use older cohorts only.",
+        "repeat_title": "How often customers come back",
+        "repeat_sub": "Customer count on a log scale; 5+ combines 5, 6, 7, 9 and 17 orders",
+        "repeat_note": "One order per customer is the overwhelming majority. Counts are customers, not orders.",
+        "repeat_x": "Customers (log scale)",
         "status_title": "What the revenue figure includes",
-        "status_x": "Revenue recorded (thousands of R$, log scale)",
-        "status_note": (
-            "Amber = cancelled or unavailable.\nA payment was recorded, so it is counted."
-        ),
+        "status_sub": "Recorded payment value by order status; log scale",
+        "status_note": "Amber = cancelled or unavailable. A payment was recorded, so it is counted in revenue.",
+        "status_x": "Recorded payment value (R$, log scale)",
+        "status_cancelled": "Cancelled or unavailable",
+        "status_other": "Other statuses",
+        "national": "National {pct:.1f}%",
+        "same_state": "Same state",
+        "interstate": "Interstate",
+        "sp": "São Paulo (largest market)",
+        "other": "Other states",
+        "n_label": "n={orders:,}",
+        "share": "{pct:.1f}%",
+        "revenue_peak": "R$ {value:.2f}m",
+        "avg_item": "avg item R$ {value:,.0f}",
+        "customers": "{value:,}",
+        "customer_share": "{pct:.2f}% of customers",
+        "late": "Late",
+        "not_delivered": "Not delivered",
+        "missing": "Missing outcome",
+        "on_time": "On time",
     },
     "pt": {
         "revenue_title": "Receita mensal",
-        "revenue_y": "Receita (milhares de R$)",
-        "revenue_note": "Meses de borda excluídos (set 2016, set–out 2018): {orders} pedidos.",
+        "revenue_sub": "Valor bruto de pagamentos, sem os três meses de borda quase vazios",
+        "revenue_note": "Excluídos: set 2016 e set–out 2018 ({orders} pedidos). As barras são meses, não uma série contínua.",
+        "revenue_ylabel": "Receita (R$ milhões)",
         "black_friday": "Black Friday",
-        "categories_title": "As 12 categorias que sustentam a receita",
-        "categories_x": "Receita de itens (milhares de R$)",
-        "avg_item": "item médio R$ {value:,.0f}",
-        "delivery_title": "Onde a satisfação cai",
-        "delivery_y": "Nota média da avaliação",
-        "share_le2": "{value:.0f}%\nnota ≤2",
+        "categories_title": "As categorias que sustentam o marketplace",
+        "categories_sub": "12 maiores por receita de itens; participação sobre toda a receita de itens",
+        "categories_note": "Rótulos mostram receita de itens e preço médio do item. Frete não entra.",
+        "delivery_title": "Nota média da avaliação por resultado da entrega",
+        "delivery_sub": "Média da avaliação mais recente por pedido entregue; menor é pior",
+        "delivery_note": "Barras mostram nota média e participação de notas ≤2. n é o número de pedidos.",
+        "share_le2": "{value:.0f}%\n≤2 estrelas",
         "buckets": {
-            "on time": "no prazo",
-            "late: up to 7 days": "atraso\n0-7 dias",
-            "late: 8 to 14 days": "atraso\n8-14 dias",
-            "late: more than 14 days": "atraso\n>14 dias",
-            "not delivered: cancelled or unavailable": "cancelado ou\nindisponível",
-            "not delivered: still open": "em aberto\nno snapshot",
-            "delivered: missing timestamp": "entregue,\nsem data",
+            "on time": "No prazo",
+            "late: up to 7 days": "Atraso\n0–7 dias",
+            "late: 8 to 14 days": "Atraso\n8–14 dias",
+            "late: more than 14 days": "Atraso\n>14 dias",
+            "not delivered: cancelled or unavailable": "Cancelado ou\nindisponível",
+            "not delivered: still open": "Em aberto\nno snapshot",
+            "delivered: missing timestamp": "Entregue,\nsem data",
         },
-        "state_title": "Atraso na entrega por estado (estados com ao menos 1,000 entregas)",
-        "state_x": "Entregas após a data prometida (%)",
-        "state_label": "{pct:.1f}% ({orders:,})",
-        "lane_title": "Atraso por rota (rotas com ao menos 900 entregas)",
-        "lane_x": "Entregas após a data prometida (%)",
+        "state_title": "Atraso por estado do cliente",
+        "state_sub": "Estados com ao menos 1.000 entregas; linha tracejada é a taxa nacional",
+        "state_note": "Atraso = entrega após a data prometida. n é o número de pedidos entregues.",
+        "state_label": "{pct:.1f}%  ({orders:,})",
+        "lane_title": "Atraso por rota vendedor → cliente",
+        "lane_sub": "Rotas com ao menos 900 entregas; linha tracejada é a taxa nacional",
+        "lane_note": "Azul = vendedor e cliente no mesmo estado. Atraso = entrega após a data prometida.",
         "lane_label": "{pct:.1f}%  ({orders:,})",
-        "lane_note": "Azul = vendedor e cliente no mesmo estado.",
-        "cohort_title": "Retenção após o primeiro pedido",
-        "cohort_x": "Meses após o primeiro pedido do cliente",
-        "cohort_y": "Clientes que compraram de novo (%)",
+        "cohort_title": "Recompra no mês calendário seguinte",
+        "cohort_sub": "Participação de cada coorte que volta a comprar, por mês de calendário",
+        "cohort_note": "Clientes elegíveis sob cada mês. Não é retenção de 30 dias; meses distantes usam só coortes antigas.",
         "repeat_title": "Com que frequência o cliente volta",
-        "repeat_x": "Pedidos feitos",
-        "repeat_y": "Clientes (escala log)",
+        "repeat_sub": "Clientes em escala log; 5+ agrupa 5, 6, 7, 9 e 17 pedidos",
+        "repeat_note": "Um pedido por cliente é a maioria absoluta. Contagens são clientes, não pedidos.",
+        "repeat_x": "Clientes (escala log)",
         "status_title": "O que a receita inclui",
-        "status_x": "Receita registrada (milhares de R$, escala log)",
-        "status_note": "Âmbar = cancelado ou indisponível.\nHouve pagamento, então entra na conta.",
+        "status_sub": "Valor de pagamento registrado por status; escala log",
+        "status_note": "Âmbar = cancelado ou indisponível. Houve pagamento, então entra na receita.",
+        "status_x": "Valor de pagamento registrado (R$, escala log)",
+        "status_cancelled": "Cancelado ou indisponível",
+        "status_other": "Outros status",
+        "national": "Brasil {pct:.1f}%",
+        "same_state": "Mesmo estado",
+        "interstate": "Interestadual",
+        "sp": "São Paulo (maior mercado)",
+        "other": "Outros estados",
+        "n_label": "n={orders:,}",
+        "share": "{pct:.1f}%",
+        "revenue_peak": "R$ {value:.2f} mi",
+        "avg_item": "item médio R$ {value:,.0f}",
+        "customers": "{value:,}",
+        "customer_share": "{pct:.2f}% dos clientes",
+        "late": "Atrasado",
+        "not_delivered": "Não entregue",
+        "missing": "Sem resultado",
+        "on_time": "No prazo",
     },
 }
 
@@ -219,8 +256,6 @@ def load_data(engine) -> dict[str, pd.DataFrame]:
             -- chart. `is_intrastate` drives the colour: it is the comparison that
             -- makes the point, because intrastate lanes with volume are fine.
             -- 900 rather than 1,000 so RJ -> RJ (946 deliveries) survives the cut.
-            -- It is the most useful bar on the chart: a Rio seller delivering in
-            -- Rio is not late, which is what rules out the destination itself.
             select lane, is_intrastate, delivered_orders, late_pct
             from analytics_marts.mart_late_delivery_by_lane
             where delivered_orders >= 900
@@ -230,12 +265,10 @@ def load_data(engine) -> dict[str, pd.DataFrame]:
         "cohort": read(
             engine,
             """
-            -- `mart_cohort_retention` holds one row per (cohort_month,
-            -- month_offset), so the cohorts have to be summed before they can be
-            -- plotted. Selecting the raw rows draws ~20 bars on top of each other
-            -- at every offset, and the y-axis is then driven by whichever small
-            -- cohort happens to have the highest retention.
             select month_offset,
+                   count(distinct cohort_month) as cohorts,
+                   sum(active_customers) as active_customers,
+                   sum(cohort_customers) as eligible_customers,
                    round(100.0 * sum(active_customers) / sum(cohort_customers), 2) as retention_pct
             from analytics_marts.mart_cohort_retention
             where month_offset between 1 and 12
@@ -261,6 +294,14 @@ def load_data(engine) -> dict[str, pd.DataFrame]:
             order by revenue desc
             """,
         ),
+        "national": read(
+            engine,
+            """
+            select 100.0 * avg(case when is_late then 1 else 0 end) as late_pct
+            from analytics_marts.fct_orders
+            where is_late is not null
+            """,
+        ),
     }
 
 
@@ -268,185 +309,211 @@ def save(fig: plt.Figure, lang: str, name: str) -> None:
     directory = FIGURES_DIR if lang == "en" else FIGURES_DIR / lang
     directory.mkdir(parents=True, exist_ok=True)
     path = directory / name
-    fig.savefig(path, bbox_inches="tight")
+    fig.savefig(path, bbox_inches="tight", pad_inches=0.16)
     plt.close(fig)
     print(f"  wrote {path.relative_to(REPO_ROOT)}")
 
 
-# ---------------------------------------------------------------------------
-# Charts
-# ---------------------------------------------------------------------------
+def _national(data) -> float:
+    return float(data["national"].iloc[0]["late_pct"])
+
+
+def _xlim_with_labels(ax, values, padding: float = 0.24) -> None:
+    upper = max(values) * (1 + padding)
+    ax.set_xlim(0, upper)
+
+
 def chart_revenue_monthly(data, s, lang: str) -> None:
     """Monthly revenue over the period the marketplace was actually trading."""
     df = data["revenue"].copy()
     df["month"] = pd.to_datetime(df["month"])
 
-    # Three months hold almost nothing: September 2016 (4 orders), and the two
-    # months the dataset was cut off in, September and October 2018 (16 and 4). At
-    # this scale their bars are invisible slivers — a chart cannot show 0.06% of
-    # its own height. October 2016 (324 orders) and December 2016 (1 order) are
-    # both kept: they are the marketplace's first months of trading, and a 1-order
-    # bar is honest about how little was happening. The note below names exactly
-    # which months were dropped, because a chart that colours a bar nobody can
-    # see, or drops it silently, is worse than one that says what it left out.
     window = (df["month"] >= pd.Timestamp("2016-10-01")) & (
         df["month"] <= pd.Timestamp("2018-08-31")
     )
     excluded_orders = int(df.loc[~window, "orders"].sum())
     df = df.loc[window].copy()
 
-    fig, ax = plt.subplots(figsize=(8.4, 3.9))
-    # Plotted against real dates rather than against a list of labels: the dataset
-    # has no November 2016 at all, and a categorical axis would draw October and
-    # December 2016 as adjacent bars, inventing a month that never existed.
-    ax.bar(df["month"], df["revenue_brl"] / 1_000, color=PRIMARY, width=20)
-    ax.set_ylabel(s["revenue_y"])
-    ax.set_title(s["revenue_title"])
-    ax.grid(axis="x", visible=False)
+    fig, ax = plt.subplots(figsize=(8.6, 4.0), layout="constrained")
+    ax.bar(df["month"], df["revenue_brl"], color=PRIMARY, width=20)
+    style_axes(ax, grid_axis="y")
+    add_title(ax, s["revenue_title"], s["revenue_sub"])
+    ax.set_ylabel(s["revenue_ylabel"])
+    ax.yaxis.set_major_formatter(FuncFormatter(lambda value, _pos: f"R$ {value / 1e6:.1f}m"))
     ax.xaxis.set_major_locator(mdates.MonthLocator(interval=3))
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
-    ax.tick_params(axis="x", rotation=90, labelsize=8)
+    ax.tick_params(axis="x", rotation=0, labelsize=8)
 
-    # Headroom above the tallest bar, so the annotation can sit above the peak
-    # rather than across it.
-    peak_thousands = df["revenue_brl"].max() / 1_000
-    ax.set_ylim(0, peak_thousands * 1.16)
-
-    # In date units now, so the annotation offset is in days rather than bars.
-    peak = mdates.date2num(df.loc[df["revenue_brl"].idxmax(), "month"])
+    peak_row = df.loc[df["revenue_brl"].idxmax()]
+    peak = mdates.date2num(peak_row["month"])
+    peak_value = float(peak_row["revenue_brl"])
+    ax.set_ylim(0, peak_value * 1.18)
     ax.annotate(
-        s["black_friday"],
-        xy=(peak, peak_thousands),
-        xytext=(peak - 75, peak_thousands * 1.05),
-        ha="center",
+        f"{s['black_friday']}: {s['revenue_peak'].format(value=peak_value / 1e6)}",
+        xy=(peak, peak_value),
+        xytext=(0.62, 0.73),
+        textcoords="axes fraction",
+        ha="left",
+        va="center",
         color=ACCENT,
-        fontsize=9,
-        fontweight="bold",
-        arrowprops={"arrowstyle": "->", "color": ACCENT, "lw": 1.3, "shrinkA": 2},
+        fontsize=8.5,
+        fontweight="semibold",
+        arrowprops={"arrowstyle": "-", "color": ACCENT, "lw": 1.2, "shrinkA": 4},
     )
     ax.text(
         0.01,
-        0.98,
+        0.97,
         s["revenue_note"].format(orders=excluded_orders),
         transform=ax.transAxes,
         ha="left",
         va="top",
-        fontsize=8,
+        fontsize=7.8,
         color=SOFT,
     )
     save(fig, lang, "revenue-monthly.png")
 
 
 def chart_top_categories(data, s, lang: str) -> None:
-    """The categories that carry the revenue."""
-    df = data["categories"].iloc[::-1]
+    """The categories that carry the revenue, with their share of the total."""
+    df = data["categories"].iloc[::-1].copy()
+    labels = [
+        (CATEGORY_LABELS if lang == "en" else CATEGORY_LABELS_PT).get(category, category)
+        for category in df["category"]
+    ]
+    total = float(df["revenue_brl"].sum())
 
-    fig, ax = plt.subplots(figsize=(8.0, 4.5))
-    ax.barh(df["category"], df["revenue_brl"] / 1_000, color=PRIMARY, height=0.68)
-    ax.set_xlabel(s["categories_x"])
-    ax.set_title(s["categories_title"])
-    ax.grid(axis="y", visible=False)
+    fig, ax = plt.subplots(figsize=(8.4, 4.8), layout="constrained")
+    ax.barh(labels, df["revenue_brl"], color=PRIMARY, height=0.68)
+    style_axes(ax, grid_axis="x")
+    add_title(ax, s["categories_title"], s["categories_sub"])
+    ax.set_xlabel("Item revenue (R$ millions)")
+    ax.xaxis.set_major_formatter(FuncFormatter(lambda value, _pos: f"R$ {value / 1e6:.1f}m"))
 
     for y, (value, price) in enumerate(
         zip(df["revenue_brl"], df["avg_item_price_brl"], strict=True)
     ):
         ax.text(
-            value / 1_000 + 12,
+            value + total * 0.012,
             y,
-            s["avg_item"].format(value=price),
+            f"{brl_millions(value)}  ·  {100 * value / total:.1f}%  ·  {s['avg_item'].format(value=price)}",
             va="center",
-            fontsize=8,
+            fontsize=7.8,
             color=SOFT,
         )
-    ax.margins(x=0.22)
+    ax.set_xlim(0, max(df["revenue_brl"]) * 1.35)
+    add_source(fig, s["categories_note"])
     save(fig, lang, "top-categories.png")
 
 
 def chart_delivery_review(data, s, lang: str) -> None:
-    """The strongest relationship in the dataset, in one picture."""
-    df = data["delivery"]
-
-    # The bucket names are precise but far too long to sit side by side as axis
-    # labels, so they are wrapped for display. The colour keys off the real name,
-    # not the label, and the label itself is translated.
+    """The strongest relationship in the dataset, with its denominators."""
+    df = data["delivery"].copy()
     labels = [s["buckets"][b] for b in df["delivery_bucket"]]
 
-    fig, ax = plt.subplots(figsize=(7.6, 4.0))
-    bars = ax.bar(
-        labels,
-        df["avg_review_score"],
-        color=[PRIMARY if b == "on time" else ACCENT for b in df["delivery_bucket"]],
-        width=0.62,
-    )
-    ax.set_ylabel(s["delivery_y"])
-    ax.set_ylim(0, 5)
-    ax.set_title(s["delivery_title"])
-    ax.grid(axis="x", visible=False)
+    def colour(bucket: str) -> str:
+        if bucket == "on time":
+            return PRIMARY
+        if bucket.startswith("late"):
+            return ACCENT
+        if bucket.startswith("not delivered"):
+            return SOFT
+        return MUTED
 
-    for bar, score, bad in zip(
-        bars, df["avg_review_score"], df["pct_review_score_le2"], strict=True
+    colours = [colour(bucket) for bucket in df["delivery_bucket"]]
+    hatches = [
+        "//" if bucket.startswith("not delivered") else ".." if "missing" in bucket else ""
+        for bucket in df["delivery_bucket"]
+    ]
+
+    df = df.iloc[::-1].reset_index(drop=True)
+    labels = [s["buckets"][b] for b in df["delivery_bucket"]]
+    colours = colours[::-1]
+    hatches = hatches[::-1]
+
+    fig, ax = plt.subplots(figsize=(8.8, 4.9), layout="constrained")
+    bars = ax.barh(labels, df["avg_review_score"], color=colours, height=0.62)
+    for bar, hatch in zip(bars, hatches, strict=True):
+        bar.set_hatch(hatch)
+    style_axes(ax, grid_axis="x")
+    add_title(ax, s["delivery_title"], s["delivery_sub"])
+    ax.set_xlabel("Average review score (0–5)")
+    ax.set_xlim(0, 6.3)
+    ax.set_xticks([0, 1, 2, 3, 4, 5])
+    ax.tick_params(axis="y", labelsize=7.8, length=0)
+
+    for bar, score, bad, orders in zip(
+        bars,
+        df["avg_review_score"],
+        df["pct_review_score_le2"],
+        df["orders"],
+        strict=True,
     ):
-        centre = bar.get_x() + bar.get_width() / 2
         ax.text(
-            centre,
-            score + 0.12,
-            f"{score:.2f}",
-            ha="center",
-            fontweight="bold",
-            fontsize=9.5,
+            score + 0.10,
+            bar.get_y() + bar.get_height() / 2,
+            f"{score:.2f}  ·  {bad:.0f}% ≤2  ·  n={orders:,}",
+            va="center",
+            fontsize=7.6,
+            color=SOFT,
         )
-        ax.text(
-            centre,
-            0.20,
-            s["share_le2"].format(value=bad),
-            ha="center",
-            fontsize=7.5,
-            color="white",
-        )
+
+    handles = [
+        Patch(facecolor=PRIMARY, label=s["on_time"]),
+        Patch(facecolor=ACCENT, label=s["late"]),
+        Patch(facecolor=SOFT, hatch="//", label=s["not_delivered"]),
+        Patch(facecolor=MUTED, hatch="..", label=s["missing"]),
+    ]
+    ax.legend(handles=handles, frameon=False, ncol=4, loc="lower right", fontsize=7.4)
+    add_source(fig, s["delivery_note"])
     save(fig, lang, "delivery-review.png")
 
 
 def chart_late_by_state(data, s, lang: str) -> None:
     """Lateness is geographic, and it is not a small difference."""
     df = data["states"]
+    national = _national(data)
 
-    fig, ax = plt.subplots(figsize=(8.0, 5.0))
-    colours = [PRIMARY if st == "SP" else ACCENT for st in df["customer_state"]]
+    fig, ax = plt.subplots(figsize=(8.4, 5.2), layout="constrained")
+    colours = [PRIMARY if state == "SP" else SOFT for state in df["customer_state"]]
     ax.barh(df["customer_state"], df["late_pct"], color=colours, height=0.68)
-    ax.set_xlabel(s["state_x"])
-    ax.set_title(s["state_title"])
-    ax.grid(axis="y", visible=False)
+    style_axes(ax, grid_axis="x")
+    add_title(ax, s["state_title"], s["state_sub"])
+    ax.set_xlabel("Delivered after the promised date (%)")
+    ax.set_xlim(0, max(df["late_pct"]) * 1.32)
+    reference_line(ax, national, s["national"].format(pct=national))
 
-    # Every bar carries its denominator, so a state with 1,100 deliveries cannot
-    # be read as though it ranked against one with 40,000.
     for y, (pct, orders) in enumerate(zip(df["late_pct"], df["delivered_orders"], strict=True)):
         ax.text(
             pct + 0.18,
             y,
             s["state_label"].format(pct=pct, orders=orders),
             va="center",
-            fontsize=8,
+            fontsize=7.8,
             color=SOFT,
         )
-    ax.margins(x=0.22)
+
+    handles = [
+        Patch(facecolor=PRIMARY, label=s["sp"]),
+        Patch(facecolor=SOFT, label=s["other"]),
+    ]
+    ax.legend(handles=handles, frameon=False, loc="lower right", fontsize=7.8)
+    add_source(fig, s["state_note"])
     save(fig, lang, "late-by-state.png")
 
 
 def chart_lane_late(data, s, lang: str) -> None:
-    """Lateness belongs to the route, not to the seller or the destination.
-
-    The destination-only view says "Rio is late". This one adds the origin and
-    shows that Rio receiving from Sao Paulo is late while Rio receiving from Rio
-    is not, which is a different problem with a different owner.
-    """
+    """Lateness belongs to the route, not to the seller or the destination."""
     df = data["lanes"]
+    national = _national(data)
 
-    fig, ax = plt.subplots(figsize=(8.2, 5.6))
+    fig, ax = plt.subplots(figsize=(8.6, 5.8), layout="constrained")
     colours = [PRIMARY if same else ACCENT for same in df["is_intrastate"]]
     ax.barh(df["lane"], df["late_pct"], color=colours, height=0.68)
-    ax.set_xlabel(s["lane_x"])
-    ax.set_title(s["lane_title"])
-    ax.grid(axis="y", visible=False)
+    style_axes(ax, grid_axis="x")
+    add_title(ax, s["lane_title"], s["lane_sub"])
+    ax.set_xlabel("Delivered after the promised date (%)")
+    ax.set_xlim(0, max(df["late_pct"]) * 1.34)
+    reference_line(ax, national, s["national"].format(pct=national))
 
     for y, (pct, orders) in enumerate(zip(df["late_pct"], df["delivered_orders"], strict=True)):
         ax.text(
@@ -454,40 +521,40 @@ def chart_lane_late(data, s, lang: str) -> None:
             y,
             s["lane_label"].format(pct=pct, orders=orders),
             va="center",
-            fontsize=8,
+            fontsize=7.7,
             color=SOFT,
         )
-    ax.text(
-        0.99,
-        0.02,
-        s["lane_note"],
-        transform=ax.transAxes,
-        ha="right",
-        va="bottom",
-        fontsize=8,
-        color=SOFT,
-    )
-    ax.margins(x=0.26)
+
+    handles = [
+        Patch(facecolor=PRIMARY, label=s["same_state"]),
+        Patch(facecolor=ACCENT, label=s["interstate"]),
+    ]
+    ax.legend(handles=handles, frameon=False, loc="lower right", fontsize=7.8)
+    add_source(fig, s["lane_note"])
     save(fig, lang, "lane-late.png")
 
 
 def chart_cohort_retention(data, s, lang: str) -> None:
-    """Retention does not decay from a high base — it starts low and stays there."""
+    """Retention starts low and stays there; show who is eligible at each offset."""
     df = data["cohort"]
 
-    fig, ax = plt.subplots(figsize=(8.2, 3.6))
-    ax.bar(df["month_offset"].astype(str), df["retention_pct"], color=PRIMARY, width=0.6)
-    ax.set_xlabel(s["cohort_x"])
-    ax.set_ylabel(s["cohort_y"])
-    ax.set_title(s["cohort_title"])
-    ax.grid(axis="x", visible=False)
+    fig, ax = plt.subplots(figsize=(8.8, 4.2), layout="constrained")
+    offsets = df["month_offset"].astype(int)
+    tick_labels = [
+        f"{offset}\n{eligible / 1000:,.0f}k"
+        for offset, eligible in zip(offsets, df["eligible_customers"], strict=True)
+    ]
+    ax.bar(offsets.astype(str), df["retention_pct"], color=PRIMARY, width=0.62)
+    ax.set_xticks(offsets.astype(str), tick_labels, fontsize=7.5)
+    style_axes(ax, grid_axis="y")
+    add_title(ax, s["cohort_title"], s["cohort_sub"])
+    ax.set_xlabel("Calendar months after the first order")
+    ax.set_ylabel("Ordered again (%)")
+    ax.set_ylim(0, max(df["retention_pct"]) * 1.45)
 
-    for x, pct in zip(df["month_offset"].astype(str), df["retention_pct"], strict=True):
-        # Offset the label in points, not in data units: every value here is under
-        # 1%, so a data-unit offset puts the text back on the bar's top edge and
-        # reads as though it has been struck through.
+    for x, pct in zip(offsets.astype(str), df["retention_pct"], strict=True):
         ax.annotate(
-            f"{pct:.2f}",
+            f"{pct:.2f}%",
             (x, pct),
             textcoords="offset points",
             xytext=(0, 4),
@@ -495,7 +562,7 @@ def chart_cohort_retention(data, s, lang: str) -> None:
             fontsize=8,
             color=SOFT,
         )
-    ax.margins(y=0.22)
+    add_source(fig, s["cohort_note"])
     save(fig, lang, "cohort-retention.png")
 
 
@@ -504,25 +571,32 @@ def chart_repeat_purchase(data, s, lang: str) -> None:
     df = data["repeat"].copy()
     df["bucket"] = df["frequency"].map(lambda n: str(n) if n <= 4 else "5+")
     grouped = df.groupby("bucket", sort=False)["customers"].sum()
-
-    fig, ax = plt.subplots(figsize=(7.4, 3.7))
-    bars = ax.bar(grouped.index, grouped.values, color=[ACCENT] + [PRIMARY] * (len(grouped) - 1))
-    ax.set_yscale("log")
-    ax.set_ylabel(s["repeat_y"])
-    ax.set_xlabel(s["repeat_x"])
-    ax.set_title(s["repeat_title"])
-    ax.grid(axis="x", visible=False)
-
     total = grouped.sum()
-    for bar, value in zip(bars, grouped.values, strict=True):
+
+    fig, ax = plt.subplots(figsize=(7.8, 3.9), layout="constrained")
+    positions = list(range(len(grouped)))
+    values = grouped.to_numpy()
+    ax.hlines(positions, 1, values, color=MUTED, linewidth=2)
+    ax.plot(values, positions, "o", color=PRIMARY, markersize=9)
+    ax.set_xscale("log")
+    style_axes(ax, grid_axis="x")
+    add_title(ax, s["repeat_title"], s["repeat_sub"])
+    ax.set_yticks(positions, grouped.index)
+    ax.set_xlabel(s["repeat_x"])
+    ax.set_xlim(1, max(values) * 10)
+    ax.set_xticks([1, 10, 100, 1_000, 10_000], ["1", "10", "100", "1k", "10k"])
+    ax.tick_params(axis="y", length=0)
+
+    for y, value in zip(positions, values, strict=True):
         ax.text(
-            bar.get_x() + bar.get_width() / 2,
-            value * 1.25,
-            f"{value:,}\n{100 * value / total:.2f}%",
-            ha="center",
-            fontsize=8.5,
+            value * 1.35,
+            y,
+            f"{s['customers'].format(value=value)}  ·  {s['customer_share'].format(pct=100 * value / total)}",
+            va="center",
+            fontsize=8,
+            color=SOFT,
         )
-    ax.margins(y=0.35)
+    add_source(fig, s["repeat_note"])
     save(fig, lang, "repeat-purchase.png")
 
 
@@ -532,27 +606,56 @@ def chart_order_status(data, s, lang: str) -> None:
     df["revenue"] = df["revenue"].fillna(0)
     cancelled = df["order_status"].isin(["canceled", "unavailable"])
 
-    fig, ax = plt.subplots(figsize=(7.8, 3.5))
-    ax.barh(
-        df["order_status"],
-        df["revenue"] / 1_000,
-        color=[ACCENT if is_cancelled else PRIMARY for is_cancelled in cancelled],
-        height=0.68,
+    fig, ax = plt.subplots(figsize=(8.4, 4.1), layout="constrained")
+    positions = list(range(len(df)))
+    colours = [ACCENT if value else PRIMARY for value in cancelled]
+    ax.scatter(
+        df["revenue"],
+        positions,
+        c=colours,
+        s=64,
+        edgecolors="white",
+        linewidths=0.8,
+        zorder=3,
     )
     ax.set_xscale("log")
+    style_axes(ax, grid_axis="x")
+    add_title(ax, s["status_title"], s["status_sub"])
+    ax.set_yticks(positions, df["order_status"])
     ax.set_xlabel(s["status_x"])
-    ax.set_title(s["status_title"])
-    ax.grid(axis="y", visible=False)
-    ax.text(
-        0.99,
-        0.97,
-        s["status_note"],
-        transform=ax.transAxes,
-        ha="right",
-        va="top",
-        fontsize=8,
-        color=SOFT,
+    ax.set_xlim(0.8, max(df["revenue"]) * 4.0)
+    ax.set_xticks([1, 100, 10_000, 1_000_000, 10_000_000])
+    ax.set_xticklabels(["R$1", "R$100", "R$10k", "R$1m", "R$10m"])
+
+    def money(value: float) -> str:
+        if value >= 1_000_000:
+            return f"R$ {value / 1_000_000:.1f}m"
+        if value >= 1_000:
+            return f"R$ {value / 1_000:.0f}k"
+        return f"R$ {value:.0f}"
+
+    for y, (value, orders) in enumerate(zip(df["revenue"], df["orders"], strict=True)):
+        ax.text(
+            value * 1.35,
+            y,
+            f"{money(value)}  ·  {orders:,} orders",
+            va="center",
+            fontsize=7.8,
+            color=SOFT,
+        )
+
+    handles = [
+        Line2D([0], [0], marker="o", color="none", markerfacecolor=ACCENT, markersize=8),
+        Line2D([0], [0], marker="o", color="none", markerfacecolor=PRIMARY, markersize=8),
+    ]
+    ax.legend(
+        handles,
+        [s["status_cancelled"], s["status_other"]],
+        frameon=False,
+        loc="lower right",
+        fontsize=7.8,
     )
+    add_source(fig, s["status_note"])
     save(fig, lang, "order-status.png")
 
 
