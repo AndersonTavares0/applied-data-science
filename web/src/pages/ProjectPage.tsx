@@ -268,7 +268,7 @@ function ProjectView({ slug: key }: { slug: Slug }) {
             <p className="mt-3 text-xs leading-relaxed text-muted">{data.reproduction.note}</p>
             <div className="mt-5 flex flex-wrap gap-2">
               <Button asChild variant="secondary" size="sm">
-                <a href="https://github.com/AndersonTavares0/ds-portfolio">
+                <a href="https://github.com/AndersonTavares0/applied-data-science">
                   {t.common.openSource}
                 </a>
               </Button>

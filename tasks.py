@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Portable task runner for the ds-portfolio monorepo.
+"""Portable task runner for the applied-data-science monorepo.
 
 WHY THIS EXISTS INSTEAD OF A Makefile
 -------------------------------------

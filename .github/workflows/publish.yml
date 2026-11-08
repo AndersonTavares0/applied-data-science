@@ -1,7 +1,7 @@
 name: Publish website
 
 # Builds the React site in `web/` and publishes `web/dist` to the `gh-pages`
-# branch, which GitHub Pages serves at /ds-portfolio/.
+# branch, which GitHub Pages serves at /applied-data-science/.
 #
 # The Quarto sources under `site/` are kept as an archive and are no longer
 # deployed. They remain the prose of record for the analysis and are useful for

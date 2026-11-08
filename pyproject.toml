@@ -1,5 +1,5 @@
 [project]
-name = "ds-portfolio"
+name = "applied-data-science"
 version = "0.1.0"
 description = "E-commerce operations and customer experience: fulfillment measurement, delivery-risk modelling and complaint-text analysis on the Olist Brazilian e-commerce dataset."
 readme = "README.md"

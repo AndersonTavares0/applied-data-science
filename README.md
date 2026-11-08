@@ -1,10 +1,10 @@
-# E-commerce Operations & Customer Experience
+# Applied Data Science
 
 **A Reproducible Data Science Study**
 
-[![CI](https://github.com/AndersonTavares0/ds-portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/AndersonTavares0/ds-portfolio/actions/workflows/ci.yml)
-[![Publish](https://github.com/AndersonTavares0/ds-portfolio/actions/workflows/publish.yml/badge.svg)](https://github.com/AndersonTavares0/ds-portfolio/actions/workflows/publish.yml)
-[![Live site](https://img.shields.io/badge/live-site-1f6feb?logo=githubpages&logoColor=white)](https://AndersonTavares0.github.io/ds-portfolio/)
+[![CI](https://github.com/AndersonTavares0/applied-data-science/actions/workflows/ci.yml/badge.svg)](https://github.com/AndersonTavares0/applied-data-science/actions/workflows/ci.yml)
+[![Publish](https://github.com/AndersonTavares0/applied-data-science/actions/workflows/publish.yml/badge.svg)](https://github.com/AndersonTavares0/applied-data-science/actions/workflows/publish.yml)
+[![Live site](https://img.shields.io/badge/live-site-1f6feb?logo=githubpages&logoColor=white)](https://AndersonTavares0.github.io/applied-data-science/)
 [![Python](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![dbt](https://img.shields.io/badge/dbt-PostgreSQL-FF694B?logo=dbt&logoColor=white)](https://www.getdbt.com/)
 [![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
@@ -12,11 +12,13 @@
 [![Code: MIT](https://img.shields.io/badge/code-MIT-2ea44f)](LICENSE)
 [![Data: CC BY-NC-SA 4.0](https://img.shields.io/badge/data-CC%20BY--NC--SA%204.0-important)](docs/acknowledgements.md)
 
-A study of the Olist Brazilian e-commerce dataset: **99,441 orders** from September 2016 to October 2018, across nine related tables. Three connected analyses on one dataset, each with a written case study, committed figures, reproducible SQL, and an explicit account of what the data cannot support.
+**Applied Data Science** is the collection identity: reproducible studies built on real operational data, each with a written case study, committed figures, reproducible SQL, and an explicit account of what the data cannot support.
 
-The thread: **late delivery is the strongest signal of customer dissatisfaction in this marketplace.** A late order averages **2.27 stars**; an on-time order averages **4.29**. The first study measures the problem, the second asks whether it can be ranked at checkout, and the third reads what customers wrote when the parcel went wrong.
+The first collection is **Olist e-commerce operations** — *E-commerce Operations & Customer Experience*. It follows the Olist Brazilian e-commerce dataset: **99,441 orders** from September 2016 to October 2018, across nine related tables. Three connected analyses on one dataset, each with its own question and its own limits.
 
-The repository slug stays `ds-portfolio` so existing links keep working. The published site is a static React application in [`web/`](web/); the original Quarto reports remain in [`site/`](site/) as an archive but are no longer deployed.
+The thread: **late delivery is the strongest signal of customer dissatisfaction in this marketplace.** A late order averages **2.27 stars**; an on-time order averages **4.29**. The first study measures the problem, the second asks whether it can be ranked at checkout, and the third reads what customers wrote when the parcel went wrong. Start with the collection page: [applied-data-science/collections/olist](https://AndersonTavares0.github.io/applied-data-science/collections/olist).
+
+The published site is a static React application in [`web/`](web/); the original Quarto reports remain in [`site/`](site/) as an archive but are no longer deployed. Docker container and volume names, and the dbt profile/schema, keep the original `ds-portfolio` / `portfolio` identifiers so existing local environments keep working.
 
 ## At a glance
 
@@ -33,11 +35,11 @@ The repository slug stays `ds-portfolio` so existing links keep working. The pub
 
 | # | Study | Question | Headline |
 |---|---|---|---|
-| 01 | [E-commerce Performance & Fulfillment Analytics](https://AndersonTavares0.github.io/ds-portfolio/projects/retail-analytics) | Which levers actually move satisfaction and repeat purchase? | 96.9% of customers buy once; lateness concentrates on one crossing |
-| 02 | [Late-Delivery Risk Prediction & Temporal Validation](https://AndersonTavares0.github.io/ds-portfolio/projects/late-delivery) | Can orders be ranked at checkout without leaking the future? | Modest ranking signal; **no-go** as a production queue |
-| 03 | [Customer Complaint Topic Modeling & Comparative Analysis](https://AndersonTavares0.github.io/ds-portfolio/projects/voice-of-customer) | What do late and on-time customers complain about? | Late = parcel; on-time = product |
+| 01 | [E-commerce Performance & Fulfillment Analytics](https://AndersonTavares0.github.io/applied-data-science/projects/retail-analytics) | Which levers actually move satisfaction and repeat purchase? | 96.9% of customers buy once; lateness concentrates on one crossing |
+| 02 | [Late-Delivery Risk Prediction & Temporal Validation](https://AndersonTavares0.github.io/applied-data-science/projects/late-delivery) | Can orders be ranked at checkout without leaking the future? | Modest ranking signal; **no-go** as a production queue |
+| 03 | [Customer Complaint Topic Modeling & Comparative Analysis](https://AndersonTavares0.github.io/applied-data-science/projects/voice-of-customer) | What do late and on-time customers complain about? | Late = parcel; on-time = product |
 
-Every page is also available in Portuguese: [pt/](https://AndersonTavares0.github.io/ds-portfolio/pt/).
+Every page is also available in Portuguese: [pt/](https://AndersonTavares0.github.io/applied-data-science/pt/).
 
 ## What the studies found
 
@@ -87,8 +89,8 @@ Every page is also available in Portuguese: [pt/](https://AndersonTavares0.githu
 Requires [uv](https://docs.astral.sh/uv/), Docker, and Node.js 22.
 
 ```bash
-git clone https://github.com/AndersonTavares0/ds-portfolio.git
-cd ds-portfolio
+git clone https://github.com/AndersonTavares0/applied-data-science.git
+cd applied-data-science
 cp .env.example .env
 uv run python tasks.py doctor      # toolchain and environment
 uv run python tasks.py setup       # dependencies, database, dataset
@@ -100,7 +102,7 @@ Build the site:
 ```bash
 cd web
 npm ci
-npm run dev        # http://localhost:5173/ds-portfolio/
+npm run dev        # http://localhost:5173/applied-data-science/
 npm run build      # typecheck + production bundle in web/dist
 npm run preview
 ```
@@ -134,7 +136,7 @@ web/                            published React site
   src/data/                     committed JSON exports of tested marts
   src/content/                  typed EN/PT copy
   src/components/charts/        Recharts data plates
-  src/pages/                    home, case studies, about
+  src/pages/                    home, collection, case studies, about
   scripts/export_data.py        the only database step the site needs
 
 site/                           Quarto archive, retained but not deployed

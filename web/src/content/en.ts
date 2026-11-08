@@ -6,9 +6,10 @@ export const en: SiteContent = {
   nav: {
     skip: 'Skip to content',
     home: 'Home',
-    projects: 'Projects',
+    projects: 'Studies',
+    collection: 'Olist collection',
     about: 'About',
-    allProjects: 'All projects',
+    allProjects: 'All studies',
     menu: 'Menu',
     close: 'Close menu',
     language: 'Language',
@@ -16,10 +17,10 @@ export const en: SiteContent = {
     themeLight: 'Switch to light theme',
     themeDark: 'Switch to dark theme',
     onThisPage: 'On this page',
-    backToProjects: 'Back to projects',
-    projectNav: 'Project navigation',
-    nextProject: 'Next project',
-    previousProject: 'Previous project',
+    backToProjects: 'Back to studies',
+    projectNav: 'Study navigation',
+    nextProject: 'Next study',
+    previousProject: 'Previous study',
     source: 'Source',
     sourceNote: 'Every number is reproducible from committed SQL and scripts.',
     dataLicence: 'Data: Olist, CC BY-NC-SA 4.0',
@@ -29,19 +30,83 @@ export const en: SiteContent = {
     notFoundBody: 'The link may be old, or the page may have moved. The three case studies are still here.',
     notFoundCta: 'Go to the home page',
   },
+  collection: {
+    metaTitle: 'E-commerce Operations & Customer Experience — Applied Data Science',
+    metaDescription:
+      'The first Applied Data Science collection: 99,441 Olist orders and three connected studies in measurement, prediction and complaint text, each with its limitations stated.',
+    eyebrow: 'Collection 01 · Olist e-commerce operations',
+    title: 'E-commerce Operations & Customer Experience',
+    subtitle: 'A Reproducible Data Science Study',
+    lead:
+      'One Brazilian marketplace, 99,441 orders between September 2016 and October 2018, and three studies that ask what happened, what can be ranked at checkout, and what customers wrote when the parcel went wrong.',
+    stats: [
+      { value: '99,441', label: 'orders analysed', note: 'September 2016 – October 2018' },
+      { value: 'R$ 16.0M', label: 'recorded payment value', note: 'Payment records, not realized revenue' },
+      { value: '6.77%', label: 'deliveries arrive late', note: '6,535 of 96,476 delivered orders' },
+      { value: '9,139', label: 'written complaints read', note: '1–2 star reviews from delivered orders' },
+    ],
+    scope: {
+      heading: 'The dataset and its scope',
+      paragraphs: [
+        'The collection is built on the Olist Brazilian e-commerce dataset: nine related tables covering orders, items, payments, reviews, products, sellers, customers, geolocation and category translation. Every published number comes from PostgreSQL and dbt models that are tested before anything reaches a chart.',
+        'The three studies share one grain and one time window. Study 01 measures revenue, retention and delivery outcomes. Study 02 learns only from features available at checkout and validates on orders placed after the cutoff. Study 03 reads the written complaints attached to delivered orders and compares late against on-time outcomes.',
+        'The window closes on 17 October 2018, so the final two months are partial. There is no refund, cost, margin or carrier identifier, and reviews are self-selected. Those limits are repeated in each study rather than parked here.',
+      ],
+    },
+    studiesHeading: 'Three studies, one thread',
+    studiesIntro:
+      'Each study states its question, scope, method, result and what the data cannot support. Read them in order, or start with the question closest to your work.',
+    method: {
+      heading: 'Reproducible from the raw file',
+      intro:
+        'Nothing on this site is typed by hand from a notebook. The path from the pinned download to the number on the page is scripted and tested.',
+      steps: [
+        'Raw CSVs are downloaded from a pinned revision and loaded as text. Casting, renaming and empty-cell handling happen only in dbt staging.',
+        'Every mart carries a description and tested keys. dbt build runs 91 data tests, including retention at month zero and agreement between the late flag and days late.',
+        'Python reads the tested marts for the model and the complaint analysis. The site consumes committed JSON exports, so the frontend never queries a database.',
+        'One task runner rebuilds the pipeline. 54 Python tests cover the feature contract, the temporal split, the metrics and the text normalisation without a network or a database.',
+      ],
+      note:
+        'The dataset is about 126 MB and is not committed. Code is MIT; the data is CC BY-NC-SA 4.0 and stays with Olist.',
+    },
+    limitations: {
+      heading: 'What this collection does not establish',
+      intro:
+        'The collection localises a problem and measures it. It does not explain it, price it, or prove that changing one variable would change the outcome.',
+      items: [
+        'No causal claim about late delivery. The crossing between São Paulo and Rio is where lateness concentrates, but the data have no carrier, hand-off or route assignment. Seller behaviour is not ruled out.',
+        'No realized revenue. Recorded payment value is the gross amount in the payment table, including freight and cancelled orders that still carry a payment record.',
+        'No population of customers. The complaint corpus is selected by outcome and by who chose to write; positive reviews are not modelled.',
+        'No second marketplace or later period. The vocabulary, the promise and the delivery operation belong to Olist between September 2016 and October 2018.',
+        'No deployment recommendation. Study 02 is a case study in leakage and honest evaluation, not a production queue.',
+      ],
+    },
+    cta: {
+      primary: 'Start with the operations analysis',
+      secondary: 'Read about the method',
+    },
+  },
   home: {
-    metaTitle: 'Anderson Tavares — E-commerce Operations & Customer Experience',
+    metaTitle: 'Applied Data Science — Anderson Tavares',
     metaDescription:
       'Late delivery is the strongest signal of customer dissatisfaction in this marketplace. Measured across 99,441 orders, predicted honestly, and explained through 9,139 written complaints.',
-    eyebrow: 'E-commerce Operations & Customer Experience · Anderson Tavares',
+    eyebrow: 'Applied Data Science · Anderson Tavares',
     subtitle: 'A Reproducible Data Science Study',
     title: 'Late delivery is the strongest signal of customer dissatisfaction.',
     lead:
       'I measured it across 99,441 Olist orders. Then I asked the two questions that follow: can a model see the risk at checkout, and what do customers actually write when the parcel goes wrong?',
     thesis:
-      'One dataset. Three questions: which levers move satisfaction and repeat purchase, can late orders be ranked honestly, and what do the complaints say in the customers’ own words?',
+      'The first collection brings one dataset and three questions: which levers move satisfaction and repeat purchase, can late orders be ranked honestly, and what do the complaints say in the customers’ own words?',
     primaryCta: 'Read the operations analysis',
-    secondaryCta: 'See all three projects',
+    secondaryCta: 'See all three studies',
+    collectionCard: {
+      eyebrow: 'First collection · Olist e-commerce operations',
+      title: 'E-commerce Operations & Customer Experience',
+      subtitle: 'A Reproducible Data Science Study',
+      body:
+        'Applied Data Science collects reproducible studies built on real operational data. The first collection follows 99,441 Olist orders through measurement, prediction and the customers’ own words.',
+      cta: 'Explore the collection',
+    },
     heroPlate: {
       label: 'The finding, in two numbers',
       lateLabel: 'Late delivery',
@@ -51,7 +116,7 @@ export const en: SiteContent = {
       footnote:
         'Mean review score. 6,535 of 96,476 deliveries — 6.77% — arrived after the promised date. This is an association, not a causal effect.',
     },
-    projectsHeading: 'Three projects, one thread',
+    projectsHeading: 'Three studies, one thread',
     projectsIntro:
       'Each case study states its question, its scope, the method, the result, and what the data cannot support. The limitations are part of the argument, not a footnote.',
     projects: [
@@ -622,7 +687,7 @@ export const en: SiteContent = {
     title: 'Anderson Tavares',
     intro: [
       'Data analyst. I work in SQL as a first language, model data with dbt, and write the analysis so someone who does not write SQL can follow the argument and recheck the numbers.',
-      'Most of my work is on marketplace and operations data, where the hard part is deciding what a number means. The three projects here are one dataset and three different questions: measurement, prediction and text.',
+      'Most of my work is on marketplace and operations data, where the hard part is deciding what a number means. The three studies here are one dataset and three different questions: measurement, prediction and text.',
     ],
     lookingFor: 'Looking for data analyst or data scientist roles.',
     toolsHeading: 'What I work with',
@@ -663,7 +728,7 @@ export const en: SiteContent = {
       'Code is MIT. The Olist dataset is CC BY-NC-SA 4.0, non-commercial, and is not redistributed here. All published numbers are aggregates from the tested marts; no raw review text is reproduced.',
   },
   footer: {
-    line: 'E-commerce Operations & Customer Experience. A Reproducible Data Science Study.',
+    line: 'Applied Data Science — A Reproducible Data Science Study. First collection: Olist e-commerce operations.',
     source: 'Source and reproduction',
     licence: 'Code MIT · Data CC BY-NC-SA 4.0',
     note: 'Built as a static site. No tracking, no cookies, no analytics.',

@@ -6,9 +6,10 @@ export const pt: SiteContent = {
   nav: {
     skip: 'Pular para o conteúdo',
     home: 'Início',
-    projects: 'Projetos',
+    projects: 'Estudos',
+    collection: 'Coleção Olist',
     about: 'Sobre',
-    allProjects: 'Todos os projetos',
+    allProjects: 'Todos os estudos',
     menu: 'Menu',
     close: 'Fechar menu',
     language: 'Idioma',
@@ -16,10 +17,10 @@ export const pt: SiteContent = {
     themeLight: 'Mudar para o tema claro',
     themeDark: 'Mudar para o tema escuro',
     onThisPage: 'Nesta página',
-    backToProjects: 'Voltar aos projetos',
-    projectNav: 'Navegação do projeto',
-    nextProject: 'Próximo projeto',
-    previousProject: 'Projeto anterior',
+    backToProjects: 'Voltar aos estudos',
+    projectNav: 'Navegação dos estudos',
+    nextProject: 'Próximo estudo',
+    previousProject: 'Estudo anterior',
     source: 'Fonte',
     sourceNote: 'Todo número é reproduzível a partir do SQL e dos scripts versionados.',
     dataLicence: 'Dados: Olist, CC BY-NC-SA 4.0',
@@ -29,19 +30,83 @@ export const pt: SiteContent = {
     notFoundBody: 'O link pode estar antigo, ou a página pode ter mudado. Os três estudos de caso continuam aqui.',
     notFoundCta: 'Ir para a página inicial',
   },
+  collection: {
+    metaTitle: 'Operações de E-commerce e Experiência do Cliente — Applied Data Science',
+    metaDescription:
+      'A primeira coleção do Applied Data Science: 99.441 pedidos da Olist e três estudos conectados de medição, previsão e texto de reclamações, cada um com suas limitações declaradas.',
+    eyebrow: 'Coleção 01 · Operações de e-commerce Olist',
+    title: 'Operações de E-commerce e Experiência do Cliente',
+    subtitle: 'Um estudo reproduzível em ciência de dados',
+    lead:
+      'Um marketplace brasileiro, 99.441 pedidos entre setembro de 2016 e outubro de 2018, e três estudos que perguntam o que aconteceu, o que pode ser ordenado no checkout e o que os clientes escreveram quando o pacote deu errado.',
+    stats: [
+      { value: '99.441', label: 'pedidos analisados', note: 'setembro de 2016 – outubro de 2018' },
+      { value: 'R$ 16,0 mi', label: 'valor de pagamento registrado', note: 'Registros de pagamento, não receita realizada' },
+      { value: '6,77%', label: 'das entregas chegam atrasadas', note: '6.535 de 96.476 pedidos entregues' },
+      { value: '9.139', label: 'reclamações escritas lidas', note: 'avaliações de 1–2 estrelas de pedidos entregues' },
+    ],
+    scope: {
+      heading: 'O conjunto de dados e seu escopo',
+      paragraphs: [
+        'A coleção é construída sobre o conjunto Olist de e-commerce brasileiro: nove tabelas relacionadas com pedidos, itens, pagamentos, avaliações, produtos, vendedores, clientes, geolocalização e tradução de categorias. Todo número publicado vem de modelos em PostgreSQL e dbt que são testados antes de chegar a um gráfico.',
+        'Os três estudos compartilham um grão e uma janela temporal. O estudo 01 mede receita, retenção e desfechos de entrega. O estudo 02 aprende apenas com características disponíveis no checkout e valida em pedidos feitos depois do corte. O estudo 03 lê as reclamações escritas de pedidos entregues e compara atrasados com pontuais.',
+        'A janela termina em 17 de outubro de 2018, então os dois últimos meses são parciais. Não há dado de reembolso, custo, margem ou identificador de transportadora, e as avaliações são auto-selecionadas. Esses limites aparecem em cada estudo, não ficam guardados aqui.',
+      ],
+    },
+    studiesHeading: 'Três estudos, um fio',
+    studiesIntro:
+      'Cada estudo declara a pergunta, o escopo, o método, o resultado e o que os dados não sustentam. Leia na ordem ou comece pela pergunta mais próxima do seu trabalho.',
+    method: {
+      heading: 'Reprodutível desde o arquivo bruto',
+      intro:
+        'Nada neste site é digitado à mão a partir de um notebook. O caminho do download com revisão fixada até o número na página é scriptado e testado.',
+      steps: [
+        'Os CSVs brutos são baixados de uma revisão fixada e carregados como texto. Conversões, renomeações e tratamento de células vazias acontecem só no staging do dbt.',
+        'Cada mart tem descrição e chaves testadas. O dbt build roda 91 testes de dados, incluindo retenção no mês zero e concordância entre o flag de atraso e os dias de atraso.',
+        'O Python lê os marts testados para o modelo e para a análise de reclamações. O site consome exportações JSON versionadas, então o frontend nunca consulta um banco.',
+        'Um único task runner reconstrói o pipeline. 54 testes em Python cobrem o contrato de features, a divisão temporal, as métricas e a normalização de texto sem rede nem banco.',
+      ],
+      note:
+        'O conjunto tem cerca de 126 MB e não é versionado. O código é MIT; os dados são CC BY-NC-SA 4.0 e permanecem com a Olist.',
+    },
+    limitations: {
+      heading: 'O que esta coleção não estabelece',
+      intro:
+        'A coleção localiza um problema e o mede. Ela não o explica, não o precifica e não prova que mudar uma variável mudaria o desfecho.',
+      items: [
+        'Nenhuma afirmação causal sobre atraso. O corredor entre São Paulo e Rio é onde o atraso se concentra, mas os dados não têm transportadora, transferência ou atribuição de rota. O comportamento dos vendedores não está descartado.',
+        'Nenhuma receita realizada. O valor de pagamento registrado é o valor bruto da tabela de pagamentos, incluindo frete e pedidos cancelados que ainda têm registro de pagamento.',
+        'Nenhuma população de clientes. O corpus de reclamações é selecionado pelo desfecho e por quem escolheu escrever; avaliações positivas não são modeladas.',
+        'Nenhum segundo marketplace ou período posterior. O vocabulário, o prazo e a operação de entrega pertencem à Olist entre setembro de 2016 e outubro de 2018.',
+        'Nenhuma recomendação de implantação. O estudo 02 é um caso sobre vazamento e avaliação honesta, não uma fila de produção.',
+      ],
+    },
+    cta: {
+      primary: 'Começar pela análise de operações',
+      secondary: 'Ler sobre o método',
+    },
+  },
   home: {
-    metaTitle: 'Anderson Tavares — Operações de E-commerce e Experiência do Cliente',
+    metaTitle: 'Applied Data Science — Anderson Tavares',
     metaDescription:
       'O atraso na entrega é o sinal mais forte de insatisfação do cliente neste marketplace. Medido em 99.441 pedidos, previsto com honestidade e explicado por 9.139 reclamações escritas.',
-    eyebrow: 'Operações de E-commerce e Experiência do Cliente · Anderson Tavares',
+    eyebrow: 'Applied Data Science · Anderson Tavares',
     subtitle: 'Um estudo reproduzível em ciência de dados',
     title: 'O atraso na entrega é o sinal mais forte de insatisfação do cliente.',
     lead:
       'Eu medi isso em 99.441 pedidos da Olist. Depois fiz as duas perguntas que vêm a seguir: um modelo consegue ver o risco no checkout, e o que os clientes realmente escrevem quando o pacote dá errado?',
     thesis:
-      'Um conjunto de dados. Três perguntas: quais alavancas movem satisfação e recompra, é possível ordenar atrasos com honestidade, e do que falam as reclamações nas palavras dos próprios clientes?',
+      'A primeira coleção traz um conjunto de dados e três perguntas: quais alavancas movem satisfação e recompra, é possível ordenar atrasos com honestidade, e do que falam as reclamações nas palavras dos próprios clientes?',
     primaryCta: 'Ler a análise de operações',
-    secondaryCta: 'Ver os três projetos',
+    secondaryCta: 'Ver os três estudos',
+    collectionCard: {
+      eyebrow: 'Primeira coleção · Operações de e-commerce Olist',
+      title: 'Operações de E-commerce e Experiência do Cliente',
+      subtitle: 'Um estudo reproduzível em ciência de dados',
+      body:
+        'Applied Data Science reúne estudos reproduzíveis sobre dados operacionais reais. A primeira coleção acompanha 99.441 pedidos da Olist entre medição, previsão e as palavras dos próprios clientes.',
+      cta: 'Explorar a coleção',
+    },
     heroPlate: {
       label: 'A descoberta, em dois números',
       lateLabel: 'Entrega atrasada',
@@ -51,7 +116,7 @@ export const pt: SiteContent = {
       footnote:
         'Nota média da avaliação. 6.535 de 96.476 entregas — 6,77% — chegaram depois da data prometida. É uma associação, não um efeito causal.',
     },
-    projectsHeading: 'Três projetos, um fio',
+    projectsHeading: 'Três estudos, um fio',
     projectsIntro:
       'Cada estudo de caso declara a pergunta, o escopo, o método, o resultado e o que os dados não sustentam. As limitações fazem parte do argumento, não são uma nota de rodapé.',
     projects: [
@@ -622,7 +687,7 @@ export const pt: SiteContent = {
     title: 'Anderson Tavares',
     intro: [
       'Analista de dados. Trabalho com SQL como primeira língua, modelo dados com dbt e escrevo a análise de modo que alguém que não escreve SQL consiga acompanhar o argumento e reconferir os números.',
-      'A maior parte do meu trabalho é com dados de marketplace e de operações, onde a parte difícil é decidir o que um número significa. Os três projetos aqui são um conjunto de dados e três perguntas diferentes: medição, previsão e texto.',
+      'A maior parte do meu trabalho é com dados de marketplace e de operações, onde a parte difícil é decidir o que um número significa. Os três estudos aqui são um conjunto de dados e três perguntas diferentes: medição, previsão e texto.',
     ],
     lookingFor: 'Em busca de posições de analista de dados ou cientista de dados.',
     toolsHeading: 'Com o que eu trabalho',
@@ -663,7 +728,7 @@ export const pt: SiteContent = {
       'O código é MIT. O conjunto Olist é CC BY-NC-SA 4.0, não comercial, e não é redistribuído aqui. Todos os números publicados são agregados dos marts testados; nenhum texto bruto de avaliação é reproduzido.',
   },
   footer: {
-    line: 'Operações de E-commerce e Experiência do Cliente. Um estudo reproduzível em ciência de dados.',
+    line: 'Applied Data Science — Um estudo reproduzível em ciência de dados. Primeira coleção: operações de e-commerce Olist.',
     source: 'Fonte e reprodução',
     licence: 'Código MIT · Dados CC BY-NC-SA 4.0',
     note: 'Site estático. Sem rastreamento, sem cookies, sem analytics.',

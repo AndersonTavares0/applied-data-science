@@ -18,6 +18,14 @@ export function Footer() {
         <nav aria-label={t.nav.projects}>
           <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-muted">{t.nav.projects}</p>
           <ul className="mt-3 space-y-2 text-sm">
+            <li>
+              <Link
+                to={path('/collections/olist')}
+                className="text-ink-soft no-underline hover:text-brand hover:underline"
+              >
+                {t.nav.collection}
+              </Link>
+            </li>
             {projectOrder.map((slug) => (
               <li key={slug}>
                 <Link to={project(slug)} className="text-ink-soft no-underline hover:text-brand hover:underline">
@@ -40,7 +48,7 @@ export function Footer() {
           <ul className="mt-3 space-y-2 text-sm">
             <li>
               <a
-                href="https://github.com/AndersonTavares0/ds-portfolio"
+                href="https://github.com/AndersonTavares0/applied-data-science"
                 className="inline-flex items-center gap-2 text-ink-soft no-underline hover:text-brand hover:underline"
               >
                 <Code2 className="h-3.5 w-3.5" aria-hidden="true" />

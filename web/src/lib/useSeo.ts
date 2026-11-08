@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 import type { Lang } from '../content/types'
 
-const SITE = 'https://andersontavares0.github.io/ds-portfolio'
+const SITE = 'https://AndersonTavares0.github.io/applied-data-science'
 
 function setMeta(attribute: 'name' | 'property', key: string, content: string) {
   let tag = document.head.querySelector<HTMLMetaElement>(`meta[${attribute}="${key}"]`)
