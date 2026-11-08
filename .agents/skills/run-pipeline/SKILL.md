@@ -19,7 +19,7 @@ uv run python tasks.py topics       # complaint topic model and figures
 uv run python tasks.py test         # Python tests
 ```
 
-Or `uv run python tasks.py pipeline` for the whole chain, including the site render.
+Or `uv run python tasks.py pipeline` for the whole analysis chain. The React site is a separate build: `uv run python tasks.py web-export` then `uv run python tasks.py web-build`.
 
 Never call `docker`, `dbt` or `pytest` directly. `tasks.py` is what loads `.env`
 and sets `PYTHONPATH`, and dbt does not read `.env` on its own.

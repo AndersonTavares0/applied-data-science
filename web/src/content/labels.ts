@@ -1,0 +1,166 @@
+import type { Lang } from './types'
+
+export const categoryLabels: Record<Lang, Record<string, string>> = {
+  en: {
+    health_beauty: 'Health & beauty',
+    watches_gifts: 'Watches & gifts',
+    bed_bath_table: 'Bed, bath & table',
+    sports_leisure: 'Sports & leisure',
+    computers_accessories: 'Computers & accessories',
+    furniture_decor: 'Furniture & decor',
+    cool_stuff: 'Cool stuff',
+    housewares: 'Housewares',
+    auto: 'Auto',
+    garden_tools: 'Garden tools',
+    toys: 'Toys',
+    baby: 'Baby',
+  },
+  pt: {
+    health_beauty: 'Saúde & beleza',
+    watches_gifts: 'Relógios & presentes',
+    bed_bath_table: 'Cama, mesa & banho',
+    sports_leisure: 'Esporte & lazer',
+    computers_accessories: 'Informática & acessórios',
+    furniture_decor: 'Móveis & decoração',
+    cool_stuff: 'Utilidades',
+    housewares: 'Casa & cozinha',
+    auto: 'Automotivo',
+    garden_tools: 'Jardim & ferramentas',
+    toys: 'Brinquedos',
+    baby: 'Bebê',
+  },
+}
+
+export const deliveryBucketLabels: Record<Lang, Record<string, string>> = {
+  en: {
+    'on time': 'On time',
+    'late: up to 7 days': 'Late 0–7 days',
+    'late: 8 to 14 days': 'Late 8–14 days',
+    'late: more than 14 days': 'Late >14 days',
+    'not delivered: cancelled or unavailable': 'Cancelled or unavailable',
+    'not delivered: still open': 'Still open at snapshot',
+    'delivered: missing timestamp': 'Delivered, no timestamp',
+  },
+  pt: {
+    'on time': 'No prazo',
+    'late: up to 7 days': 'Atraso 0–7 dias',
+    'late: 8 to 14 days': 'Atraso 8–14 dias',
+    'late: more than 14 days': 'Atraso >14 dias',
+    'not delivered: cancelled or unavailable': 'Cancelado ou indisponível',
+    'not delivered: still open': 'Em aberto no snapshot',
+    'delivered: missing timestamp': 'Entregue, sem data',
+  },
+}
+
+export const topicShortLabels: Record<Lang, Record<number, string>> = {
+  en: {
+    0: 'Quality',
+    1: 'Not received',
+    2: 'Incomplete',
+    3: 'Delivery problem',
+    4: 'Delay',
+    5: 'Wrong item',
+  },
+  pt: {
+    0: 'Qualidade',
+    1: 'Não recebido',
+    2: 'Incompleto',
+    3: 'Entrega',
+    4: 'Demora',
+    5: 'Item errado',
+  },
+}
+
+export const groupLabels: Record<Lang, Record<string, string>> = {
+  en: {
+    'Delivery and non-receipt': 'Delivery & non-receipt',
+    Product: 'Product',
+    'Mixed or general': 'Mixed / delay',
+  },
+  pt: {
+    'Delivery and non-receipt': 'Entrega e não recebimento',
+    Product: 'Produto',
+    'Mixed or general': 'Misto / demora',
+  },
+}
+
+export const statusLabels: Record<Lang, Record<string, string>> = {
+  en: {
+    delivered: 'Delivered',
+    shipped: 'Shipped',
+    canceled: 'Cancelled',
+    unavailable: 'Unavailable',
+    processing: 'Processing',
+    invoiced: 'Invoiced',
+    created: 'Created',
+    approved: 'Approved',
+  },
+  pt: {
+    delivered: 'Entregue',
+    shipped: 'Enviado',
+    canceled: 'Cancelado',
+    unavailable: 'Indisponível',
+    processing: 'Em processamento',
+    invoiced: 'Faturado',
+    created: 'Criado',
+    approved: 'Aprovado',
+  },
+}
+
+export const featureLabels: Record<Lang, Record<string, string>> = {
+  en: {
+    promise_days: 'Promise length',
+    customer_state: 'Customer state',
+    seller_state: 'Seller state',
+    category: 'Category',
+    items_value: 'Items value',
+    avg_weight_grams: 'Average weight',
+    seller_count: 'Seller count',
+    avg_volume_cm3: 'Average volume',
+    paid_by_credit_card: 'Credit card',
+    avg_photos_qty: 'Photos',
+    freight_value: 'Freight',
+    item_count: 'Item count',
+    paid_by_boleto: 'Boleto',
+    purchase_hour: 'Purchase hour',
+    purchase_weekend: 'Weekend purchase',
+    freight_share: 'Freight share',
+    items_missing_dimensions: 'Missing dimensions',
+    product_count: 'Product count',
+    max_installments: 'Max installments',
+    paid_by_voucher: 'Voucher',
+    payment_count: 'Payment count',
+    same_state: 'Same state',
+    order_value: 'Order value',
+    purchase_dow: 'Day of week',
+    purchase_month: 'Purchase month',
+  },
+  pt: {
+    promise_days: 'Prazo prometido',
+    customer_state: 'Estado do cliente',
+    seller_state: 'Estado do vendedor',
+    category: 'Categoria',
+    items_value: 'Valor dos itens',
+    avg_weight_grams: 'Peso médio',
+    seller_count: 'Número de vendedores',
+    avg_volume_cm3: 'Volume médio',
+    paid_by_credit_card: 'Cartão de crédito',
+    avg_photos_qty: 'Fotos',
+    freight_value: 'Frete',
+    item_count: 'Número de itens',
+    paid_by_boleto: 'Boleto',
+    purchase_hour: 'Hora da compra',
+    purchase_weekend: 'Compra em fim de semana',
+    freight_share: 'Participação do frete',
+    items_missing_dimensions: 'Dimensões ausentes',
+    product_count: 'Número de produtos',
+    max_installments: 'Parcelas máximas',
+    paid_by_voucher: 'Voucher',
+    payment_count: 'Número de pagamentos',
+    same_state: 'Mesmo estado',
+    order_value: 'Valor do pedido',
+    purchase_dow: 'Dia da semana',
+    purchase_month: 'Mês da compra',
+  },
+}
+

@@ -30,5 +30,6 @@ In practice, this means:
 ## Tooling
 
 - [dbt](https://www.getdbt.com/) — data transformation and testing
-- [Quarto](https://quarto.org/) — report publishing
+- [React](https://react.dev/), [Tailwind CSS](https://tailwindcss.com/) and [Recharts](https://recharts.org/) — the published site
+- [Quarto](https://quarto.org/) — the archived source of the original reports
 - [uv](https://docs.astral.sh/uv/) — Python environment management

@@ -17,14 +17,19 @@ ds-portfolio/
 │       ├── scripts/              thin entry points (download, load, charts)
 │       ├── src/retail/           the data layer as importable modules
 │       └── tests/                Python tests, no network and no database required
-├── site/                         the published narrative — its own Quarto project
+├── web/                          the published React site (TypeScript + Tailwind)
+│   ├── src/data/                 committed JSON exports of the tested marts
+│   ├── src/content/              typed EN/PT copy
+│   ├── src/components/charts/    Recharts plates and custom figures
+│   ├── src/pages/                home, routed case studies, about
+│   └── scripts/                  export_data.py, spa-fallback.mjs
+├── site/                         Quarto archive of the original reports — not deployed
 │   ├── reports/01-retail-analytics/  the report, the memo, and their figures
 │   ├── pt/                       the same pages in Portuguese
 │   ├── _quarto.yml               shared configuration
-│   ├── _quarto-en.yml            the English profile: language, navigation, render list
+│   ├── _quarto-en.yml            the English profile
 │   ├── _quarto-pt.yml            the Portuguese profile
-│   ├── theme/  theme.scss, theme-dark.scss, _theme-rules.scss
-│   └── index.qmd, about.qmd
+│   └── theme/                    the original light/dark rules
 ├── AGENTS.md                     the rules an agent (or a person) works to here
 ├── README.md                     portfolio landing page
 ├── docker-compose.yml            PostgreSQL, and nothing else
@@ -33,28 +38,23 @@ ds-portfolio/
 └── uv.lock                       pinned dependency versions
 ```
 
-The website is its own Quarto project, rooted at `site/`. Two things follow.
-The repository root stays a short list of entry points and one folder per
-purpose, and the governance files — `docs/`, `AGENTS.md` — are out of the
-website's reach **by construction**, so they cannot be published by accident. An
-earlier layout kept the Quarto project at the repository root and depended on an
-explicit `render:` list to keep those pages off the site; that was a guarantee
-held up by a config list, and this is a guarantee held up by the filesystem. The
-publish workflow only needs to be told where the project root now is: `path: site`
-in the publish action.
+The website is a React application rooted at `web/`. It is deliberately a
+separate build from the analysis: `web/scripts/export_data.py` reads the tested
+marts and the Project 02/03 report artifacts once and writes typed JSON into
+`web/src/data/`, so the site never needs PostgreSQL or the 126 MB dataset. The
+committed JSON is the contract between the analysis and the presentation.
 
-The site is built twice and shipped once. Each language is a Quarto **profile**
-(`_quarto-en.yml`, `_quarto-pt.yml`): a profile carries its own language, its own
-navigation, and its own render list. Profiles are the documented way to publish
-several versions of one website, and they are used here because Quarto allows
-exactly one navbar per build — a `_metadata.yml` in a subdirectory cannot
-override it, which was tried and does not work. The two builds cannot share an
-output directory either, since a render empties the directory it writes to, so
-the Portuguese profile writes to `site/.build-pt/` and `tasks.py render` copies
-its `pt/` subtree into `site/_site/pt/`. The light and dark appearances are a
-separate axis again: two compiled theme bundles selected by the reader's
-`prefers-color-scheme`, both pulling their rules from `_theme-rules.scss` so a
-rule is written once.
+Routing is client-side with React Router under the `/ds-portfolio/` base path.
+The production build is a static bundle in `web/dist/`; a postbuild step copies
+`index.html` to `404.html` so deep links work on GitHub Pages, and the publish
+workflow pushes `web/dist` to `gh-pages`. Both languages are routes
+(`/projects/...` and `/pt/projects/...`) rather than separate builds, and the
+theme is a class on `<html>` backed by CSS variables, so there is one set of
+components and one set of numbers.
+
+The Quarto sources under `site/` are retained as the archive of the original
+reports. They are no longer rendered or deployed; `tasks.py render` remains for
+anyone who wants to inspect the old build.
 
 ## How data moves
 
@@ -80,8 +80,9 @@ rule is written once.
               ▼
   analytics_marts     dim_*, fct_*, mart_*   tables — what the report queries
               │
+              │  web/scripts/export_data.py      aggregates → committed JSON
               ▼
-      Quarto reports → GitHub Pages
+      React site (web/src) → web/dist → GitHub Pages
 ```
 
 ## Why it is separated this way
@@ -92,8 +93,8 @@ It also stops the silent corruption that happens when a zip-code prefix like
 `01001` is inferred as the integer `1001` and every geographic join quietly
 returns nothing. See [decision 0001](decisions/0001-raw-columns-stay-text.md).
 
-**Docker runs the database and nothing else.** Python, dbt and Quarto run
-natively. Containerising the whole stack would make the environment harder to
+**Docker runs the database and nothing else.** Python and dbt run natively;
+Node builds the site. Containerising the whole stack would make the environment harder to
 inspect and slower to iterate on, in exchange for reproducibility that
 `uv.lock` already provides for dependencies and `docker-compose.yml` provides
 for the database.

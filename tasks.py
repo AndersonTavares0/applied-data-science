@@ -42,10 +42,13 @@ VOICE_PROJECT = ROOT / "projects" / "03-voice-of-customer"
 VOICE_SRC = VOICE_PROJECT / "src"
 VOICE_SCRIPTS = VOICE_PROJECT / "scripts"
 
-# The website is its own Quarto project with its own root, so it can be rendered
-# and published without the rest of the repository in reach. Every Quarto
-# command therefore runs with `cwd=SITE`.
+# The Quarto archive is its own project with its own root, so it can be rendered
+# without the rest of the repository in reach. Every Quarto command therefore
+# runs with `cwd=SITE`. The public site is `web/` (see WEB below).
 SITE = ROOT / "site"
+# The public site is the React app in `web/`. Quarto under `site/` is retained
+# as an archive and is no longer part of the publish workflow.
+WEB = ROOT / "web"
 # The Portuguese pages are a second render of the same project into their own
 # directory (see `site/_quarto-pt.yml`); `render` copies the result into
 # `_site/pt`, which is where those sources live, so URLs are unchanged.
@@ -219,7 +222,7 @@ def task_fmt() -> None:
 
 
 def task_render() -> None:
-    """Render the bilingual Quarto website into `site/_site/`."""
+    """Render the bilingual Quarto archive into `site/_site/` (legacy)."""
     require("quarto", "install Quarto: https://quarto.org/docs/get-started/")
     # Two builds of one project, because Quarto allows exactly one navbar per
     # website and there is no per-directory override. They cannot share an
@@ -235,8 +238,25 @@ def task_render() -> None:
     print(f"copied {source.relative_to(SITE)} -> {destination.relative_to(SITE)}")
 
 
+def task_web_export() -> None:
+    """Export the tested marts and report artifacts to `web/src/data`."""
+    run([sys.executable, str(WEB / "scripts" / "export_data.py")])
+
+
+def task_web_dev() -> None:
+    """Run the React site locally with hot reload."""
+    require("npm", "install Node.js 22: https://nodejs.org/")
+    run(["npm", "run", "dev"], cwd=WEB)
+
+
+def task_web_build() -> None:
+    """Typecheck and build the React site into `web/dist`."""
+    require("npm", "install Node.js 22: https://nodejs.org/")
+    run(["npm", "run", "build"], cwd=WEB)
+
+
 def task_preview() -> None:
-    """Live-preview the Quarto website."""
+    """Live-preview the Quarto archive (the public site is `web-build`)."""
     require("quarto", "install Quarto: https://quarto.org/docs/get-started/")
     run(["quarto", "preview"], cwd=SITE)
 
@@ -257,7 +277,6 @@ def task_pipeline() -> None:
     task_train()
     task_topics()
     task_test()
-    task_render()
 
 
 def task_clean() -> None:
@@ -297,11 +316,14 @@ TASKS: dict[str, tuple[str, object]] = {
     "test": ("Run the Python test suite", task_test),
     "lint": ("Check lint + formatting", task_lint),
     "fmt": ("Auto-fix lint + format", task_fmt),
-    "render": ("Render the Quarto website", task_render),
-    "preview": ("Live-preview the Quarto website", task_preview),
-    "publish": ("Publish the site to the `gh-pages` branch", task_publish),
+    "render": ("Render the Quarto archive (not deployed)", task_render),
+    "web-export": ("Export marts + report artifacts for the React site", task_web_export),
+    "web-dev": ("Run the React site locally", task_web_dev),
+    "web-build": ("Typecheck and build the React site", task_web_build),
+    "preview": ("Live-preview the Quarto archive", task_preview),
+    "publish": ("Publish the Quarto archive to `gh-pages` (legacy)", task_publish),
     "pipeline": (
-        "load -> dbt build -> charts -> train + topics -> tests -> render",
+        "load -> dbt build -> charts -> train + topics -> tests",
         task_pipeline,
     ),
     "clean": ("Remove caches and build artefacts", task_clean),
