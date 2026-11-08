@@ -30,16 +30,17 @@ export const en: SiteContent = {
     notFoundCta: 'Go to the home page',
   },
   home: {
-    metaTitle: 'Anderson Tavares — Applied Data Science Portfolio',
+    metaTitle: 'Anderson Tavares — E-commerce Operations & Customer Experience',
     metaDescription:
       'Late delivery is the strongest signal of customer dissatisfaction in this marketplace. Measured across 99,441 orders, predicted honestly, and explained through 9,139 written complaints.',
-    eyebrow: 'Applied data science portfolio · Anderson Tavares',
+    eyebrow: 'E-commerce Operations & Customer Experience · Anderson Tavares',
+    subtitle: 'A Reproducible Data Science Study',
     title: 'Late delivery is the strongest signal of customer dissatisfaction.',
     lead:
       'I measured it across 99,441 Olist orders. Then I asked the two questions that follow: can a model see the risk at checkout, and what do customers actually write when the parcel goes wrong?',
     thesis:
       'One dataset. Three questions: which levers move satisfaction and repeat purchase, can late orders be ranked honestly, and what do the complaints say in the customers’ own words?',
-    primaryCta: 'Read the retail analysis',
+    primaryCta: 'Read the operations analysis',
     secondaryCta: 'See all three projects',
     heroPlate: {
       label: 'The finding, in two numbers',
@@ -57,11 +58,11 @@ export const en: SiteContent = {
       {
         slug: 'retail-analytics',
         number: '01',
-        title: 'Retail analytics',
+        title: 'E-commerce Performance & Fulfillment Analytics',
         question: 'Which levers actually move customer satisfaction and repeat purchase?',
-        headline: 'R$ 16.0M in revenue. 96.9% of customers buy exactly once.',
+        headline: 'R$ 16.0M in recorded payment value. 96.9% of customers buy exactly once.',
         headlineNote:
-          'The delay that hurts satisfaction is created on the São Paulo → Rio lane: 14.17% late, against 4.49% for São Paulo. Sellers dispatch on time.',
+          'Late delivery is concentrated on the São Paulo → Rio crossing: 14.17% late, against 4.49% within São Paulo. The pattern is associational; the data do not identify the carrier or the cause.',
         method: 'PostgreSQL · dbt · SQL · Python',
         tags: ['dbt', 'PostgreSQL', 'cohorts', 'delivery'],
         cta: 'Read the case study',
@@ -69,7 +70,7 @@ export const en: SiteContent = {
       {
         slug: 'late-delivery',
         number: '02',
-        title: 'Late-delivery model',
+        title: 'Late-Delivery Risk Prediction & Temporal Validation',
         question: 'At the moment of purchase, can we rank orders by their risk of arriving late?',
         headline: 'AUC 0.685. The riskiest 10% contains 19.7% of late orders.',
         headlineNote:
@@ -81,7 +82,7 @@ export const en: SiteContent = {
       {
         slug: 'voice-of-customer',
         number: '03',
-        title: 'Voice of the customer',
+        title: 'Customer Complaint Topic Modeling & Comparative Analysis',
         question: 'What do 9,139 written complaints say, and how do late orders differ?',
         headline: 'Late complaints are about the parcel: 65.7% against 18.5%.',
         headlineNote:
@@ -137,15 +138,15 @@ export const en: SiteContent = {
   },
   projects: {
     'retail-analytics': {
-      metaTitle: 'Retail analytics — Anderson Tavares',
+      metaTitle: 'E-commerce Performance & Fulfillment Analytics — Anderson Tavares',
       metaDescription:
-        '99,441 Olist orders in PostgreSQL and dbt: R$ 16.0M revenue, a 3.12% repeat rate, and a late-delivery problem concentrated on the São Paulo → Rio lane.',
-      kicker: 'Project 01 · Retail analytics',
-      title: 'Which levers actually move satisfaction and repeat purchase?',
+        '99,441 Olist orders in PostgreSQL and dbt: R$ 16.0M in recorded payment value, a 3.12% repeat rate, and a late-delivery problem concentrated on the São Paulo → Rio crossing.',
+      kicker: 'Project 01 · E-commerce Performance & Fulfillment Analytics',
+      title: 'E-commerce Performance & Fulfillment Analytics',
       deck:
-        'A dbt and PostgreSQL analysis of 99,441 orders. The uncomfortable finding is that this is an acquisition business, and the delay that hurts satisfaction is created on one lane rather than by the sellers.',
+        'A dbt and PostgreSQL analysis of 99,441 orders. The uncomfortable finding is that this is an acquisition business, and that lateness is concentrated on one crossing rather than explained by seller quality.',
       heroStats: [
-        { value: 'R$ 16.0M', label: 'revenue in 25 months', note: 'R$ 160.99 average order; freight is 14.1% of it.' },
+        { value: 'R$ 16.0M', label: 'recorded payment value in 25 months', note: 'R$ 160.99 average order; freight is 14.1% of it. This is payment value, not realized revenue after refunds.' },
         { value: '96.9%', label: 'customers buy exactly once', note: '3.12% ever repeat; 0.48% in the next calendar month.' },
         { value: '6.77%', label: 'deliveries arrive late', note: 'Late orders average 2.27 stars against 4.29 on time.' },
       ],
@@ -162,11 +163,11 @@ export const en: SiteContent = {
       tocTitle: 'On this page',
       question: [
         'The question was which levers actually move customer satisfaction and repeat purchase, rather than what happened. The marketplace had 99,441 orders and a review score for almost every one. The obvious levers — marketing, loyalty, discounts, seller quality — needed to be separated from the one the data kept pointing at.',
-        'Three findings came out of it. Revenue grows through acquisition, not retention. The promised delivery date is conservative almost everywhere. And the minority of late deliveries is not spread evenly across the country: it concentrates on a single crossing.',
+        'Three findings came out of it. Recorded payment value grows through acquisition, not retention. The promised delivery date is conservative almost everywhere. And the minority of late deliveries is not spread evenly across the country: it concentrates on a single crossing.',
       ],
       why: [
         'If 96.9% of customers never place a second order, a loyalty programme would spend money to influence a decision almost nobody is making. The growth question becomes how to acquire more customers or raise order value per visit. That is a different operating model from the one a retention dashboard implies.',
-        'The delivery finding matters for a second reason: it is the strongest relationship in the dataset. A late order averages 2.27 stars; an on-time order averages 4.29. Whatever creates lateness is also creating a large share of the dissatisfaction the marketplace can measure.',
+        'The delivery finding matters for a second reason: it is the strongest relationship in the dataset. A late order averages 2.27 stars; an on-time order averages 4.29. The conditions associated with lateness also account for a large share of the dissatisfaction the marketplace can measure.',
       ],
       data: [
         'The dataset is the Olist Brazilian e-commerce dataset: 99,441 orders placed between September 2016 and October 2018, across nine related tables — orders, items, payments, reviews, products, sellers, customers, geolocation and category translation.',
@@ -186,19 +187,19 @@ export const en: SiteContent = {
       },
       findings: {
         intro: [
-          'Revenue was R$ 16,008,872.12 across 99,441 orders, an average of R$ 160.99. Freight is R$ 2.25M, or 14.1% of what customers paid. November 2017 is the largest month at R$ 1.19M and 7,544 orders, 63% above October — consistent with Black Friday.',
+          'Recorded payment value was R$ 16,008,872.12 across 99,441 orders, an average of R$ 160.99. Freight is R$ 2.25M, or 14.1% of what customers paid. November 2017 is the largest month at R$ 1.19M and 7,544 orders, 63% above October — consistent with Black Friday.',
         ],
         bullets: [
-          'This is an acquisition business. 93,099 of 96,096 customers placed exactly one order (96.88%). 2,997 ever placed a second, a repeat rate of 3.12%. One-order customers account for 94.1% of revenue; repeat customers for 5.9%.',
+          'This is an acquisition business. 93,099 of 96,096 customers placed exactly one order (96.88%). 2,997 ever placed a second, a repeat rate of 3.12%. One-order customers account for 94.1% of recorded payment value; repeat customers for 5.9%.',
           'Ordering again in the next calendar month is 0.48%, and retention stays near 0.2% after that. It does not decay from a high base; it starts low. The offset is a calendar month, not a 30-day window, and the 25-month observation window truncates anyone who would return later. The figure is a floor.',
           'RFM is reported but weak. Frequency barely varies when 96.9% of customers order once, so the frequency score is a count capped at five, not a quintile split. “Champions” means bought recently, spent well and returned at least once — 1,066 customers, not a large loyal segment.',
           '6,535 of 96,476 deliveries arrived after the promised date, 6.77%. Late orders average 2.27 stars against 4.29 for on-time orders. Beyond a week late, about 80% of reviewers give one or two stars, against 9.27% of on-time reviewers.',
           'São Paulo is late on 4.49% of 40,495 deliveries. Rio de Janeiro is late on 12.10% of 12,353; Bahia on 12.16%; Ceará on 13.76%. The average delivered order arrives 11.88 days early, so the promise is conservative almost everywhere.',
-          'The sellers are not the cause. Sellers dispatch in about three days on lanes with volume. A Rio seller delivering inside Rio is late 4.76% of the time, close to São Paulo’s 4.66%, and 53 of the 65 sellers that ship to both states are worse into Rio.',
-          'The lane is the cause. São Paulo → Rio carries 8,129 of Rio’s 12,353 deliveries and is late 14.17%. Every intrastate lane with at least 250 deliveries sits at 4.8% or below. The median on the crossing is 12.8 days and the ninetieth percentile is 31.0, so the tail is the problem.',
+          'Seller behaviour does not explain the gap. Sellers dispatch in about three days on lanes with volume. A Rio seller delivering inside Rio is late 4.76% of the time, close to São Paulo’s 4.66%, and 53 of the 65 sellers that ship to both states are worse into Rio. That makes seller quality an unlikely sole explanation, but it does not rule it out.',
+          'The lane is where the problem concentrates. São Paulo → Rio carries 8,129 of Rio’s 12,353 deliveries and is late 14.17%. Every intrastate lane with at least 250 deliveries sits at 4.8% or below. The median on the crossing is 12.8 days and the ninetieth percentile is 31.0, so the tail is the problem. This is an observed association: the route marks where to investigate the carrier and hand-off, not proof that the route itself causes the delay.',
           'São Paulo → Rio also carries the thinnest promise: 27.0 days, against 30.3 for the farther São Paulo → Rio Grande do Sul lane, whose median is 13.9 days and p90 is 27.1. Three more days on the promise would report 11.60% instead of 14.17%; seven more would report 8.37%.',
-          'Category revenue sums to R$ 13.59M against R$ 16.0M of payments because it counts item price only. The gap is freight, not a mistake. The top ten of 74 categories account for 62.4% of item revenue.',
-          'Revenue includes cancelled and unavailable orders — 1,234 orders and R$ 269,735.11, about 1.7% — because a payment was recorded. Excluding them would be a different but equally defensible definition. The report states which one is in use.',
+          'Category item value sums to R$ 13.59M against R$ 16.0M of recorded payments because it counts item price only. The gap is freight, not a mistake. The top ten of 74 categories account for 62.4% of item value.',
+          'Recorded payment value includes cancelled and unavailable orders — 1,234 orders and R$ 269,735.11, about 1.7% — because a payment was recorded. Excluding them would be a different but equally defensible definition. The report states which one is in use.',
         ],
         outro: [
           'The Rio estimate is an association, not a causal forecast. At São Paulo’s late rate, about 940 of Rio’s 1,495 late orders over the 25-month snapshot would not have been late. Applying the observed review behaviour — 49.36% of late orders score ≤2 against 9.27% of on-time orders — implies roughly 377 fewer one- and two-star reviews over the snapshot. That is cumulative over the observed period, not an annual rate.',
@@ -206,11 +207,11 @@ export const en: SiteContent = {
       },
       implications: {
         intro: [
-          'The recommendation follows from where the delay is created, not from the size of the review gap. It is a lane problem before it is a seller problem.',
+          'The recommendation follows from where the delay concentrates, not from the size of the review gap. The lane is the first place to investigate; this is not a finding about seller fault.',
         ],
         items: [
           {
-            title: 'Work the São Paulo → Rio lane, not the sellers on it',
+            title: 'Investigate the São Paulo → Rio crossing, not seller quality alone',
             body:
               'The crossing carries two thirds of Rio’s orders at 14.17% late. The question for the carriers is why the ninetieth percentile is 31 days on a lane whose median is 12.8, and why 379 orders arrive more than two weeks after the promise. No carrier identifier exists, so this needs the operational side, not another query.',
           },
@@ -234,12 +235,12 @@ export const en: SiteContent = {
       limitations: [
         'The dataset is a snapshot from September 2016 to October 2018, not a live feed. September and October 2018 are partial. Anything here is one observation of one period, not a trend.',
         'Reviews are self-selected. 98,673 of 99,441 orders carry a review, but only customers who chose to write appear. A 4.29 average among respondents is not a 4.29 average among all customers.',
-        '“Revenue” means gross merchandise value recorded in the payment table. There is no cost, margin, refund or return data, so no statement about profit is possible — only about money collected.',
-        'Revenue includes 1,234 orders later cancelled or marked unavailable, worth R$ 269,735.11, because a payment was recorded. Excluding them would be a different and equally defensible definition.',
+        '“Recorded payment value” means the gross value recorded in the payment table. There is no cost, margin, refund or return data, so no statement about profit is possible — only about money collected.',
+        'Recorded payment value includes 1,234 orders later cancelled or marked unavailable, worth R$ 269,735.11, because a payment was recorded. Excluding them would be a different and equally defensible definition.',
         'customer_unique_id is derived and imperfect. Repeat-purchase findings are a floor, not a ceiling; a person who changes details may appear twice.',
         'Order counts and item counts are different grains. Products and categories come from fct_order_items; money, delivery and reviews come from fct_orders. Mixing them is the most likely way to produce a wrong total.',
         'A lane is a pair of states, not a measured route. Seller and customer states are the finest geography the dataset carries.',
-        'The dataset has no carrier identifier. The lane finding says where the delay is created; it cannot say who creates it.',
+        'The dataset has no carrier identifier. The lane finding says where the delay concentrates; it cannot identify the carrier or the cause.',
         'Lane figures cover 96,411 of 96,476 delivered orders. The 65 orders whose items came from sellers in more than one state have no single lane.',
         'Where delivery timestamps are missing, 2,965 orders are excluded from delivery statistics rather than imputed, and kept as separate buckets where the customer experience is the subject.',
       ],
@@ -258,18 +259,18 @@ export const en: SiteContent = {
       },
       charts: {
         revenue: {
-          title: 'Monthly revenue',
+          title: 'Monthly recorded payment value',
           subtitle: 'Gross payment value; the near-empty edge months are excluded from the chart',
-          note: 'mart_revenue_monthly. Excluded: Sep 2016 and Sep–Oct 2018 (24 orders). No orders in Nov 2016; Dec 2016 has one. Bars are months, not a continuous series.',
+          note: 'mart_revenue_monthly. Recorded payment value, not realized revenue. Excluded: Sep 2016 and Sep–Oct 2018 (24 orders). No orders in Nov 2016; Dec 2016 has one. Bars are months, not a continuous series.',
           description:
-            'Column chart of monthly revenue from October 2016 to August 2018. Revenue climbs through 2017, peaks in November 2017 at R$ 1.19M, then flattens near R$ 1.0–1.16M through 2018.',
+            'Column chart of monthly recorded payment value from October 2016 to August 2018. It climbs through 2017, peaks in November 2017 at R$ 1.19M, then flattens near R$ 1.0–1.16M through 2018.',
         },
         categories: {
           title: 'The categories that carry the marketplace',
-          subtitle: 'Top 12 by item revenue; share is of all item revenue',
-          note: 'mart_category_revenue. Labels show item revenue, share and average item price. Freight is excluded.',
+          subtitle: 'Top 12 by item value; share is of all item value',
+          note: 'mart_category_revenue. Labels show item value, share and average item price. Freight is excluded.',
           description:
-            'Horizontal bars of the twelve categories with the most item revenue, best first. Health and beauty leads at R$ 1.26M, followed by watches and gifts at R$ 1.21M and bed, bath and table at R$ 1.04M.',
+            'Horizontal bars of the twelve categories with the most item value, best first. Health and beauty leads at R$ 1.26M, followed by watches and gifts at R$ 1.21M and bed, bath and table at R$ 1.04M.',
         },
         delivery: {
           title: 'Average review score by delivery outcome',
@@ -307,20 +308,20 @@ export const en: SiteContent = {
             'Lollipop chart on a logarithmic horizontal scale. 93,099 customers placed one order (96.88%); 2,745 placed two; 203 placed three; the tail continues to one customer with 17 orders.',
         },
         status: {
-          title: 'What the revenue figure includes',
+          title: 'What the payment total includes',
           subtitle: 'Recorded payment value by order status, on a log scale',
-          note: 'fct_orders. Amber marks cancelled or unavailable orders: a payment was recorded, so they remain in revenue.',
+          note: 'fct_orders. Amber marks cancelled or unavailable orders: a payment was recorded, so they remain in the payment total. Realized revenue would exclude them and any refunds.',
           description:
-            'Lollipop chart of revenue by order status on a logarithmic scale. Delivered orders hold R$ 15.42M; shipped R$ 177k; cancelled R$ 143k and unavailable R$ 126k, both highlighted; the remaining statuses are smaller.',
+            'Lollipop chart of recorded payment value by order status on a logarithmic scale. Delivered orders hold R$ 15.42M; shipped R$ 177k; cancelled R$ 143k and unavailable R$ 126k, both highlighted; the remaining statuses are smaller.',
         },
       },
     },
     'late-delivery': {
-      metaTitle: 'Late-delivery model — Anderson Tavares',
+      metaTitle: 'Late-Delivery Risk Prediction & Temporal Validation — Anderson Tavares',
       metaDescription:
         'A checkout-time model on 32,150 temporal holdout orders: ROC AUC 0.685, top-decile lift 1.97×, calibration slope 0.82, and an honest no-go for deployment.',
-      kicker: 'Project 02 · Late-delivery model',
-      title: 'At checkout, can we rank orders by their risk of arriving late?',
+      kicker: 'Project 02 · Late-Delivery Risk Prediction & Temporal Validation',
+      title: 'Late-Delivery Risk Prediction & Temporal Validation',
       deck:
         'A classifier restricted to what is known when the order is placed, evaluated on a temporal holdout. The result is a modest ranking signal and a clear no-go for deployment.',
       heroStats: [
@@ -371,7 +372,7 @@ export const en: SiteContent = {
           'At 10% capacity — 3,215 orders — the model finds 280 late orders: 8.7% precision, 19.7% recall and 1.97× lift. The 95% bootstrap intervals are 7.7–9.6% precision, 17.7–21.7% recall and 1.77–2.17× lift.',
           'The capacity curve is not monotone. At 5% capacity, 1,608 orders, precision is 7.7% and recall 8.7%; at 20%, 6,430 orders, precision is 9.2% and recall 41.8%. The very highest scores are not the purest, so the model should not be used as a narrow shortlist.',
           'A customer-state baseline captures 12.2% of late orders at 10% capacity, 5.4% precision and 1.22× lift. The model’s 8.7% precision is better, but the gain is modest.',
-          'The probability level is close but compressed. Mean prediction is 4.26% against 4.42% observed. A logistic recalibration on the holdout gives an intercept of −0.47 and a slope of 0.82: high scores are not high enough and low scores are not low enough. The score is a ranking, not a probability for an individual order.',
+          'The aggregate probability level is close: mean prediction is 4.26% against 4.42% observed. The deciles are not uniformly calibrated. Middle and upper-middle bins under-predict — the ninth decile predicts 7.0% and observes 9.8% — while the top decile over-predicts, 12.3% against 8.7%. The calibration slope is 0.82 with intercept −0.47. The score is a ranking, not a probability for an individual order.',
           'The signal moves with the period. Monthly AUC ranges from 0.60 to 0.79; top-decile recall falls to 10.4% in August. Rolling origins are weaker still: AUC 0.59–0.62 and average precision 0.056–0.184 across three windows.',
           'Permutation importance ranks promise_days first (a 0.026 drop in AP), then customer_state (0.017) and seller_state (0.003). Basket value, freight, weight, payment and category add almost nothing. purchase_month is slightly negative.',
           'The model class is not settled. Logistic regression won the rolling-origin comparison; boosting was slightly better on the final holdout. Neither paired interval excludes zero. Reporting one as “the model” would overstate what this split can decide.',
@@ -435,9 +436,9 @@ export const en: SiteContent = {
         calibration: {
           title: 'Calibration on the temporal holdout',
           subtitle: 'Predicted against observed late rate in ten score bins of 3,215 orders each',
-          note: 'model_metrics.json. The dashed diagonal is perfect calibration; the horizontal line is the 4.42% observed rate. Mean prediction is 4.26%, slope 0.82, intercept −0.47.',
+          note: 'model_metrics.json. The dashed diagonal is perfect calibration; the horizontal line is the 4.42% observed rate. Mean prediction is 4.26%. The ninth decile predicts 7.0% and observes 9.8%; the top decile predicts 12.3% and observes 8.7%. Slope 0.82, intercept −0.47.',
           description:
-            'Scatter plot of predicted against observed late-delivery rate for logistic regression and gradient boosting. Points track the diagonal until the top bin, where the logistic model predicts 12.3% and observes 8.7%. The observed base rate is 4.42%.',
+            'Scatter plot of predicted against observed late-delivery rate for logistic regression and gradient boosting. The ninth decile predicts 7.0% and observes 9.8%; the top decile predicts 12.3% and observes 8.7%. The observed base rate is 4.42%.',
         },
         capacity: {
           title: 'Precision at review capacity',
@@ -463,11 +464,11 @@ export const en: SiteContent = {
       },
     },
     'voice-of-customer': {
-      metaTitle: 'Voice of the customer — Anderson Tavares',
+      metaTitle: 'Customer Complaint Topic Modeling & Comparative Analysis — Anderson Tavares',
       metaDescription:
         '9,139 written 1–2 star complaints: late complaints are about the parcel (65.7%) and on-time complaints about the product (68.9%), with the selection stated first.',
-      kicker: 'Project 03 · Voice of the customer',
-      title: 'What do 9,139 written complaints say?',
+      kicker: 'Project 03 · Customer Complaint Topic Modeling & Comparative Analysis',
+      title: 'Customer Complaint Topic Modeling & Comparative Analysis',
       deck:
         'A topic model over the Portuguese text customers wrote. Late and on-time customers are not having the same conversation: one is about the parcel, the other about the product.',
       heroStats: [
@@ -522,7 +523,7 @@ export const en: SiteContent = {
           'Grouping the topics by hand makes the split starker. Delivery and non-receipt together are 65.7% of late complaints and 18.5% of on-time complaints. The three product topics are 18.1% against 68.9%. The grouping is an analyst’s summary, not a model output.',
           'All six topic differences have 95% intervals excluding zero and Benjamini–Hochberg q-values below 0.001. The direction does not depend on forcing each complaint into one topic: using the full distribution, delivery and non-receipt carry 58.9% of late weight against 22.8% of on-time weight; product topics carry 24.9% against 63.1%.',
           'The four-topic alternative does not overturn the headline. At k=4, the delivery/non-receipt topics hold 83.3% of late complaints and 29.3% of on-time complaints; product/order topics hold 16.7% and 70.7%. The same contrast with coarser boundaries.',
-          'Six is a prespecified semantic choice, not a coherence optimum. Seed 0 ranks k=6 highest on UMass coherence (−2.677), but the seed-averaged score is highest at k=4 (−2.628 against −2.739). k=4 merges product and return complaints, so six is retained for granularity — not because it creates the result.',
+          'Six was the initial analysis choice, not a coherence optimum established in advance. A later seed-0 check ranks k=6 highest on UMass coherence (−2.677), but the seed-averaged score is highest at k=4 (−2.628 against −2.739). k=4 merges product and return complaints, so six is retained for granularity. That is a judgement about interpretation, not evidence that six is the true number of topics.',
           'The labels are readable but not reliable at the individual level. The manual audit found 20 of 30 clearly consistent, 5 partly consistent and 5 dominated by another theme. The delay topic was weakest: three of its five sampled complaints were mainly about product quality or wrong items. This is one analyst’s review, not independent coding.',
           '22.7% of complaints have a largest topic weight below 0.5, 7.5% below 0.4, and 31.7% have a second topic at or above 0.3. Mean normalised entropy is 0.522. A late, damaged, incomplete order often has mass on more than one theme.',
         ],
@@ -600,7 +601,7 @@ export const en: SiteContent = {
         coherence: {
           title: 'Why six topics',
           subtitle: 'UMass coherence by number of topics, seed 0 against the mean of seeds 0–2',
-          note: 'topic_selection.csv. k=6 is highest at seed 0; the seed-averaged score is highest at k=4. Six is a prespecified semantic choice, not a coherence optimum.',
+          note: 'topic_selection.csv. k=6 is highest at seed 0; the seed-averaged score is highest at k=4. Six was the initial choice and is retained for granularity, not because it is the coherence optimum.',
           description:
             'Line chart of coherence for k=4 to 10. The seed-0 line peaks at k=6 (−2.677); the seed-averaged line peaks at k=4 (−2.628). The differences are small relative to the spread across seeds.',
         },
@@ -662,7 +663,7 @@ export const en: SiteContent = {
       'Code is MIT. The Olist dataset is CC BY-NC-SA 4.0, non-commercial, and is not redistributed here. All published numbers are aggregates from the tested marts; no raw review text is reproduced.',
   },
   footer: {
-    line: 'Applied data science portfolio. Measurement, prediction and text on one dataset.',
+    line: 'E-commerce Operations & Customer Experience. A Reproducible Data Science Study.',
     source: 'Source and reproduction',
     licence: 'Code MIT · Data CC BY-NC-SA 4.0',
     note: 'Built as a static site. No tracking, no cookies, no analytics.',

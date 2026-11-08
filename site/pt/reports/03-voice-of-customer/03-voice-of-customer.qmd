@@ -114,7 +114,7 @@ O método é deliberadamente simples e fixado antes de olhar o desfecho.
 
 ### Por que seis tópicos
 
-Seis é uma escolha semântica pré-especificada, não um ótimo de coerência. A
+Seis foi a escolha inicial da análise, não um ótimo de coerência estabelecido de antemão. A
 coerência UMass — se os termos principais de um tópico aparecem juntos no corpus
 — depende da inicialização: no seed 0 é maior em k=6, mas a média entre seeds é
 maior em k=4. A tabela repete cada candidato nos seeds 0, 1 e 2:

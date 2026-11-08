@@ -30,16 +30,17 @@ export const pt: SiteContent = {
     notFoundCta: 'Ir para a página inicial',
   },
   home: {
-    metaTitle: 'Anderson Tavares — Portfólio de Ciência de Dados Aplicada',
+    metaTitle: 'Anderson Tavares — Operações de E-commerce e Experiência do Cliente',
     metaDescription:
       'O atraso na entrega é o sinal mais forte de insatisfação do cliente neste marketplace. Medido em 99.441 pedidos, previsto com honestidade e explicado por 9.139 reclamações escritas.',
-    eyebrow: 'Portfólio de ciência de dados aplicada · Anderson Tavares',
+    eyebrow: 'Operações de E-commerce e Experiência do Cliente · Anderson Tavares',
+    subtitle: 'Um estudo reproduzível em ciência de dados',
     title: 'O atraso na entrega é o sinal mais forte de insatisfação do cliente.',
     lead:
       'Eu medi isso em 99.441 pedidos da Olist. Depois fiz as duas perguntas que vêm a seguir: um modelo consegue ver o risco no checkout, e o que os clientes realmente escrevem quando o pacote dá errado?',
     thesis:
       'Um conjunto de dados. Três perguntas: quais alavancas movem satisfação e recompra, é possível ordenar atrasos com honestidade, e do que falam as reclamações nas palavras dos próprios clientes?',
-    primaryCta: 'Ler a análise de varejo',
+    primaryCta: 'Ler a análise de operações',
     secondaryCta: 'Ver os três projetos',
     heroPlate: {
       label: 'A descoberta, em dois números',
@@ -57,11 +58,11 @@ export const pt: SiteContent = {
       {
         slug: 'retail-analytics',
         number: '01',
-        title: 'Análise de varejo',
+        title: 'Análise de Desempenho e Cumprimento de Pedidos em E-commerce',
         question: 'Quais alavancas realmente movem a satisfação do cliente e a recompra?',
-        headline: 'R$ 16,0 mi de receita. 96,9% dos clientes compram uma única vez.',
+        headline: 'R$ 16,0 mi de valor de pagamento registrado. 96,9% dos clientes compram uma única vez.',
         headlineNote:
-          'O atraso que derruba a satisfação é criado no corredor São Paulo → Rio: 14,17% de atraso, contra 4,49% em São Paulo. Os vendedores despacham no prazo.',
+          'O atraso se concentra no corredor São Paulo → Rio: 14,17% de atraso, contra 4,49% dentro de São Paulo. O padrão é associativo; os dados não identificam a transportadora nem a causa.',
         method: 'PostgreSQL · dbt · SQL · Python',
         tags: ['dbt', 'PostgreSQL', 'coortes', 'entrega'],
         cta: 'Ler o estudo de caso',
@@ -69,7 +70,7 @@ export const pt: SiteContent = {
       {
         slug: 'late-delivery',
         number: '02',
-        title: 'Modelo de atraso',
+        title: 'Previsão de Risco de Atraso e Validação Temporal',
         question: 'No momento da compra, é possível ordenar os pedidos pelo risco de atrasar?',
         headline: 'AUC 0,685. Os 10% de maior risco concentram 19,7% dos atrasos.',
         headlineNote:
@@ -81,7 +82,7 @@ export const pt: SiteContent = {
       {
         slug: 'voice-of-customer',
         number: '03',
-        title: 'Voz do cliente',
+        title: 'Modelagem de Tópicos de Reclamações e Análise Comparativa',
         question: 'Do que falam 9.139 reclamações escritas, e como os pedidos atrasados diferem?',
         headline: 'Reclamações de atrasados são sobre o pacote: 65,7% contra 18,5%.',
         headlineNote:
@@ -137,15 +138,15 @@ export const pt: SiteContent = {
   },
   projects: {
     'retail-analytics': {
-      metaTitle: 'Análise de varejo — Anderson Tavares',
+      metaTitle: 'Análise de Desempenho e Cumprimento de Pedidos em E-commerce — Anderson Tavares',
       metaDescription:
-        '99.441 pedidos da Olist em PostgreSQL e dbt: R$ 16,0 mi de receita, recompra de 3,12% e um problema de atraso concentrado no corredor São Paulo → Rio.',
-      kicker: 'Projeto 01 · Análise de varejo',
-      title: 'Quais alavancas realmente movem a satisfação e a recompra?',
+        '99.441 pedidos da Olist em PostgreSQL e dbt: R$ 16,0 mi de valor de pagamento registrado, recompra de 3,12% e um problema de atraso concentrado no corredor São Paulo → Rio.',
+      kicker: 'Projeto 01 · Análise de Desempenho e Cumprimento de Pedidos em E-commerce',
+      title: 'Análise de Desempenho e Cumprimento de Pedidos em E-commerce',
       deck:
-        'Uma análise de 99.441 pedidos em dbt e PostgreSQL. A descoberta incômoda é que este é um negócio de aquisição, e o atraso que derruba a satisfação é criado em um corredor, não pelos vendedores.',
+        'Uma análise de 99.441 pedidos em dbt e PostgreSQL. A descoberta incômoda é que este é um negócio de aquisição, e que o atraso se concentra em um corredor, sem que a qualidade dos vendedores o explique.',
       heroStats: [
-        { value: 'R$ 16,0 mi', label: 'de receita em 25 meses', note: 'Ticket médio de R$ 160,99; o frete é 14,1% disso.' },
+        { value: 'R$ 16,0 mi', label: 'de valor de pagamento registrado em 25 meses', note: 'Ticket médio de R$ 160,99; o frete é 14,1% disso. É valor pago, não receita realizada após reembolsos.' },
         { value: '96,9%', label: 'dos clientes compram uma vez', note: '3,12% compram de novo alguma vez; 0,48% no mês calendário seguinte.' },
         { value: '6,77%', label: 'das entregas atrasam', note: 'Pedidos atrasados têm média de 2,27 estrelas contra 4,29 no prazo.' },
       ],
@@ -162,11 +163,11 @@ export const pt: SiteContent = {
       tocTitle: 'Nesta página',
       question: [
         'A pergunta era quais alavancas realmente movem a satisfação do cliente e a recompra, e não o que aconteceu. O marketplace tinha 99.441 pedidos e uma nota de avaliação para quase todos. As alavancas óbvias — marketing, fidelidade, descontos, qualidade do vendedor — precisavam ser separadas daquela para a qual os dados insistiam em apontar.',
-        'Três descobertas saíram disso. A receita cresce por aquisição, não por retenção. A data prometida é conservadora em quase todo lugar. E a minoria de entregas atrasadas não se distribui igualmente pelo país: concentra-se em uma única travessia.',
+        'Três descobertas saíram disso. O valor de pagamento registrado cresce por aquisição, não por retenção. A data prometida é conservadora em quase todo lugar. E a minoria de entregas atrasadas não se distribui igualmente pelo país: concentra-se em uma única travessia.',
       ],
       why: [
         'Se 96,9% dos clientes nunca fazem um segundo pedido, um programa de fidelidade gastaria dinheiro para influenciar uma decisão que quase ninguém está tomando. A pergunta de crescimento passa a ser como adquirir mais clientes ou elevar o valor por visita. É um modelo operacional diferente do que um painel de retenção sugere.',
-        'A descoberta sobre entrega importa por um segundo motivo: é a relação mais forte do conjunto de dados. Um pedido atrasado tem média de 2,27 estrelas; um pedido no prazo tem 4,29. O que cria o atraso também cria boa parte da insatisfação que o marketplace consegue medir.',
+        'A descoberta sobre entrega importa por um segundo motivo: é a relação mais forte do conjunto de dados. Um pedido atrasado tem média de 2,27 estrelas; um pedido no prazo tem 4,29. As condições associadas ao atraso também respondem por boa parte da insatisfação que o marketplace consegue medir.',
       ],
       data: [
         'O conjunto é o Olist Brazilian e-commerce dataset: 99.441 pedidos feitos entre setembro de 2016 e outubro de 2018, em nove tabelas relacionadas — pedidos, itens, pagamentos, avaliações, produtos, vendedores, clientes, geolocalização e tradução de categorias.',
@@ -186,19 +187,19 @@ export const pt: SiteContent = {
       },
       findings: {
         intro: [
-          'A receita foi de R$ 16.008.872,12 em 99.441 pedidos, média de R$ 160,99. O frete é R$ 2,25 mi, ou 14,1% do que os clientes pagaram. Novembro de 2017 é o maior mês, com R$ 1,19 mi e 7.544 pedidos, 63% acima de outubro — consistente com a Black Friday.',
+          'O valor de pagamento registrado foi de R$ 16.008.872,12 em 99.441 pedidos, média de R$ 160,99. O frete é R$ 2,25 mi, ou 14,1% do que os clientes pagaram. Novembro de 2017 é o maior mês, com R$ 1,19 mi e 7.544 pedidos, 63% acima de outubro — consistente com a Black Friday.',
         ],
         bullets: [
-          'Este é um negócio de aquisição. 93.099 dos 96.096 clientes fizeram exatamente um pedido (96,88%). 2.997 fizeram um segundo alguma vez, taxa de recompra de 3,12%. Clientes de um pedido respondem por 94,1% da receita; os de recompra, por 5,9%.',
+          'Este é um negócio de aquisição. 93.099 dos 96.096 clientes fizeram exatamente um pedido (96,88%). 2.997 fizeram um segundo alguma vez, taxa de recompra de 3,12%. Clientes de um pedido respondem por 94,1% do valor de pagamento registrado; os de recompra, por 5,9%.',
           'Comprar de novo no mês calendário seguinte é 0,48%, e a retenção fica perto de 0,2% depois disso. Ela não cai de uma base alta; começa baixa. O deslocamento é um mês calendário, não uma janela de 30 dias, e a janela de 25 meses trunca quem voltaria mais tarde. O número é um piso.',
           'O RFM é reportado, mas é fraco. A frequência quase não varia quando 96,9% dos clientes compram uma vez, então o score de frequência é a contagem limitada a cinco, não um quintil. “Champions” significa comprou recentemente, gastou bem e voltou ao menos uma vez — 1.066 clientes, não um grande segmento fiel.',
           '6.535 de 96.476 entregas chegaram depois da data prometida, 6,77%. Pedidos atrasados têm média de 2,27 estrelas contra 4,29 no prazo. Depois de uma semana de atraso, cerca de 80% dos avaliadores dão uma ou duas estrelas, contra 9,27% no prazo.',
           'São Paulo atrasa em 4,49% de 40.495 entregas. O Rio de Janeiro atrasa em 12,10% de 12.353; a Bahia em 12,16%; o Ceará em 13,76%. O pedido entregue médio chega 11,88 dias antes, então a promessa é conservadora em quase todo lugar.',
-          'Os vendedores não são a causa. Eles despacham em cerca de três dias nos corredores com volume. Um vendedor do Rio entregando dentro do Rio atrasa 4,76% das vezes, próximo dos 4,66% de São Paulo, e 53 dos 65 vendedores que enviam para os dois estados vão pior para o Rio.',
-          'O corredor é a causa. São Paulo → Rio carrega 8.129 das 12.353 entregas do Rio e atrasa 14,17%. Todo corredor interno com pelo menos 250 entregas fica em 4,8% ou menos. A mediana na travessia é 12,8 dias e o nonagésimo percentil é 31,0, então o problema está na cauda.',
+          'O comportamento dos vendedores não explica a diferença. Eles despacham em cerca de três dias nos corredores com volume. Um vendedor do Rio entregando dentro do Rio atrasa 4,76% das vezes, próximo dos 4,66% de São Paulo, e 53 dos 65 vendedores que enviam para os dois estados vão pior para o Rio. Isso torna a qualidade do vendedor uma explicação improvável como causa única, mas não a descarta.',
+          'O corredor é onde o problema se concentra. São Paulo → Rio carrega 8.129 das 12.353 entregas do Rio e atrasa 14,17%. Todo corredor interno com pelo menos 250 entregas fica em 4,8% ou menos. A mediana na travessia é 12,8 dias e o nonagésimo percentil é 31,0, então o problema está na cauda. É uma associação observada: o corredor indica onde investigar a transportadora e a transferência, não prova que a rota cause o atraso.',
           'São Paulo → Rio também tem a promessa mais curta: 27,0 dias, contra 30,3 no corredor mais distante São Paulo → Rio Grande do Sul, cuja mediana é 13,9 dias e o p90 é 27,1. Três dias a mais na promessa registrariam 11,60% em vez de 14,17%; sete a mais registrariam 8,37%.',
-          'A receita por categoria soma R$ 13,59 mi contra R$ 16,0 mi de pagamentos porque conta apenas o preço do item. A diferença é frete, não erro. As dez maiores entre 74 categorias respondem por 62,4% da receita de itens.',
-          'A receita inclui pedidos cancelados e indisponíveis — 1.234 pedidos e R$ 269.735,11, cerca de 1,7% — porque houve pagamento registrado. Excluí-los seria uma definição diferente e igualmente defensável. O relatório declara qual está em uso.',
+          'O valor dos itens por categoria soma R$ 13,59 mi contra R$ 16,0 mi de pagamentos porque conta apenas o preço do item. A diferença é frete, não erro. As dez maiores entre 74 categorias respondem por 62,4% do valor dos itens.',
+          'O valor de pagamento registrado inclui pedidos cancelados e indisponíveis — 1.234 pedidos e R$ 269.735,11, cerca de 1,7% — porque houve pagamento registrado. Excluí-los seria uma definição diferente e igualmente defensável. O relatório declara qual está em uso.',
         ],
         outro: [
           'A estimativa do Rio é uma associação, não uma previsão causal. À taxa de São Paulo, cerca de 940 dos 1.495 pedidos atrasados do Rio ao longo dos 25 meses não teriam atrasado. Aplicando o comportamento observado de avaliação — 49,36% dos pedidos atrasados dão nota ≤2 contra 9,27% dos pedidos no prazo — isso implica cerca de 377 avaliações de uma e duas estrelas a menos no recorte. É cumulativo no período observado, não uma taxa anual.',
@@ -206,11 +207,11 @@ export const pt: SiteContent = {
       },
       implications: {
         intro: [
-          'A recomendação vem de onde o atraso é criado, não do tamanho da diferença nas avaliações. É um problema de corredor antes de ser um problema de vendedor.',
+          'A recomendação vem de onde o atraso se concentra, não do tamanho da diferença nas avaliações. O corredor é o primeiro lugar a investigar; isso não é uma conclusão sobre culpa dos vendedores.',
         ],
         items: [
           {
-            title: 'Trabalhar o corredor São Paulo → Rio, não os vendedores nele',
+            title: 'Investigar o corredor São Paulo → Rio, não apenas a qualidade dos vendedores',
             body:
               'A travessia carrega dois terços dos pedidos do Rio com 14,17% de atraso. A pergunta para as transportadoras é por que o nonagésimo percentil é de 31 dias em um corredor cuja mediana é 12,8, e por que 379 pedidos chegam mais de duas semanas depois da promessa. Não existe identificador de transportadora, então isso exige o lado operacional, não outra consulta.',
           },
@@ -234,12 +235,12 @@ export const pt: SiteContent = {
       limitations: [
         'O conjunto é um recorte de setembro de 2016 a outubro de 2018, não um feed ao vivo. Setembro e outubro de 2018 são parciais. Tudo aqui é uma observação de um período, não uma tendência.',
         'As avaliações são autosselecionadas. 98.673 de 99.441 pedidos têm avaliação, mas só aparecem clientes que escolheram escrever. Uma média de 4,29 entre respondentes não é uma média de 4,29 entre todos os clientes.',
-        '“Receita” significa valor bruto de mercadoria registrado na tabela de pagamentos. Não há custo, margem, reembolso ou devolução, então nenhuma afirmação sobre lucro é possível — apenas sobre dinheiro arrecadado.',
-        'A receita inclui 1.234 pedidos depois cancelados ou marcados como indisponíveis, R$ 269.735,11, porque houve pagamento registrado. Excluí-los seria uma definição diferente e igualmente defensável.',
+        '“Valor de pagamento registrado” significa o valor bruto registrado na tabela de pagamentos. Não há custo, margem, reembolso ou devolução, então nenhuma afirmação sobre lucro é possível — apenas sobre dinheiro arrecadado.',
+        'O valor de pagamento registrado inclui 1.234 pedidos depois cancelados ou marcados como indisponíveis, R$ 269.735,11, porque houve pagamento registrado. Excluí-los seria uma definição diferente e igualmente defensável.',
         'customer_unique_id é derivado e imperfeito. As descobertas de recompra são um piso, não um teto; uma pessoa que muda os dados pode aparecer duas vezes.',
         'Contagens de pedidos e de itens têm grãos diferentes. Produtos e categorias vêm de fct_order_items; dinheiro, entrega e avaliações vêm de fct_orders. Misturar os dois é o caminho mais provável para um total errado.',
         'Um corredor é um par de estados, não uma rota medida. Os estados do vendedor e do cliente são a geografia mais fina do conjunto.',
-        'O conjunto não tem identificador de transportadora. A descoberta do corredor diz onde o atraso é criado; não diz quem o cria.',
+        'O conjunto não tem identificador de transportadora. A descoberta do corredor diz onde o atraso se concentra; não identifica a transportadora nem a causa.',
         'Os números de corredor cobrem 96.411 das 96.476 entregas. Os 65 pedidos cujos itens vieram de vendedores em mais de um estado não têm corredor único.',
         'Onde falta data de entrega, 2.965 pedidos são excluídos das estatísticas de entrega em vez de imputados, e mantidos em grupos separados quando o tema é a experiência do cliente.',
       ],
@@ -258,18 +259,18 @@ export const pt: SiteContent = {
       },
       charts: {
         revenue: {
-          title: 'Receita mensal',
+          title: 'Valor de pagamento registrado por mês',
           subtitle: 'Valor bruto de pagamentos; os meses de borda quase vazios ficam fora do gráfico',
-          note: 'mart_revenue_monthly. Excluídos: setembro de 2016 e setembro–outubro de 2018 (24 pedidos). Nenhum pedido em novembro de 2016; dezembro de 2016 tem um. As barras são meses, não uma série contínua.',
+          note: 'mart_revenue_monthly. Valor de pagamento registrado, não receita realizada. Excluídos: setembro de 2016 e setembro–outubro de 2018 (24 pedidos). Nenhum pedido em novembro de 2016; dezembro de 2016 tem um. As barras são meses, não uma série contínua.',
           description:
-            'Gráfico de colunas da receita mensal de outubro de 2016 a agosto de 2018. A receita sobe ao longo de 2017, atinge o pico em novembro de 2017 com R$ 1,19 mi e depois fica perto de R$ 1,0–1,16 mi em 2018.',
+            'Gráfico de colunas do valor de pagamento registrado por mês, de outubro de 2016 a agosto de 2018. O valor sobe ao longo de 2017, atinge o pico em novembro de 2017 com R$ 1,19 mi e depois fica perto de R$ 1,0–1,16 mi em 2018.',
         },
         categories: {
           title: 'As categorias que sustentam o marketplace',
-          subtitle: '12 maiores por receita de itens; a participação é sobre toda a receita de itens',
-          note: 'mart_category_revenue. Os rótulos mostram receita de itens, participação e preço médio do item. Frete não entra.',
+          subtitle: '12 maiores por valor dos itens; a participação é sobre todo o valor dos itens',
+          note: 'mart_category_revenue. Os rótulos mostram valor dos itens, participação e preço médio do item. Frete não entra.',
           description:
-            'Barras horizontais das doze categorias com mais receita de itens, da maior para a menor. Saúde e beleza lidera com R$ 1,26 mi, seguida por relógios e presentes com R$ 1,21 mi e cama, mesa e banho com R$ 1,04 mi.',
+            'Barras horizontais das doze categorias com mais valor dos itens, da maior para a menor. Saúde e beleza lidera com R$ 1,26 mi, seguida por relógios e presentes com R$ 1,21 mi e cama, mesa e banho com R$ 1,04 mi.',
         },
         delivery: {
           title: 'Nota média da avaliação por resultado da entrega',
@@ -307,20 +308,20 @@ export const pt: SiteContent = {
             'Gráfico de lollipop em escala horizontal logarítmica. 93.099 clientes fizeram um pedido (96,88%); 2.745 fizeram dois; 203 fizeram três; a cauda vai até um cliente com 17 pedidos.',
         },
         status: {
-          title: 'O que a receita inclui',
+          title: 'O que o total de pagamentos inclui',
           subtitle: 'Valor de pagamento registrado por status do pedido, em escala log',
-          note: 'fct_orders. Âmbar marca pedidos cancelados ou indisponíveis: houve pagamento, então eles permanecem na receita.',
+          note: 'fct_orders. Âmbar marca pedidos cancelados ou indisponíveis: houve pagamento, então eles permanecem no total. Receita realizada excluiria esses pedidos e eventuais reembolsos.',
           description:
-            'Gráfico de lollipop da receita por status em escala logarítmica. Pedidos entregues somam R$ 15,42 mi; enviados R$ 177 mil; cancelados R$ 143 mil e indisponíveis R$ 126 mil, ambos destacados; os demais status são menores.',
+            'Gráfico de lollipop do valor de pagamento registrado por status em escala logarítmica. Pedidos entregues somam R$ 15,42 mi; enviados R$ 177 mil; cancelados R$ 143 mil e indisponíveis R$ 126 mil, ambos destacados; os demais status são menores.',
         },
       },
     },
     'late-delivery': {
-      metaTitle: 'Modelo de atraso — Anderson Tavares',
+      metaTitle: 'Previsão de Risco de Atraso e Validação Temporal — Anderson Tavares',
       metaDescription:
         'Um modelo no checkout em 32.150 pedidos de uma amostra temporal: ROC AUC 0,685, lift de 1,97× no topo de 10%, inclinação de calibração 0,82 e um no-go honesto para produção.',
-      kicker: 'Projeto 02 · Modelo de atraso na entrega',
-      title: 'No checkout, é possível ordenar os pedidos pelo risco de atrasar?',
+      kicker: 'Projeto 02 · Previsão de Risco de Atraso e Validação Temporal',
+      title: 'Previsão de Risco de Atraso e Validação Temporal',
       deck:
         'Um classificador restrito ao que se sabe quando o pedido é feito, avaliado em uma amostra temporal. O resultado é um sinal de ranking modesto e um no-go claro para implantação.',
       heroStats: [
@@ -371,7 +372,7 @@ export const pt: SiteContent = {
           'Com 10% de capacidade — 3.215 pedidos — o modelo encontra 280 atrasados: 8,7% de precisão, 19,7% de recall e 1,97× de lift. Os intervalos de bootstrap de 95% são 7,7–9,6% de precisão, 17,7–21,7% de recall e 1,77–2,17× de lift.',
           'A curva de capacidade não é monotônica. Com 5% de capacidade, 1.608 pedidos, a precisão é 7,7% e o recall 8,7%; com 20%, 6.430 pedidos, a precisão é 9,2% e o recall 41,8%. Os scores mais altos não são os mais puros, então o modelo não deve ser usado como uma lista curta estreita.',
           'Uma baseline por estado do cliente captura 12,2% dos atrasos com 10% de capacidade, 5,4% de precisão e 1,22× de lift. A precisão de 8,7% do modelo é melhor, mas o ganho é modesto.',
-          'O nível da probabilidade está próximo, mas comprimido. A previsão média é 4,26% contra 4,42% observados. Uma recalibração logística na amostra dá intercepto −0,47 e inclinação 0,82: scores altos não são altos o bastante e scores baixos não são baixos o bastante. O score é um ranking, não uma probabilidade para um pedido individual.',
+          'O nível agregado da probabilidade está próximo: previsão média de 4,26% contra 4,42% observados. Os decis não são uniformemente calibrados. As faixas intermediárias e médio-altas subestimam — o nono decil prevê 7,0% e observa 9,8% — enquanto o topo superestima, 12,3% contra 8,7%. A inclinação de calibração é 0,82, com intercepto −0,47. O score é um ranking, não uma probabilidade para um pedido individual.',
           'O sinal muda com o período. A AUC mensal vai de 0,60 a 0,79; o recall do decil superior cai para 10,4% em agosto. As origens móveis são mais fracas ainda: AUC 0,59–0,62 e precisão média 0,056–0,184 em três janelas.',
           'A importância por permutação coloca promise_days em primeiro (queda de 0,026 em AP), depois customer_state (0,017) e seller_state (0,003). Valor da cesta, frete, peso, pagamento e categoria acrescentam quase nada. purchase_month é ligeiramente negativa.',
           'A classe do modelo não está decidida. A regressão logística venceu a comparação com origens móveis; o boosting foi um pouco melhor na amostra final. Nenhum intervalo pareado exclui zero. Reportar um deles como “o modelo” exageraria o que esta divisão consegue decidir.',
@@ -435,9 +436,9 @@ export const pt: SiteContent = {
         calibration: {
           title: 'Calibração na amostra temporal',
           subtitle: 'Previsto contra observado em dez faixas de score de 3.215 pedidos cada',
-          note: 'model_metrics.json. A diagonal tracejada é calibração perfeita; a linha horizontal é a taxa observada de 4,42%. A previsão média é 4,26%, inclinação 0,82, intercepto −0,47.',
+          note: 'model_metrics.json. A diagonal tracejada é calibração perfeita; a linha horizontal é a taxa observada de 4,42%. A previsão média é 4,26%. O nono decil prevê 7,0% e observa 9,8%; o topo prevê 12,3% e observa 8,7%. Inclinação 0,82, intercepto −0,47.',
           description:
-            'Gráfico de dispersão do risco previsto contra o observado para regressão logística e boosting. Os pontos seguem a diagonal até a última faixa, onde a logística prevê 12,3% e observa 8,7%. A taxa base observada é 4,42%.',
+            'Gráfico de dispersão do risco previsto contra o observado para regressão logística e boosting. O nono decil prevê 7,0% e observa 9,8%; o topo prevê 12,3% e observa 8,7%. A taxa base observada é 4,42%.',
         },
         capacity: {
           title: 'Precisão por capacidade de revisão',
@@ -463,11 +464,11 @@ export const pt: SiteContent = {
       },
     },
     'voice-of-customer': {
-      metaTitle: 'Voz do cliente — Anderson Tavares',
+      metaTitle: 'Modelagem de Tópicos de Reclamações e Análise Comparativa — Anderson Tavares',
       metaDescription:
         '9.139 reclamações escritas de 1–2 estrelas: as de atrasados são sobre o pacote (65,7%) e as de pedidos no prazo sobre o produto (68,9%), com a seleção declarada antes.',
-      kicker: 'Projeto 03 · Voz do cliente',
-      title: 'Do que falam as 9.139 reclamações escritas?',
+      kicker: 'Projeto 03 · Modelagem de Tópicos de Reclamações e Análise Comparativa',
+      title: 'Modelagem de Tópicos de Reclamações e Análise Comparativa',
       deck:
         'Um modelo de tópicos sobre o texto em português que os clientes escreveram. Clientes de pedidos atrasados e no prazo não estão tendo a mesma conversa: um fala do pacote, o outro do produto.',
       heroStats: [
@@ -522,7 +523,7 @@ export const pt: SiteContent = {
           'Agrupar os tópicos à mão deixa a separação mais nítida. Entrega e não recebimento juntos são 65,7% das reclamações de atrasados e 18,5% das de pedidos no prazo. Os três tópicos de produto são 18,1% contra 68,9%. O agrupamento é um resumo do analista, não uma saída do modelo.',
           'Todas as seis diferenças têm intervalos de 95% que excluem zero e q-valores de Benjamini–Hochberg abaixo de 0,001. A direção não depende de forçar cada reclamação em um tópico: usando a distribuição completa, entrega e não recebimento carregam 58,9% do peso das reclamações de atrasados contra 22,8% das no prazo; os tópicos de produto carregam 24,9% contra 63,1%.',
           'A alternativa com quatro tópicos não derruba a manchete. Com k=4, os tópicos de entrega/não recebimento concentram 83,3% das reclamações de atrasados e 29,3% das no prazo; os de produto/pedido, 16,7% e 70,7%. O mesmo contraste, com fronteiras mais grossas.',
-          'Seis é uma escolha semântica pré-especificada, não um ótimo de coerência. A semente 0 coloca k=6 no topo da coerência UMass (−2,677), mas a média das sementes é maior em k=4 (−2,628 contra −2,739). k=4 junta produto e troca, então seis é mantido pela granularidade — não porque cria o resultado.',
+          'Seis foi a escolha inicial da análise, não um ótimo de coerência estabelecido de antemão. Uma checagem posterior com a semente 0 coloca k=6 no topo da coerência UMass (−2,677), mas a média das sementes é maior em k=4 (−2,628 contra −2,739). k=4 junta produto e troca, então seis é mantido pela granularidade. É um julgamento de interpretação, não evidência de que seis seja o número verdadeiro de tópicos.',
           'Os rótulos são legíveis, mas não confiáveis no nível individual. A auditoria manual encontrou 20 de 30 claramente consistentes, 5 parcialmente consistentes e 5 dominados por outro tema. O tópico de demora foi o mais fraco: três das cinco reclamações amostradas eram principalmente sobre qualidade do produto ou item errado. É a leitura de um analista, não codificação independente.',
           '22,7% das reclamações têm o maior peso de tópico abaixo de 0,5, 7,5% abaixo de 0,4, e 31,7% têm um segundo tópico em 0,3 ou mais. A entropia normalizada média é 0,522. Um pedido atrasado, danificado e incompleto muitas vezes tem massa em mais de um tema.',
         ],
@@ -600,7 +601,7 @@ export const pt: SiteContent = {
         coherence: {
           title: 'Por que seis tópicos',
           subtitle: 'Coerência UMass por número de tópicos, semente 0 contra a média das sementes 0–2',
-          note: 'topic_selection.csv. k=6 é o maior na semente 0; a média das sementes é maior em k=4. Seis é uma escolha semântica pré-especificada, não um ótimo de coerência.',
+          note: 'topic_selection.csv. k=6 é o maior na semente 0; a média das sementes é maior em k=4. Seis foi a escolha inicial e é mantido pela granularidade, não porque seja o ótimo de coerência.',
           description:
             'Gráfico de linhas da coerência para k=4 a 10. A linha da semente 0 tem pico em k=6 (−2,677); a média das sementes tem pico em k=4 (−2,628). As diferenças são pequenas em relação à dispersão entre sementes.',
         },
@@ -662,7 +663,7 @@ export const pt: SiteContent = {
       'O código é MIT. O conjunto Olist é CC BY-NC-SA 4.0, não comercial, e não é redistribuído aqui. Todos os números publicados são agregados dos marts testados; nenhum texto bruto de avaliação é reproduzido.',
   },
   footer: {
-    line: 'Portfólio de ciência de dados aplicada. Medição, previsão e texto em um conjunto de dados.',
+    line: 'Operações de E-commerce e Experiência do Cliente. Um estudo reproduzível em ciência de dados.',
     source: 'Fonte e reprodução',
     licence: 'Código MIT · Dados CC BY-NC-SA 4.0',
     note: 'Site estático. Sem rastreamento, sem cookies, sem analytics.',

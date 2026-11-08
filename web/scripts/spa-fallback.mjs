@@ -12,70 +12,70 @@ const site = 'https://andersontavares0.github.io/ds-portfolio'
 const routes = [
   {
     path: '',
-    title: 'Anderson Tavares — Applied Data Science Portfolio',
+    title: 'Anderson Tavares — E-commerce Operations & Customer Experience',
     description:
       'Late delivery is the strongest signal of customer dissatisfaction in this marketplace. Measured across 99,441 Olist orders, predicted honestly, and explained through 9,139 written complaints.',
     lang: 'en',
   },
   {
     path: 'pt',
-    title: 'Anderson Tavares — Portfólio de Ciência de Dados Aplicada',
+    title: 'Anderson Tavares — Operações de E-commerce e Experiência do Cliente',
     description:
       'O atraso na entrega é o sinal mais forte de insatisfação do cliente neste marketplace. Medido em 99.441 pedidos da Olist, previsto com honestidade e explicado por 9.139 reclamações escritas.',
     lang: 'pt-BR',
   },
   {
     path: 'projects/retail-analytics',
-    title: 'Retail analytics: which levers move satisfaction? — Anderson Tavares',
+    title: 'E-commerce Performance & Fulfillment Analytics — Anderson Tavares',
     description:
       'A dbt and PostgreSQL analysis of 99,441 Olist orders: acquisition rather than retention, a promise that is conservative almost everywhere, and lateness concentrated on one crossing.',
     lang: 'en',
   },
   {
     path: 'pt/projects/retail-analytics',
-    title: 'Análise de varejo: quais alavancas movem a satisfação? — Anderson Tavares',
+    title: 'Análise de Desempenho e Cumprimento de Pedidos em E-commerce — Anderson Tavares',
     description:
       'Uma análise em dbt e PostgreSQL de 99.441 pedidos da Olist: aquisição em vez de retenção, um prazo conservador em quase todo o país e atraso concentrado em um corredor.',
     lang: 'pt-BR',
   },
   {
     path: 'projects/late-delivery',
-    title: 'Late-delivery model: ranking at checkout — Anderson Tavares',
+    title: 'Late-Delivery Risk Prediction & Temporal Validation — Anderson Tavares',
     description:
       'A temporal-holdout model of late delivery using only checkout-time information. The honest result is a modest ranking signal, not a production queue.',
     lang: 'en',
   },
   {
     path: 'pt/projects/late-delivery',
-    title: 'Modelo de atraso: ordenação no checkout — Anderson Tavares',
+    title: 'Previsão de Risco de Atraso e Validação Temporal — Anderson Tavares',
     description:
       'Um modelo de atraso com amostra temporal usando apenas informações do checkout. O resultado honesto é um sinal modesto de ordenação, não uma fila de produção.',
     lang: 'pt-BR',
   },
   {
     path: 'projects/voice-of-customer',
-    title: 'Voice of the customer: what 9,139 complaints say — Anderson Tavares',
+    title: 'Customer Complaint Topic Modeling & Comparative Analysis — Anderson Tavares',
     description:
       'A topic model of Portuguese complaint text. Late and on-time customers complain about different things: the parcel and the product. Selection and topic stability are stated first.',
     lang: 'en',
   },
   {
     path: 'pt/projects/voice-of-customer',
-    title: 'Voz do cliente: o que dizem 9.139 reclamações — Anderson Tavares',
+    title: 'Modelagem de Tópicos de Reclamações e Análise Comparativa — Anderson Tavares',
     description:
       'Um modelo de tópicos sobre reclamações em português. Clientes com atraso e no prazo reclamam de coisas diferentes: o pacote e o produto. Seleção e estabilidade vêm antes.',
     lang: 'pt-BR',
   },
   {
     path: 'about',
-    title: 'About Anderson Tavares — Applied Data Science Portfolio',
+    title: 'About Anderson Tavares — E-commerce Operations & Customer Experience',
     description:
       'How the three Olist case studies were built: reproducible SQL and dbt models, temporal validation, text analysis, and an explicit account of what the data cannot support.',
     lang: 'en',
   },
   {
     path: 'pt/about',
-    title: 'Sobre Anderson Tavares — Portfólio de Ciência de Dados Aplicada',
+    title: 'Sobre Anderson Tavares — Operações de E-commerce e Experiência do Cliente',
     description:
       'Como os três estudos da Olist foram construídos: SQL e modelos dbt reproduzíveis, validação temporal, análise de texto e uma explicação explícita do que os dados não sustentam.',
     lang: 'pt-BR',

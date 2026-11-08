@@ -8,7 +8,9 @@ All monetary values are in Brazilian reais (R$), as recorded in the source.
 
 ---
 
-## Revenue
+## Revenue (recorded payment value)
+
+**Public label.** The website calls this **recorded payment value**, not realized revenue.
 
 **Definition.** The sum of `payment_value` across every payment row for an order,
 aggregated to the order first, then summed by month. Computed in
@@ -19,7 +21,7 @@ profit, not margin, and not net of anything — this dataset contains no cost da
 no returns and no refunds.
 
 **It includes orders that were later cancelled or marked unavailable**, because a
-payment was recorded for them. That is roughly 3% of orders. The report states
+payment was recorded for them. That is 1,234 of 99,441 orders — about 1.2% of orders and 1.7% of recorded payment value. The report states
 this rather than implying that "revenue" means delivered-and-kept revenue.
 
 **It includes freight**, which is what the customer actually paid. Where freight
@@ -134,7 +136,7 @@ late had the promise been three or seven days longer, computed as the share with
 measurement and not the parcel: the promise is set by Olist, so they say what the
 record would show, never what the customer would experience.
 
-**No carrier is identified.** A lane says where the delay is created. It cannot say
+**No carrier is identified.** A lane says where the delay concentrates. It cannot identify
 who creates it, and narrowing it to a carrier or a warehouse needs data this
 dataset does not carry.
 
@@ -336,8 +338,10 @@ and top-decile recall 21.8%; the paired logistic-minus-boosting AP difference is
 Logistic won the rolling origins (mean AP 0.119 vs 0.108), but the test interval
 includes zero.
 
-**Calibration is close in level but compressed.** Mean prediction is 4.26%
-against 4.42% observed; calibration slope is 0.82 and intercept −0.47. The Brier
+**Calibration is close in level but not uniform across deciles.** Mean prediction is 4.26%
+against 4.42% observed; calibration slope is 0.82 and intercept −0.47. The ninth
+decile predicts 7.0% and observes 9.8%, while the top decile predicts 12.3% and
+observes 8.7%. The Brier
 (0.0418) is slightly better than a constant (0.0424). Probabilities still must
 not be read as risks for an individual order or a future regime.
 
@@ -378,7 +382,7 @@ list, and tokens of at least three letters. Each complaint is assigned to the
 topic with the largest weight (hard assignment). UMass coherence (top 10 terms,
 using Gensim's topic-weight ordering) is **−2.677** at seed 0, the best of k=4–10 at that seed, but seed-averaged
 coherence is highest at k=4 (**−2.628** vs **−2.739** at k=6). Six is therefore
-a prespecified semantic choice, not a coherence optimum: k=4 merges product
+the initial analysis choice, not a coherence optimum: k=4 merges product
 quality with returns, while six preserves the distinction the question needs.
 A k=4 sensitivity fit still puts **83.3%** of late complaints and **29.3%** of
 on-time complaints in the delivery/non-receipt group, against **16.7%** and

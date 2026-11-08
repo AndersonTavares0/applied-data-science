@@ -111,7 +111,7 @@ The method is deliberately simple and fixed before looking at the outcome.
 
 ### Why six topics
 
-Six is a prespecified semantic choice, not a coherence optimum. UMass coherence
+Six was the initial analysis choice, not a coherence optimum established in advance. UMass coherence
 — whether the top terms of a topic appear together in the corpus — depends on
 the initialisation: at seed 0 it is highest at k=6, but the seed-averaged score
 is highest at k=4. The table below repeats every candidate over seeds 0, 1 and 2:

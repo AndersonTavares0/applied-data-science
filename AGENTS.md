@@ -6,15 +6,15 @@ one is a bug.
 
 ## What this repository is
 
-A data science portfolio. The thesis, stated once:
+E-commerce Operations & Customer Experience — a reproducible data science portfolio. The thesis, stated once:
 
 > In this marketplace, late delivery is the strongest signal of customer
-> dissatisfaction, and it is created in the crossing between São Paulo and Rio
-> rather than by the sellers. I **measured** it (Project 01), **predicted** it
-> (Project 02), and **explained the voice of the customer** (Project 03).
+> dissatisfaction, and it is concentrated on the crossing between São Paulo and
+> Rio. The data localise the problem; they do not identify the cause or rule out
+> seller behaviour. I **measured** it (Project 01), **predicted** it
+> (Project 02), and **analysed the complaint text** (Project 03).
 
-Project 01 is a retail analytics pipeline on the Olist Brazilian e-commerce
-dataset: raw CSVs → PostgreSQL → dbt → a published report.
+Project 01 is the E-commerce Performance & Fulfillment Analytics study on the Olist Brazilian e-commerce dataset: raw CSVs → PostgreSQL → dbt → a published case study.
 
 The audience is a hiring manager who will give it two minutes. Optimise for
 credibility, not for volume of code.

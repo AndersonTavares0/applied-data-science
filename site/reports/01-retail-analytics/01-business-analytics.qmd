@@ -41,7 +41,7 @@ one about repeat purchase was uncomfortable.
   de Janeiro is late on **12.1%** of deliveries and Ceará on **13.8%**, against
   São Paulo's **4.5%**. But a Rio seller delivering inside Rio matches São Paulo
   (**4.7%** against **4.6%**), and 53 of the 65 sellers who ship to both states
-  are worse into Rio. The delay is created in the crossing between São Paulo and
+  are worse into Rio. The delay is concentrated in the crossing between São Paulo and
   Rio, which carries two thirds of Rio's orders at **14.2%** late.
 - **That lane carries the thinnest promise in the dataset.** São Paulo to Rio is
   promised 27 days against 30.3 for the farther São Paulo to Rio Grande do Sul
@@ -337,7 +337,7 @@ That estimate is an association, not a causal forecast. I have not shown that
 making a delivery on time *causes* the better review, only that the two travel
 together, and the customers who experience late delivery may differ in other
 ways. So the next question is not how much the 940 orders are worth, it is
-where the delay is created, and that is answerable with the data already
+where the delay concentrates, and that is answerable with the data already
 loaded.
 
 ### Where the delay happens
@@ -371,7 +371,7 @@ Two thirds of Rio's deliveries, 8,129 of 12,353, ship from São Paulo sellers,
 and that lane is the worst in the table at **14.17%**. Every intrastate lane
 with at least 250 deliveries sits at 4.8% or below; the two intrastate lanes
 above that are 14 and 7 orders, too small to support a rate. The difficulty is
-created in the crossing.
+concentrated in the crossing; that is an association, not proof of cause.
 
 ### The promise on that lane is the thinnest
 
@@ -398,10 +398,10 @@ and the actual delivery time are correlated by construction.
 
 ## What I would do next
 
-1. **Fix the São Paulo to Rio lane, not the sellers on it.** Sellers dispatch in
+1. **Investigate the São Paulo to Rio crossing, not seller quality alone.** Sellers dispatch in
    about three days on every lane with volume, Rio's own sellers deliver on time inside Rio,
    and 53 of the 65 sellers who ship to both states are worse into Rio. The
-   delay is created in the crossing: 8,129 deliveries, 14.17% late, and 379 of
+   delay is concentrated in the crossing: 8,129 deliveries, 14.17% late, and 379 of
    them more than two weeks late. The operational question is what happens
    during the 9 days of median transit and in the 31 days at the ninetieth
    percentile.

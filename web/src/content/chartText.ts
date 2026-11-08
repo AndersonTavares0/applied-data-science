@@ -2,7 +2,7 @@ import type { Lang } from './types'
 
 export const chartText = {
   en: {
-    revenueAxis: 'Revenue (R$ millions)',
+    revenueAxis: 'Recorded payment value (R$ millions)',
     monthAxis: 'Month',
     lateAxis: 'Late deliveries (%)',
     deliveries: 'deliveries',
@@ -60,7 +60,7 @@ export const chartText = {
     eligibleLine: 'Line: eligible customers',
   },
   pt: {
-    revenueAxis: 'Receita (R$ milhões)',
+    revenueAxis: 'Valor de pagamento registrado (R$ milhões)',
     monthAxis: 'Mês',
     lateAxis: 'Entregas atrasadas (%)',
     deliveries: 'entregas',

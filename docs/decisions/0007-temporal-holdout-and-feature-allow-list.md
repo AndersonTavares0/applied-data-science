@@ -55,8 +55,8 @@ excellent score.
    Both models are reported there only as a sensitivity check.
 5. **Report the base-rate shift instead of hiding it.** Prevalence falls from
    5.61% in mature training to 4.42% in the holdout. Mean prediction is 4.26%,
-   close in level, but the calibration slope is 0.82: the ranking is compressed.
-   The report says the score is not a probability.
+   close in level, but the calibration slope is 0.82 and the deciles are not
+   uniformly calibrated. The report says the score is not a probability.
 6. **Evaluate at a fixed capacity, not a fixed threshold.** The operational
    decision is how many orders a team can review, so the headline is capacity
    precision, recall and lift at 5%, 10% and 20%. This avoids inventing

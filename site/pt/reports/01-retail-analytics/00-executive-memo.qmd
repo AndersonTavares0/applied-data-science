@@ -21,7 +21,7 @@ format:
 
 A entrega atrasada é rara (6.8% das entregas) e é o sinal mais forte de
 insatisfação do cliente neste conjunto de dados. Ela não se distribui de forma
-uniforme, e não são os vendedores. **O atraso é criado na travessia entre São
+uniforme. **O atraso se concentra na travessia entre São
 Paulo e o Rio, que carrega dois terços dos pedidos do Rio e atrasa 14.2% das
 vezes.**
 
@@ -34,11 +34,11 @@ vezes.**
   contra 9.27% dos clientes com entrega no prazo.
 - São Paulo atrasa em **4.49%** das entregas, o Rio de Janeiro em **12.10%**, a
   Bahia em **12.16%** e o Ceará em **13.76%**.
-- **Os vendedores não são a causa.** Os vendedores despacham em cerca de três dias
+- **O comportamento dos vendedores não explica a diferença.** Os vendedores despacham em cerca de três dias
   em corredores com volume. Um vendedor do Rio entregando dentro do Rio atrasa
   **4.76%** das vezes, próximo dos **4.66%** de São Paulo, e 53 dos 65 vendedores
   que enviam para os dois estados vão pior para o Rio.
-- **O corredor é a causa.** De São Paulo ao Rio carrega **8,129** das 12,353
+- **O corredor é onde o problema se concentra.** De São Paulo ao Rio carrega **8,129** das 12,353
   entregas do Rio e atrasa **14.17%**. Todo corredor interno com pelo menos 250
   entregas fica em 4.8% ou menos.
 
@@ -66,7 +66,7 @@ disso pode ser convertido em lucro.
 ## Recomendação
 
 **Trabalhe o corredor de São Paulo ao Rio, e pare de procurar um vendedor ruim.**
-Os vendedores despacham no prazo e os próprios vendedores do Rio são pontuais,
+A qualidade dos vendedores é uma explicação improvável como causa única, mas os dados não a descartam;
 então o atraso está nos 9 dias medianos que o pacote passa entre os dois, e nos
 379 pedidos que chegam mais de duas semanas depois da promessa. A pergunta para as
 transportadoras nesse corredor é por que o nonagésimo percentil é de 31 dias em um
@@ -74,11 +74,10 @@ corredor cuja mediana é 12.8.
 
 ```{mermaid}
 flowchart TB
-  A["São Paulo ao Rio<br/>8,129 entregas, 14.17% atrasadas"] --> B{"Os vendedores<br/>causam isso?"}
-  B -- "não" --> C["Eles despacham em cerca de três dias<br/>em corredores com volume"]
-  C --> D{"É difícil chegar ao Rio?"}
-  D -- "não" --> E["Os próprios vendedores do Rio entregam<br/>com 4.76% de atraso"]
-  E --> F["A travessia é o problema,<br/>e sua promessa é a mais frágil:<br/>27 dias contra 30.3 para o corredor SP–RS, mais distante"]
+  A["São Paulo ao Rio<br/>8,129 entregas, 14.17% atrasadas"] --> B["Vendedores despacham em cerca de três dias<br/>em corredores com volume"]
+  B --> C["Qualidade do vendedor é uma explicação improvável<br/>como causa única, mas não é descartada"]
+  A --> D["A travessia tem a promessa mais frágil:<br/>27 dias contra 30.3 para o corredor SP–RS, mais distante"]
+  D --> E["O dado indica onde investigar<br/>a transportadora e a transferência"]
 ```
 
 *A pergunta sobre os vendedores é respondida pelos dados. A pergunta sobre a

@@ -326,9 +326,10 @@ def main() -> int:
             "mean_best": mean_best,
             "selected": TOPIC_COUNT,
             "note": (
-                "k=6 is a prespecified interpretability choice, not the "
-                "coherence-optimal count; k=4 has the highest seed-averaged "
-                "coherence but merges product and return complaints."
+                "k=6 was the initial analysis choice and is retained for "
+                "interpretability, not because it is coherence-optimal; k=4 "
+                "has the highest seed-averaged coherence but merges product "
+                "and return complaints."
             ),
             "rows": selection.round(4).to_dict(orient="records"),
         },

@@ -29,11 +29,11 @@ directly to orders inflates every denominator.
    signal; the topic model describes what the complaint is about.
 3. **Fit the topics without the outcome.** LDA sees only the complaint text.
    Delivery outcome is joined after fitting, so the topics cannot be chosen to
-   separate late from on-time orders. Six topics is a prespecified semantic
-   choice, not a coherence optimum: at seed 0 it has the highest UMass coherence
-   of k=4–10, but the seed-averaged score is highest at k=4 (mean −2.628 vs
-   −2.739), and k=4 merges product quality with returns. The candidate table is
-   reported across seeds 0–2 so the instability is visible.
+   separate late from on-time orders. Six topics was the initial analysis
+   choice, not a coherence optimum established in advance. A later check found
+   k=6 highest at seed 0 but k=4 highest on average across seeds 0–2 (mean
+   −2.628 vs −2.739); k=4 merges product quality with returns. The candidate
+   table is reported across seeds 0–2 so the instability is visible.
 4. **Compare composition, with uncertainty.** Report each topic's share of late
    complaints and of on-time complaints, the difference in percentage points, a
    95% interval, and a Benjamini–Hochberg adjusted p-value across the six topics.
@@ -53,8 +53,9 @@ directly to orders inflates every denominator.
 - **The corpus is selected by outcome.** 57.57% of late orders comment against
   39.07% of on-time orders. Topic shares describe complainers, and cannot be
   projected onto all customers or all orders.
-- **Six topics is a useful summary, not the true number.** UMass coherence is
-  highest at k=6 at seed 0 but highest at k=4 on average across seeds 0–2; the
+- **Six topics is a useful summary, not the true number.** Six was the initial
+  choice. UMass coherence is highest at k=6 at seed 0 but highest at k=4 on
+  average across seeds 0–2; the
   difference is small relative to the seed spread. Perplexity is lower at k=8
   and is not used to claim an optimum. Refits with seeds 1–4 give mean ARI 0.258
   and mean top-term Jaccard 0.413; the broad delivery/product grouping

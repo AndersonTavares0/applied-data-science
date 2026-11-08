@@ -148,7 +148,7 @@ export function Header() {
             Anderson Tavares
           </span>
           <span className="hidden font-mono text-[9px] uppercase tracking-[0.14em] text-muted sm:inline">
-            applied data science
+            {lang === 'pt' ? 'operações de e-commerce' : 'e-commerce operations'}
           </span>
         </Link>
 

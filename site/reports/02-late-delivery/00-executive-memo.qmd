@@ -44,7 +44,8 @@ is a research prototype, not a deployment-ready queue.**
   (95% interval −0.0122 to +0.0036)**. The interval includes zero.
 - **The score is not a probability.** Mean predicted risk is 4.26% against 4.42%
   observed, but the calibration slope is 0.82 and the intercept −0.47. The
-  ranking is compressed; do not attach the percentage to an individual order.
+  deciles are not uniformly calibrated; do not attach the percentage to an
+  individual order.
 - **Promise and geography do the work.** `promise_days`, customer state and seller
   state dominate. Basket value, freight, weight, payment and category add little.
 - **The signal moves with the period.** Monthly AUC in the holdout ranges from

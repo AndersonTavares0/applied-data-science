@@ -41,7 +41,7 @@ são, e `uv run python tasks.py train` as reconstrói.
   inclui zero: esta amostra não distingue os dois.
 - **O score é razoavelmente calibrado em nível, mas não é uma probabilidade
   confiável.** A previsão média é 4,26% contra 4,42% observados; a inclinação de
-  calibração é 0,82 e o intercepto −0,47. O ranking está comprimido e o score não
+  calibração é 0,82 e o intercepto −0,47. O nível agregado está próximo, mas os decis não são uniformes e o score não
   deve ser lido como probabilidade de um pedido individual.
 - **Prazo e geografia dominam.** A importância por permutação coloca
   `promise_days` primeiro, depois `customer_state` e `seller_state`. Valor da
@@ -182,10 +182,9 @@ períodos.
 
 A taxa de atraso na amostra é 4,42%; o modelo selecionado prevê 4,26% em média.
 Uma recalibração logística ajustada na amostra dá intercepto **−0,47** e
-inclinação **0,82** (escala logit). A inclinação abaixo de um significa que os
-scores estão comprimidos: scores altos não são altos o suficiente e scores baixos
-não são baixos o suficiente. O nível está próximo, mas a probabilidade de um
-pedido individual ainda não é confiável.
+inclinação **0,82** (escala logit). Os decis não são uniformemente calibrados: o nono prevê 7,0% e observa 9,8%,
+enquanto o topo prevê 12,3% e observa 8,7%. O nível agregado está próximo, mas a
+probabilidade de um pedido individual ainda não é confiável.
 
 A leitura prática: **o score é um ranking, não uma probabilidade.** Se uma
 probabilidade for necessária para uma decisão voltada ao cliente, ela precisa ser

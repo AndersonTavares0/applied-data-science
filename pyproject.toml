@@ -1,7 +1,7 @@
 [project]
 name = "ds-portfolio"
 version = "0.1.0"
-description = "Applied data science portfolio: retail measurement, delivery-risk modelling and complaint-text analysis on the Olist Brazilian e-commerce dataset."
+description = "E-commerce operations and customer experience: fulfillment measurement, delivery-risk modelling and complaint-text analysis on the Olist Brazilian e-commerce dataset."
 readme = "README.md"
 
 # Pinned below 3.13 on purpose: dbt-postgres is the most version-sensitive
