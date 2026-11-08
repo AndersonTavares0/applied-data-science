@@ -36,7 +36,7 @@ export const pt: SiteContent = {
       'A primeira coleção do Applied Data Science: 99.441 pedidos da Olist e três estudos conectados de medição, previsão e texto de reclamações, cada um com suas limitações declaradas.',
     eyebrow: 'Coleção 01 · Operações de e-commerce Olist',
     title: 'Operações de E-commerce e Experiência do Cliente',
-    subtitle: 'Um estudo reproduzível em ciência de dados',
+    subtitle: 'Estudos Reproduzíveis em Ciência de Dados',
     lead:
       'Um marketplace brasileiro, 99.441 pedidos entre setembro de 2016 e outubro de 2018, e três estudos que perguntam o que aconteceu, o que pode ser ordenado no checkout e o que os clientes escreveram quando o pacote deu errado.',
     stats: [
@@ -91,7 +91,7 @@ export const pt: SiteContent = {
     metaDescription:
       'O atraso na entrega é o sinal mais forte de insatisfação do cliente neste marketplace. Medido em 99.441 pedidos, previsto com honestidade e explicado por 9.139 reclamações escritas.',
     eyebrow: 'Applied Data Science · Anderson Tavares',
-    subtitle: 'Um estudo reproduzível em ciência de dados',
+    subtitle: 'Estudos Reproduzíveis em Ciência de Dados',
     title: 'O atraso na entrega é o sinal mais forte de insatisfação do cliente.',
     lead:
       'Eu medi isso em 99.441 pedidos da Olist. Depois fiz as duas perguntas que vêm a seguir: um modelo consegue ver o risco no checkout, e o que os clientes realmente escrevem quando o pacote dá errado?',
@@ -102,7 +102,7 @@ export const pt: SiteContent = {
     collectionCard: {
       eyebrow: 'Primeira coleção · Operações de e-commerce Olist',
       title: 'Operações de E-commerce e Experiência do Cliente',
-      subtitle: 'Um estudo reproduzível em ciência de dados',
+      subtitle: 'Estudos Reproduzíveis em Ciência de Dados',
       body:
         'Applied Data Science reúne estudos reproduzíveis sobre dados operacionais reais. A primeira coleção acompanha 99.441 pedidos da Olist entre medição, previsão e as palavras dos próprios clientes.',
       cta: 'Explorar a coleção',
@@ -728,7 +728,7 @@ export const pt: SiteContent = {
       'O código é MIT. O conjunto Olist é CC BY-NC-SA 4.0, não comercial, e não é redistribuído aqui. Todos os números publicados são agregados dos marts testados; nenhum texto bruto de avaliação é reproduzido.',
   },
   footer: {
-    line: 'Applied Data Science — Um estudo reproduzível em ciência de dados. Primeira coleção: operações de e-commerce Olist.',
+    line: 'Applied Data Science — Estudos Reproduzíveis em Ciência de Dados. Primeira coleção: operações de e-commerce Olist.',
     source: 'Fonte e reprodução',
     licence: 'Código MIT · Dados CC BY-NC-SA 4.0',
     note: 'Site estático. Sem rastreamento, sem cookies, sem analytics.',
