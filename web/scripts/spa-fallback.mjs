@@ -7,21 +7,35 @@ import { dirname, resolve } from 'node:path'
 const dist = resolve(import.meta.dirname, '..', 'dist')
 const index = resolve(dist, 'index.html')
 const fallback = resolve(dist, '404.html')
-const site = 'https://andersontavares0.github.io/ds-portfolio'
+const site = 'https://AndersonTavares0.github.io/applied-data-science'
 
 const routes = [
   {
     path: '',
-    title: 'Anderson Tavares — E-commerce Operations & Customer Experience',
+    title: 'Applied Data Science — A Reproducible Data Science Study',
     description:
-      'Late delivery is the strongest signal of customer dissatisfaction in this marketplace. Measured across 99,441 Olist orders, predicted honestly, and explained through 9,139 written complaints.',
+      'Applied Data Science: late delivery is the strongest signal of customer dissatisfaction in this marketplace. Measured across 99,441 Olist orders, predicted honestly, and explained through 9,139 written complaints.',
     lang: 'en',
   },
   {
     path: 'pt',
-    title: 'Anderson Tavares — Operações de E-commerce e Experiência do Cliente',
+    title: 'Applied Data Science — Um estudo reproduzível em ciência de dados',
     description:
-      'O atraso na entrega é o sinal mais forte de insatisfação do cliente neste marketplace. Medido em 99.441 pedidos da Olist, previsto com honestidade e explicado por 9.139 reclamações escritas.',
+      'Applied Data Science: o atraso na entrega é o sinal mais forte de insatisfação do cliente neste marketplace. Medido em 99.441 pedidos da Olist, previsto com honestidade e explicado por 9.139 reclamações escritas.',
+    lang: 'pt-BR',
+  },
+  {
+    path: 'collections/olist',
+    title: 'E-commerce Operations & Customer Experience — Applied Data Science',
+    description:
+      'The first Applied Data Science collection: 99,441 Olist orders and three connected studies in measurement, prediction and complaint text, each with its limitations stated.',
+    lang: 'en',
+  },
+  {
+    path: 'pt/collections/olist',
+    title: 'Operações de E-commerce e Experiência do Cliente — Applied Data Science',
+    description:
+      'A primeira coleção do Applied Data Science: 99.441 pedidos da Olist e três estudos conectados de medição, previsão e texto de reclamações, cada um com suas limitações declaradas.',
     lang: 'pt-BR',
   },
   {
@@ -68,14 +82,14 @@ const routes = [
   },
   {
     path: 'about',
-    title: 'About Anderson Tavares — E-commerce Operations & Customer Experience',
+    title: 'About Anderson Tavares — Applied Data Science',
     description:
       'How the three Olist case studies were built: reproducible SQL and dbt models, temporal validation, text analysis, and an explicit account of what the data cannot support.',
     lang: 'en',
   },
   {
     path: 'pt/about',
-    title: 'Sobre Anderson Tavares — Operações de E-commerce e Experiência do Cliente',
+    title: 'Sobre Anderson Tavares — Applied Data Science',
     description:
       'Como os três estudos da Olist foram construídos: SQL e modelos dbt reproduzíveis, validação temporal, análise de texto e uma explicação explícita do que os dados não sustentam.',
     lang: 'pt-BR',

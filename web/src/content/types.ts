@@ -57,6 +57,22 @@ export interface ProjectContent {
   charts: Record<string, ChartCopy>
 }
 
+export interface CollectionContent {
+  metaTitle: string
+  metaDescription: string
+  eyebrow: string
+  title: string
+  subtitle: string
+  lead: string
+  stats: Metric[]
+  scope: { heading: string; paragraphs: string[] }
+  studiesHeading: string
+  studiesIntro: string
+  method: { heading: string; intro: string; steps: string[]; note: string }
+  limitations: { heading: string; intro: string; items: string[] }
+  cta: { primary: string; secondary: string }
+}
+
 export interface HomeContent {
   metaTitle: string
   metaDescription: string
@@ -67,6 +83,13 @@ export interface HomeContent {
   thesis: string
   primaryCta: string
   secondaryCta: string
+  collectionCard: {
+    eyebrow: string
+    title: string
+    subtitle: string
+    body: string
+    cta: string
+  }
   heroPlate: {
     label: string
     lateLabel: string
@@ -107,6 +130,7 @@ export interface NavContent {
   skip: string
   home: string
   projects: string
+  collection: string
   about: string
   allProjects: string
   menu: string
@@ -134,6 +158,7 @@ export interface SiteContent {
   lang: Lang
   htmlLang: string
   nav: NavContent
+  collection: CollectionContent
   home: HomeContent
   projects: Record<Slug, ProjectContent>
   about: AboutContent

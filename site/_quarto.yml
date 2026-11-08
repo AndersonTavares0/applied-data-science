@@ -23,14 +23,14 @@ profile:
   default: en
 
 website:
-  title: "Applied Data Science Portfolio"
+  title: "Applied Data Science"
   description: "End-to-end data science on the Olist Brazilian e-commerce dataset: measurement, prediction, and the voice of the customer."
-  site-url: https://AndersonTavares0.github.io/ds-portfolio/
-  repo-url: https://github.com/AndersonTavares0/ds-portfolio
+  site-url: https://AndersonTavares0.github.io/applied-data-science/
+  repo-url: https://github.com/AndersonTavares0/applied-data-science
   page-footer:
     left: "Built with Quarto. Data © Olist."
     right:
-      - href: https://github.com/AndersonTavares0/ds-portfolio
+      - href: https://github.com/AndersonTavares0/applied-data-science
         text: GitHub
 
 format:

@@ -3,7 +3,7 @@
 ## The shape of the repository
 
 ```
-ds-portfolio/
+applied-data-science/
 ├── .agents/                      agent procedures scoped to this repository
 ├── .github/
 │   ├── ISSUE_TEMPLATE/           what a useful report looks like
@@ -31,7 +31,7 @@ ds-portfolio/
 │   ├── _quarto-pt.yml            the Portuguese profile
 │   └── theme/                    the original light/dark rules
 ├── AGENTS.md                     the rules an agent (or a person) works to here
-├── README.md                     portfolio landing page
+├── README.md                     project landing page
 ├── docker-compose.yml            PostgreSQL, and nothing else
 ├── pyproject.toml                dependencies and tool configuration
 ├── tasks.py                      the task runner — works the same on Windows and Linux
@@ -44,7 +44,7 @@ marts and the Project 02/03 report artifacts once and writes typed JSON into
 `web/src/data/`, so the site never needs PostgreSQL or the 126 MB dataset. The
 committed JSON is the contract between the analysis and the presentation.
 
-Routing is client-side with React Router under the `/ds-portfolio/` base path.
+Routing is client-side with React Router under the `/applied-data-science/` base path.
 The production build is a static bundle in `web/dist/`; a postbuild step copies
 `index.html` to `404.html` so deep links work on GitHub Pages, and the publish
 workflow pushes `web/dist` to `gh-pages`. Both languages are routes

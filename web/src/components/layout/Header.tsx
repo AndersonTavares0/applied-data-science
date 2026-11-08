@@ -42,7 +42,7 @@ function LanguageSwitch({ lang }: { lang: Lang }) {
 }
 
 function ProjectsMenu({ lang }: { lang: Lang }) {
-  const { t, project } = useLang()
+  const { t, path, project } = useLang()
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const { pathname } = useLocation()
@@ -89,6 +89,20 @@ function ProjectsMenu({ lang }: { lang: Lang }) {
           aria-label={t.nav.projects}
           className="absolute right-0 top-full z-50 mt-2 w-[22rem] rounded-xl border border-rule bg-surface p-2 shadow-plate"
         >
+          <Link
+            role="menuitem"
+            to={path('/collections/olist')}
+            className="flex gap-3 rounded-lg px-3 py-2.5 no-underline transition-colors hover:bg-surface-2"
+          >
+            <span className="mt-0.5 font-mono text-[10px] text-muted">01</span>
+            <span>
+              <span className="block text-sm font-semibold text-ink">{t.nav.collection}</span>
+              <span className="mt-0.5 block text-xs leading-snug text-muted">
+                {t.collection.title}
+              </span>
+            </span>
+          </Link>
+          <div className="my-1 border-t border-rule" />
           {projectOrder.map((slug) => {
             const item = t.projects[slug]
             return (
@@ -145,10 +159,10 @@ export function Header() {
       <div className="mx-auto flex h-16 max-w-site items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
         <Link to={path('/')} className="group flex items-baseline gap-2.5 no-underline">
           <span className="font-display text-base font-semibold sm:text-[1.15rem] tracking-[-0.01em] text-ink">
-            Anderson Tavares
+            Applied Data Science
           </span>
           <span className="hidden font-mono text-[9px] uppercase tracking-[0.14em] text-muted sm:inline">
-            {lang === 'pt' ? 'operações de e-commerce' : 'e-commerce operations'}
+            Anderson Tavares
           </span>
         </Link>
 
@@ -208,6 +222,14 @@ export function Header() {
             >
               {t.nav.home}
             </Link>
+            <Link
+              to={path('/collections/olist')}
+              className="rounded-lg px-3 py-3 no-underline hover:bg-surface-2"
+            >
+              <span className="block font-mono text-[10px] text-muted">01</span>
+              <span className="mt-0.5 block text-sm font-semibold text-ink">{t.nav.collection}</span>
+              <span className="mt-0.5 block text-xs text-muted">{t.collection.title}</span>
+            </Link>
             <p className="px-3 pb-1 pt-4 font-mono text-[10px] uppercase tracking-[0.1em] text-muted">
               {t.nav.projects}
             </p>
@@ -224,6 +246,12 @@ export function Header() {
                 </Link>
               )
             })}
+            <Link
+              to={path('/#projects')}
+              className="px-3 py-2 text-xs font-semibold text-brand no-underline hover:underline"
+            >
+              {t.nav.allProjects}
+            </Link>
             <Link
               to={path('/about')}
               className="mt-3 rounded-lg border-t border-rule px-3 py-3 text-base font-semibold text-ink no-underline hover:bg-surface-2"

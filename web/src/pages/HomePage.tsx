@@ -124,7 +124,55 @@ export function HomePage() {
         </div>
       </section>
 
-      <section id="projects" className="border-y border-rule bg-surface">
+      <section className="border-y border-rule bg-surface-2">
+        <div className="mx-auto max-w-site px-4 py-12 sm:px-6 sm:py-14 lg:px-8">
+          <div className="grid gap-8 lg:grid-cols-[1.1fr_1fr] lg:items-center lg:gap-14">
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.12em] text-muted">
+                {home.collectionCard.eyebrow}
+              </p>
+              <h2 className="mt-3 max-w-[22ch] font-display text-[1.7rem] font-semibold leading-tight tracking-[-0.02em] sm:text-[2.1rem]">
+                {home.collectionCard.title}
+              </h2>
+              <p className="mt-2 font-display text-[0.98rem] italic text-muted">
+                {home.collectionCard.subtitle}
+              </p>
+              <p className="mt-4 max-w-prose text-sm leading-relaxed text-ink-soft">
+                {home.collectionCard.body}
+              </p>
+              <div className="mt-5">
+                <Button asChild variant="secondary">
+                  <Link to={path('/collections/olist')}>
+                    {home.collectionCard.cta}
+                    <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  </Link>
+                </Button>
+              </div>
+            </div>
+            <ul className="divide-y divide-rule border-y border-rule">
+              {home.projects.map((projectItem) => (
+                <li key={projectItem.slug}>
+                  <Link
+                    to={project(projectItem.slug)}
+                    className="group flex items-center gap-3 px-1 py-3.5 no-underline"
+                  >
+                    <span className="font-mono text-[10px] text-muted">{projectItem.number}</span>
+                    <span className="flex-1 text-sm font-semibold leading-snug text-ink group-hover:text-brand">
+                      {projectItem.title}
+                    </span>
+                    <ArrowRight
+                      className="h-3.5 w-3.5 shrink-0 text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-brand"
+                      aria-hidden="true"
+                    />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section id="projects" className="border-b border-rule bg-surface">
         <div className="mx-auto max-w-site px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
           <div className="max-w-prose">
             <h2 className="font-display text-[2rem] font-semibold leading-tight tracking-[-0.02em] sm:text-[2.4rem]">

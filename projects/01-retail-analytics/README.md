@@ -4,7 +4,7 @@
 in this marketplace?
 
 **Status.** Complete and published. The report and the one-page decision memo are
-live at <https://AndersonTavares0.github.io/ds-portfolio/>.
+live at <https://AndersonTavares0.github.io/applied-data-science/>.
 
 ---
 
