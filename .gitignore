@@ -41,6 +41,13 @@ package-lock.yml
 .user.yml
 
 # ---------------------------------------------------------------------------
+# Website (React)
+# ---------------------------------------------------------------------------
+web/node_modules/
+web/dist/
+web/.vite/
+
+# ---------------------------------------------------------------------------
 # Quarto
 # NOTE: `_freeze/` is deliberately NOT ignored - with `freeze: true` it holds
 # the cached execution results that make CI fast and stable.

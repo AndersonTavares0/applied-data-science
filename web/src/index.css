@@ -1,0 +1,271 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --paper: #fbfaf7;
+    --surface: #ffffff;
+    --surface-2: #f3f1ec;
+    --ink: #17202a;
+    --ink-soft: #46525f;
+    --muted: #6b7785;
+    --rule: #dfe3e6;
+    --brand: #1f6fb2;
+    --brand-strong: #185a91;
+    --accent: #b45309;
+    --late: #b45309;
+    --danger: #a4261a;
+    --grid: #e6eaed;
+    --chart-on-time: #1f6fb2;
+    --chart-late: #d97706;
+    --chart-non-delivery: #8b98a5;
+    --chart-alt: #5c6b7a;
+    color-scheme: light;
+  }
+
+  .dark {
+    --paper: #101418;
+    --surface: #161b20;
+    --surface-2: #1c2329;
+    --ink: #e9eef3;
+    --ink-soft: #bdc8d2;
+    --muted: #93a0ac;
+    --rule: #2a333c;
+    --brand: #4d9fdd;
+    --brand-strong: #83c0ec;
+    --accent: #f0a03c;
+    --late: #f0a03c;
+    --danger: #f08a7d;
+    --grid: #242d35;
+    --chart-on-time: #4d9fdd;
+    --chart-late: #f0a03c;
+    --chart-non-delivery: #8b98a5;
+    --chart-alt: #a7b4c0;
+    color-scheme: dark;
+  }
+
+  html {
+    scroll-padding-top: 5.5rem;
+  }
+
+  body {
+    @apply bg-paper font-sans text-ink antialiased;
+    font-optical-sizing: auto;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display text-ink;
+    font-optical-sizing: auto;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  a {
+    @apply underline-offset-4;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--brand) 22%, transparent);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--brand);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Tables scroll on narrow screens rather than widening the page. */
+  .table-scroll {
+    @apply -mx-1 overflow-x-auto px-1;
+  }
+
+  .data-table {
+    @apply w-full min-w-[36rem] border-collapse text-left text-sm;
+  }
+
+  .data-table caption {
+    @apply mb-2 text-left font-sans text-xs text-muted;
+  }
+
+  .data-table th {
+    @apply border-b border-rule px-3 py-2 align-bottom font-mono text-[11px] font-medium uppercase tracking-[0.08em] text-muted;
+  }
+
+  .data-table td {
+    @apply border-b border-rule px-3 py-2.5 align-top text-ink-soft;
+  }
+
+  .data-table td:first-child {
+    @apply text-ink;
+  }
+
+  .data-table tr:last-child td {
+    @apply border-b-0;
+  }
+
+  /* Long-form case-study copy: one measure, generous leading, quiet links. */
+  .prose-editorial {
+    @apply max-w-prose text-[1.0625rem] leading-[1.75] text-ink-soft;
+  }
+
+  .prose-editorial > * + * {
+    @apply mt-5;
+  }
+
+  .prose-editorial h2 {
+    @apply mt-14 text-[1.65rem] font-semibold leading-tight tracking-[-0.01em] text-ink;
+  }
+
+  .prose-editorial h3 {
+    @apply mt-9 text-xl font-semibold leading-snug text-ink;
+  }
+
+  .prose-editorial strong {
+    @apply font-semibold text-ink;
+  }
+
+  .prose-editorial a {
+    @apply text-brand underline decoration-brand hover:decoration-brand;
+  }
+
+  .prose-editorial ul,
+  .prose-editorial ol {
+    @apply space-y-2.5 pl-5;
+  }
+
+  .prose-editorial ul {
+    @apply list-disc;
+  }
+
+  .prose-editorial ol {
+    @apply list-decimal;
+  }
+
+  .prose-editorial li::marker {
+    color: var(--muted);
+  }
+
+  .prose-editorial blockquote {
+    @apply border-l-2 border-brand pl-5 font-display text-lg leading-relaxed text-ink;
+  }
+
+  .prose-editorial code {
+    @apply rounded bg-surface-2 px-1.5 py-0.5 font-mono text-[0.85em] text-ink;
+  }
+
+  .prose-editorial pre {
+    @apply overflow-x-auto rounded-xl border border-rule bg-surface-2 p-4 font-mono text-[13px] leading-relaxed text-ink;
+  }
+
+  .prose-editorial pre code {
+    @apply bg-transparent p-0 text-inherit;
+  }
+
+  .prose-editorial hr {
+    @apply my-12 border-rule;
+  }
+
+  /* Recharts inherits the page font; SVG text is sized in the chart itself. */
+  .recharts-text {
+    font-family: 'Source Sans 3 Variable', 'Source Sans 3', system-ui, sans-serif;
+  }
+
+  .recharts-cartesian-axis-tick-value {
+    fill: var(--muted);
+  }
+
+  .recharts-tooltip-wrapper {
+    outline: none;
+  }
+
+  .chart-tooltip {
+    @apply rounded-lg border border-rule bg-surface px-3 py-2 text-xs shadow-plate;
+  }
+
+  /* Direct labels sit over grid lines and reference rules; the halo keeps the
+     text readable without adding another box. */
+  .recharts-label-list {
+    paint-order: stroke;
+    stroke: var(--surface);
+    stroke-width: 2px;
+    stroke-linejoin: round;
+  }
+}
+
+@media (max-width: 640px) {
+  .category-annotation {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  :root {
+    --paper: #ffffff;
+    --surface: #ffffff;
+    --surface-2: #ffffff;
+    --ink: #111111;
+    --ink-soft: #333333;
+    --muted: #555555;
+    --rule: #cccccc;
+  }
+
+  header,
+  footer,
+  nav,
+  .no-print,
+  aside {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff !important;
+    color: #111111 !important;
+    font-size: 11pt;
+  }
+
+  main {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  .plate,
+  figure,
+  table,
+  .prose-editorial li {
+    break-inside: avoid;
+  }
+
+  a {
+    color: #111111 !important;
+    text-decoration: underline;
+  }
+
+  a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 8pt;
+    color: #555555;
+  }
+}

@@ -1,21 +1,15 @@
 name: Publish website
 
-# Publishes the Quarto site to the `gh-pages` branch, which GitHub Pages serves.
+# Builds the React site in `web/` and publishes `web/dist` to the `gh-pages`
+# branch, which GitHub Pages serves at /ds-portfolio/.
 #
-# The website is a Quarto project rooted at `site/`, so the publish action is
-# given `path: site` rather than being run from the repository root.
+# The Quarto sources under `site/` are kept as an archive and are no longer
+# deployed. They remain the prose of record for the analysis and are useful for
+# comparing the React pages against the original reports.
 #
 # ONE-TIME SETUP — already done for this repository; recorded for anyone forking it:
 #
-#   1. The `gh-pages` branch must exist before this workflow can publish. The
-#      Quarto documentation tells you to run `quarto publish gh-pages` locally
-#      once and claims that this creates a `_publish.yml` file "required by the
-#      GitHub Action". The second half of that is wrong: this repository contains
-#      no `_publish.yml` and publishes successfully. The branch was the only real
-#      requirement — every failure before it existed was
-#      "the remote origin does not have a branch named gh-pages", and nothing
-#      else changed when it went green.
-#
+#   1. The `gh-pages` branch must exist before this workflow can publish.
 #   2. GitHub Pages then deploys from `gh-pages` / `/` automatically. No
 #      Settings -> Pages change is required for a project site; confirm with
 #      `gh api repos/<owner>/<repo>/pages`.
@@ -34,46 +28,33 @@ permissions:
 
 jobs:
   build-deploy:
-    name: render + publish
+    name: build + publish
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v7
+      - name: Set up Node
+        uses: actions/setup-node@v4
         with:
-          enable-cache: true
-
-      - name: Set up Python
-        run: uv python install
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
 
       - name: Install dependencies
-        run: uv sync --locked
+        working-directory: web
+        run: npm ci
 
-      - name: Set up Quarto
-        uses: quarto-dev/quarto-actions/setup@v2
+      - name: Build
+        working-directory: web
+        run: npm run build
 
-      # Reports are pre-executed and `freeze: true` is set, so rendering does
-      # not need the database or the dataset.
-      #
-      # The site is TWO Quarto builds shipped as one. `tasks.py render` renders
-      # the English profile into `_site/` and the Portuguese profile into
-      # `.build-pt/`, then copies the latter into `_site/pt/`.
-      #
-      # This must run here rather than being left to the publish action. The
-      # action renders with the project's DEFAULT profile, which is `en`, so
-      # nothing ever produced `pt/index.html` or `pt/about.html`: the published
-      # site was missing the Portuguese home page and about page, and shipped
-      # `pt/index.qmd` verbatim instead. The action is therefore told not to
-      # render, and publishes the tree this step built.
-      - name: Render the bilingual site
-        run: uv run python tasks.py render
-
+      # The build copies index.html to 404.html so BrowserRouter deep links work
+      # on GitHub Pages. `publish_dir` is the Vite output, not the repo root.
       - name: Publish to gh-pages
-        uses: quarto-dev/quarto-actions/publish@v2
+        uses: peaceiris/actions-gh-pages@v4
         with:
-          target: gh-pages
-          path: site
-          render: false
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./web/dist
+          enable_jekyll: false
+          user_name: github-actions[bot]
+          user_email: 41898282+github-actions[bot]@users.noreply.github.com

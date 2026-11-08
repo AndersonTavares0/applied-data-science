@@ -27,8 +27,9 @@ credibility, not for volume of code.
 | `projects/01-retail-analytics/src/retail/` | Config, dataset manifest, download / validate / load |
 | `projects/01-retail-analytics/scripts/` | Thin CLIs over `retail.*` |
 | `projects/01-retail-analytics/dbt_project/` | Staging models, marts, macros, tests |
-| `site/` | The published website — its own Quarto project, rooted here |
-| `site/reports/01-retail-analytics/` | The report and the one-page decision memo |
+| `web/` | The published React + TypeScript site, built to `web/dist` |
+| `web/src/data/` | Committed JSON exports of the tested marts; the site's data contract |
+| `site/` | Quarto archive of the original reports. Kept, not deployed |
 | `docs/` | Architecture, metric definitions, data dictionary, decision log |
 | `docs/CONTRIBUTING.md` | The workflow, and what a complete change looks like |
 | `data/` | Downloaded CSVs. Git-ignored. Never committed |
@@ -49,7 +50,9 @@ uv run python tasks.py data         # download + validate (~126 MB, once)
 uv run python tasks.py load         # CSVs -> the `raw` schema
 uv run python tasks.py dbt-build    # models AND tests
 uv run python tasks.py test         # Python tests
-uv run python tasks.py pipeline     # load -> dbt-build -> test -> render
+uv run python tasks.py pipeline     # load -> dbt-build -> charts -> train/topics -> test
+uv run python tasks.py web-export   # marts -> web/src/data/*.json (needs the DB)
+uv run python tasks.py web-build    # typecheck + build the React site
 ```
 
 ## Hard rules
@@ -94,6 +97,7 @@ uv run python tasks.py pipeline     # load -> dbt-build -> test -> render
 - `uv run python tasks.py dbt-build` → `ERROR=0`
 - `uv run ruff check . && uv run ruff format --check .` → clean
 - `uv run pytest` → all passing
+- `npm run typecheck && npm run build` in `web/` → passing
 - Any new model has a description and tested keys
 - Any new number in a report is reproducible from the committed SQL
 - The change arrived by pull request, and CI passed before it was merged

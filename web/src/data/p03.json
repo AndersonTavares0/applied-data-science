@@ -1,0 +1,919 @@
+{
+ "delivered_orders": 96476,
+ "by_outcome": {
+  "on_time": {
+   "orders": 89941,
+   "with_comment": 35138,
+   "comment_rate_pct": 39.07,
+   "low_star_comments": 6490,
+   "low_star_comment_rate_pct": 7.22
+  },
+  "late": {
+   "orders": 6535,
+   "with_comment": 3762,
+   "comment_rate_pct": 57.57,
+   "low_star_comments": 2747,
+   "low_star_comment_rate_pct": 42.04
+  }
+ },
+ "corpus": {
+  "low_star_reviews": 12276,
+  "low_star_comments": 9237,
+  "usable_comments": 9139,
+  "dropped_short_comments": 98,
+  "late_comments": 2711,
+  "late_share_pct": 29.66,
+  "min_tokens": 2
+ },
+ "groups": [
+  {
+   "group": "Delivery and non-receipt",
+   "late_n": 1780,
+   "on_time_n": 1186,
+   "late_share_pct": 65.6584,
+   "on_time_share_pct": 18.4505,
+   "diff_pp": 47.2079,
+   "ci_low_pp": 45.1845,
+   "ci_high_pp": 49.2313,
+   "late_weight_share_pct": 58.8886,
+   "on_time_weight_share_pct": 22.806,
+   "p_value": 0.0,
+   "q_value": 0.0
+  },
+  {
+   "group": "Product",
+   "late_n": 492,
+   "on_time_n": 4430,
+   "late_share_pct": 18.1483,
+   "on_time_share_pct": 68.9172,
+   "diff_pp": -50.769,
+   "ci_low_pp": -52.6088,
+   "ci_high_pp": -48.9291,
+   "late_weight_share_pct": 24.8691,
+   "on_time_weight_share_pct": 63.0737,
+   "p_value": 0.0,
+   "q_value": 0.0
+  },
+  {
+   "group": "Mixed or general",
+   "late_n": 439,
+   "on_time_n": 812,
+   "late_share_pct": 16.1933,
+   "on_time_share_pct": 12.6322,
+   "diff_pp": 3.5611,
+   "ci_low_pp": 1.954,
+   "ci_high_pp": 5.1681,
+   "late_weight_share_pct": 16.2423,
+   "on_time_weight_share_pct": 14.1203,
+   "p_value": 0.0,
+   "q_value": 0.0
+  }
+ ],
+ "groups_k4": [
+  {
+   "group": "Delivery and non-receipt",
+   "late_n": 2259,
+   "on_time_n": 1881,
+   "late_share_pct": 83.3272,
+   "on_time_share_pct": 29.2626,
+   "diff_pp": 54.0646,
+   "ci_low_pp": 52.2741,
+   "ci_high_pp": 55.855,
+   "late_weight_share_pct": 75.9174,
+   "on_time_weight_share_pct": 34.9387,
+   "p_value": 0.0,
+   "q_value": 0.0
+  },
+  {
+   "group": "Product",
+   "late_n": 452,
+   "on_time_n": 4547,
+   "late_share_pct": 16.6728,
+   "on_time_share_pct": 70.7374,
+   "diff_pp": -54.0646,
+   "ci_low_pp": -55.855,
+   "ci_high_pp": -52.2741,
+   "late_weight_share_pct": 24.0826,
+   "on_time_weight_share_pct": 65.0613,
+   "p_value": 0.0,
+   "q_value": 0.0
+  }
+ ],
+ "model": {
+  "method": "Latent Dirichlet Allocation",
+  "topics": 6,
+  "seed": 0,
+  "max_iter": 30,
+  "min_df": 20,
+  "max_df": 0.5,
+  "ngram_range": [
+   1,
+   2
+  ],
+  "perplexity": 332.92,
+  "coherence": {
+   "metric": "UMass, top 10 terms",
+   "mean": -2.6766,
+   "per_topic": [
+    -3.1446,
+    -2.6679,
+    -2.3848,
+    -2.4604,
+    -2.7475,
+    -2.6545
+   ]
+  },
+  "selection": {
+   "seeds": [
+    0,
+    1,
+    2
+   ],
+   "seed0_best": 6,
+   "mean_best": 4,
+   "selected": 6,
+   "note": "k=6 is a prespecified interpretability choice, not the coherence-optimal count; k=4 has the highest seed-averaged coherence but merges product and return complaints.",
+   "rows": [
+    {
+     "topics": 4,
+     "seed0_coherence": -2.6986,
+     "mean_coherence": -2.6279,
+     "sd_coherence": 0.0668,
+     "perplexity": 340.0868
+    },
+    {
+     "topics": 5,
+     "seed0_coherence": -2.6993,
+     "mean_coherence": -2.6916,
+     "sd_coherence": 0.0256,
+     "perplexity": 343.6812
+    },
+    {
+     "topics": 6,
+     "seed0_coherence": -2.6766,
+     "mean_coherence": -2.7386,
+     "sd_coherence": 0.0558,
+     "perplexity": 342.6913
+    },
+    {
+     "topics": 7,
+     "seed0_coherence": -2.6912,
+     "mean_coherence": -2.7549,
+     "sd_coherence": 0.1185,
+     "perplexity": 340.1667
+    },
+    {
+     "topics": 8,
+     "seed0_coherence": -2.745,
+     "mean_coherence": -2.752,
+     "sd_coherence": 0.0232,
+     "perplexity": 336.7343
+    },
+    {
+     "topics": 9,
+     "seed0_coherence": -2.8495,
+     "mean_coherence": -2.8453,
+     "sd_coherence": 0.1002,
+     "perplexity": 341.8941
+    },
+    {
+     "topics": 10,
+     "seed0_coherence": -2.8326,
+     "mean_coherence": -2.8714,
+     "sd_coherence": 0.0433,
+     "perplexity": 338.8974
+    }
+   ]
+  },
+  "stability": {
+   "reference_seed": 0,
+   "seeds": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "mean_jaccard": 0.4125961864932453,
+   "min_jaccard": 0.17647058823529413,
+   "max_jaccard": 0.8181818181818182,
+   "mean_adjusted_rand": 0.2583119015735066,
+   "min_adjusted_rand": 0.23381388001540954,
+   "max_adjusted_rand": 0.28307351713401935,
+   "per_topic_jaccard": [
+    0.2549019607843137,
+    0.580919080919081,
+    0.5476190476190476,
+    0.5088036963036963,
+    0.29166666666666663,
+    0.29166666666666663
+   ],
+   "by_seed": [
+    {
+     "seed": 1,
+     "mean_jaccard": 0.3294728147669324,
+     "adjusted_rand": 0.23381388001540954
+    },
+    {
+     "seed": 2,
+     "mean_jaccard": 0.489996114996115,
+     "adjusted_rand": 0.267052243696968
+    },
+    {
+     "seed": 3,
+     "mean_jaccard": 0.4577922077922078,
+     "adjusted_rand": 0.28307351713401935
+    },
+    {
+     "seed": 4,
+     "mean_jaccard": 0.37312360841772607,
+     "adjusted_rand": 0.2493079654476296
+    }
+   ]
+  },
+  "soft_assignment": {
+   "max_weight_quantiles": {
+    "p10": 0.42535517499353565,
+    "p25": 0.5109179037071352,
+    "p50": 0.6335576147856036,
+    "p75": 0.7942522413690796,
+    "p90": 0.8808079222925711
+   },
+   "share_max_below_0_5_pct": 22.672064777327936,
+   "share_max_below_0_4_pct": 7.484407484407485,
+   "share_second_at_least_0_3_pct": 31.68836853047379,
+   "share_second_at_least_0_25_pct": 44.87361855782908,
+   "mean_normalized_entropy": 0.5215000052148461
+  },
+  "mean_weight_by_outcome": {
+   "late": [
+    0.0705,
+    0.2517,
+    0.0767,
+    0.3371,
+    0.1624,
+    0.1015
+   ],
+   "on_time": [
+    0.2344,
+    0.1024,
+    0.2114,
+    0.1256,
+    0.1412,
+    0.185
+   ]
+  }
+ },
+ "tables": {
+  "topic_prevalence": [
+   {
+    "topic": 0,
+    "label": "Product quality or not as described",
+    "n": 1866,
+    "share_pct": 20.418,
+    "late_n": 151,
+    "on_time_n": 1715,
+    "late_share_pct": 5.5699,
+    "on_time_share_pct": 26.6801,
+    "diff_pp": -21.1102,
+    "ci_low_pp": -22.4938,
+    "ci_high_pp": -19.7267,
+    "p_value": 9.62332e-116,
+    "q_value": 1.92466e-115
+   },
+   {
+    "topic": 3,
+    "label": "Delivery problem (promise or carrier)",
+    "n": 1784,
+    "share_pct": 19.5207,
+    "late_n": 1078,
+    "on_time_n": 706,
+    "late_share_pct": 39.7639,
+    "on_time_share_pct": 10.9832,
+    "diff_pp": 28.7807,
+    "ci_low_pp": 26.7862,
+    "ci_high_pp": 30.7753,
+    "p_value": 1.21606e-220,
+    "q_value": 7.29637e-220
+   },
+   {
+    "topic": 2,
+    "label": "Incomplete order (missing items)",
+    "n": 1581,
+    "share_pct": 17.2995,
+    "late_n": 115,
+    "on_time_n": 1466,
+    "late_share_pct": 4.24198,
+    "on_time_share_pct": 22.8065,
+    "diff_pp": -18.5645,
+    "ci_low_pp": -19.8403,
+    "ci_high_pp": -17.2887,
+    "p_value": 6.70102e-102,
+    "q_value": 1.00515e-101
+   },
+   {
+    "topic": 5,
+    "label": "Wrong item, defect or return",
+    "n": 1475,
+    "share_pct": 16.1396,
+    "late_n": 226,
+    "on_time_n": 1249,
+    "late_share_pct": 8.33641,
+    "on_time_share_pct": 19.4306,
+    "diff_pp": -11.0942,
+    "ci_low_pp": -12.5149,
+    "ci_high_pp": -9.67352,
+    "p_value": 1.33845e-39,
+    "q_value": 1.60614e-39
+   },
+   {
+    "topic": 4,
+    "label": "Delay and long wait",
+    "n": 1251,
+    "share_pct": 13.6886,
+    "late_n": 439,
+    "on_time_n": 812,
+    "late_share_pct": 16.1933,
+    "on_time_share_pct": 12.6322,
+    "diff_pp": 3.56105,
+    "ci_low_pp": 1.95402,
+    "ci_high_pp": 5.16809,
+    "p_value": 6.0694e-06,
+    "q_value": 6.0694e-06
+   },
+   {
+    "topic": 1,
+    "label": "Not received (still waiting)",
+    "n": 1182,
+    "share_pct": 12.9336,
+    "late_n": 702,
+    "on_time_n": 480,
+    "late_share_pct": 25.8945,
+    "on_time_share_pct": 7.46733,
+    "diff_pp": 18.4272,
+    "ci_low_pp": 16.6574,
+    "ci_high_pp": 20.1969,
+    "p_value": 4.62896e-127,
+    "q_value": 1.38869e-126
+   }
+  ],
+  "topic_groups": [
+   {
+    "group": "Delivery and non-receipt",
+    "late_n": 1780,
+    "on_time_n": 1186,
+    "late_share_pct": 65.6584,
+    "on_time_share_pct": 18.4505,
+    "diff_pp": 47.2079,
+    "ci_low_pp": 45.1845,
+    "ci_high_pp": 49.2313,
+    "late_weight_share_pct": 58.8886,
+    "on_time_weight_share_pct": 22.806,
+    "p_value": 0.0,
+    "q_value": 0.0
+   },
+   {
+    "group": "Product",
+    "late_n": 492,
+    "on_time_n": 4430,
+    "late_share_pct": 18.1483,
+    "on_time_share_pct": 68.9172,
+    "diff_pp": -50.769,
+    "ci_low_pp": -52.6088,
+    "ci_high_pp": -48.9291,
+    "late_weight_share_pct": 24.8691,
+    "on_time_weight_share_pct": 63.0737,
+    "p_value": 0.0,
+    "q_value": 0.0
+   },
+   {
+    "group": "Mixed or general",
+    "late_n": 439,
+    "on_time_n": 812,
+    "late_share_pct": 16.1933,
+    "on_time_share_pct": 12.6322,
+    "diff_pp": 3.56105,
+    "ci_low_pp": 1.95402,
+    "ci_high_pp": 5.16809,
+    "late_weight_share_pct": 16.2423,
+    "on_time_weight_share_pct": 14.1203,
+    "p_value": 6.0694e-06,
+    "q_value": 6.0694e-06
+   }
+  ],
+  "topic_groups_k4": [
+   {
+    "group": "Delivery and non-receipt",
+    "late_n": 2259,
+    "on_time_n": 1881,
+    "late_share_pct": 83.3272,
+    "on_time_share_pct": 29.2626,
+    "diff_pp": 54.0646,
+    "ci_low_pp": 52.2741,
+    "ci_high_pp": 55.855,
+    "late_weight_share_pct": 75.9174,
+    "on_time_weight_share_pct": 34.9387,
+    "p_value": 0,
+    "q_value": 0
+   },
+   {
+    "group": "Product",
+    "late_n": 452,
+    "on_time_n": 4547,
+    "late_share_pct": 16.6728,
+    "on_time_share_pct": 70.7374,
+    "diff_pp": -54.0646,
+    "ci_low_pp": -55.855,
+    "ci_high_pp": -52.2741,
+    "late_weight_share_pct": 24.0826,
+    "on_time_weight_share_pct": 65.0613,
+    "p_value": 0,
+    "q_value": 0
+   }
+  ],
+  "topic_selection": [
+   {
+    "topics": 4,
+    "seed0_coherence": -2.69862,
+    "mean_coherence": -2.62792,
+    "sd_coherence": 0.0668307,
+    "perplexity": 340.087
+   },
+   {
+    "topics": 5,
+    "seed0_coherence": -2.69927,
+    "mean_coherence": -2.69164,
+    "sd_coherence": 0.0256213,
+    "perplexity": 343.681
+   },
+   {
+    "topics": 6,
+    "seed0_coherence": -2.67663,
+    "mean_coherence": -2.73859,
+    "sd_coherence": 0.0557569,
+    "perplexity": 342.691
+   },
+   {
+    "topics": 7,
+    "seed0_coherence": -2.69122,
+    "mean_coherence": -2.75494,
+    "sd_coherence": 0.118495,
+    "perplexity": 340.167
+   },
+   {
+    "topics": 8,
+    "seed0_coherence": -2.74496,
+    "mean_coherence": -2.75197,
+    "sd_coherence": 0.0232281,
+    "perplexity": 336.734
+   },
+   {
+    "topics": 9,
+    "seed0_coherence": -2.84954,
+    "mean_coherence": -2.84534,
+    "sd_coherence": 0.100226,
+    "perplexity": 341.894
+   },
+   {
+    "topics": 10,
+    "seed0_coherence": -2.83264,
+    "mean_coherence": -2.87142,
+    "sd_coherence": 0.043302,
+    "perplexity": 338.897
+   }
+  ],
+  "topic_terms": [
+   {
+    "topic": 0,
+    "label": "Product quality or not as described",
+    "rank": 1,
+    "term": "produto"
+   },
+   {
+    "topic": 0,
+    "label": "Product quality or not as described",
+    "rank": 2,
+    "term": "veio"
+   },
+   {
+    "topic": 0,
+    "label": "Product quality or not as described",
+    "rank": 3,
+    "term": "nao"
+   },
+   {
+    "topic": 0,
+    "label": "Product quality or not as described",
+    "rank": 4,
+    "term": "qualidade"
+   },
+   {
+    "topic": 0,
+    "label": "Product quality or not as described",
+    "rank": 5,
+    "term": "cor"
+   },
+   {
+    "topic": 0,
+    "label": "Product quality or not as described",
+    "rank": 6,
+    "term": "gostei"
+   },
+   {
+    "topic": 0,
+    "label": "Product quality or not as described",
+    "rank": 7,
+    "term": "diferente"
+   },
+   {
+    "topic": 0,
+    "label": "Product quality or not as described",
+    "rank": 8,
+    "term": "quero"
+   },
+   {
+    "topic": 0,
+    "label": "Product quality or not as described",
+    "rank": 9,
+    "term": "foto"
+   },
+   {
+    "topic": 0,
+    "label": "Product quality or not as described",
+    "rank": 10,
+    "term": "original"
+   },
+   {
+    "topic": 0,
+    "label": "Product quality or not as described",
+    "rank": 11,
+    "term": "não gostei"
+   },
+   {
+    "topic": 0,
+    "label": "Product quality or not as described",
+    "rank": 12,
+    "term": "comprei"
+   },
+   {
+    "topic": 1,
+    "label": "Not received (still waiting)",
+    "rank": 1,
+    "term": "recebi"
+   },
+   {
+    "topic": 1,
+    "label": "Not received (still waiting)",
+    "rank": 2,
+    "term": "não recebi"
+   },
+   {
+    "topic": 1,
+    "label": "Not received (still waiting)",
+    "rank": 3,
+    "term": "produto"
+   },
+   {
+    "topic": 1,
+    "label": "Not received (still waiting)",
+    "rank": 4,
+    "term": "ainda"
+   },
+   {
+    "topic": 1,
+    "label": "Not received (still waiting)",
+    "rank": 5,
+    "term": "recebi produto"
+   },
+   {
+    "topic": 1,
+    "label": "Not received (still waiting)",
+    "rank": 6,
+    "term": "ainda não"
+   },
+   {
+    "topic": 1,
+    "label": "Not received (still waiting)",
+    "rank": 7,
+    "term": "nao"
+   },
+   {
+    "topic": 1,
+    "label": "Not received (still waiting)",
+    "rank": 8,
+    "term": "produto ainda"
+   },
+   {
+    "topic": 1,
+    "label": "Not received (still waiting)",
+    "rank": 9,
+    "term": "nao recebi"
+   },
+   {
+    "topic": 1,
+    "label": "Not received (still waiting)",
+    "rank": 10,
+    "term": "saber"
+   },
+   {
+    "topic": 1,
+    "label": "Not received (still waiting)",
+    "rank": 11,
+    "term": "gostaria"
+   },
+   {
+    "topic": 1,
+    "label": "Not received (still waiting)",
+    "rank": 12,
+    "term": "comprei"
+   },
+   {
+    "topic": 2,
+    "label": "Incomplete order (missing items)",
+    "rank": 1,
+    "term": "comprei"
+   },
+   {
+    "topic": 2,
+    "label": "Incomplete order (missing items)",
+    "rank": 2,
+    "term": "recebi"
+   },
+   {
+    "topic": 2,
+    "label": "Incomplete order (missing items)",
+    "rank": 3,
+    "term": "apenas"
+   },
+   {
+    "topic": 2,
+    "label": "Incomplete order (missing items)",
+    "rank": 4,
+    "term": "dois"
+   },
+   {
+    "topic": 2,
+    "label": "Incomplete order (missing items)",
+    "rank": 5,
+    "term": "produtos"
+   },
+   {
+    "topic": 2,
+    "label": "Incomplete order (missing items)",
+    "rank": 6,
+    "term": "pedido"
+   },
+   {
+    "topic": 2,
+    "label": "Incomplete order (missing items)",
+    "rank": 7,
+    "term": "duas"
+   },
+   {
+    "topic": 2,
+    "label": "Incomplete order (missing items)",
+    "rank": 8,
+    "term": "nota"
+   },
+   {
+    "topic": 2,
+    "label": "Incomplete order (missing items)",
+    "rank": 9,
+    "term": "veio"
+   },
+   {
+    "topic": 2,
+    "label": "Incomplete order (missing items)",
+    "rank": 10,
+    "term": "somente"
+   },
+   {
+    "topic": 2,
+    "label": "Incomplete order (missing items)",
+    "rank": 11,
+    "term": "entregue"
+   },
+   {
+    "topic": 2,
+    "label": "Incomplete order (missing items)",
+    "rank": 12,
+    "term": "fiscal"
+   },
+   {
+    "topic": 3,
+    "label": "Delivery problem (promise or carrier)",
+    "rank": 1,
+    "term": "produto"
+   },
+   {
+    "topic": 3,
+    "label": "Delivery problem (promise or carrier)",
+    "rank": 2,
+    "term": "entregue"
+   },
+   {
+    "topic": 3,
+    "label": "Delivery problem (promise or carrier)",
+    "rank": 3,
+    "term": "entrega"
+   },
+   {
+    "topic": 3,
+    "label": "Delivery problem (promise or carrier)",
+    "rank": 4,
+    "term": "prazo"
+   },
+   {
+    "topic": 3,
+    "label": "Delivery problem (promise or carrier)",
+    "rank": 5,
+    "term": "dia"
+   },
+   {
+    "topic": 3,
+    "label": "Delivery problem (promise or carrier)",
+    "rank": 6,
+    "term": "chegou"
+   },
+   {
+    "topic": 3,
+    "label": "Delivery problem (promise or carrier)",
+    "rank": 7,
+    "term": "não entregue"
+   },
+   {
+    "topic": 3,
+    "label": "Delivery problem (promise or carrier)",
+    "rank": 8,
+    "term": "não chegou"
+   },
+   {
+    "topic": 3,
+    "label": "Delivery problem (promise or carrier)",
+    "rank": 9,
+    "term": "correios"
+   },
+   {
+    "topic": 3,
+    "label": "Delivery problem (promise or carrier)",
+    "rank": 10,
+    "term": "produto não"
+   },
+   {
+    "topic": 3,
+    "label": "Delivery problem (promise or carrier)",
+    "rank": 11,
+    "term": "momento"
+   },
+   {
+    "topic": 3,
+    "label": "Delivery problem (promise or carrier)",
+    "rank": 12,
+    "term": "nada"
+   },
+   {
+    "topic": 4,
+    "label": "Delay and long wait",
+    "rank": 1,
+    "term": "produto"
+   },
+   {
+    "topic": 4,
+    "label": "Delay and long wait",
+    "rank": 2,
+    "term": "estou"
+   },
+   {
+    "topic": 4,
+    "label": "Delay and long wait",
+    "rank": 3,
+    "term": "recomendo"
+   },
+   {
+    "topic": 4,
+    "label": "Delay and long wait",
+    "rank": 4,
+    "term": "loja"
+   },
+   {
+    "topic": 4,
+    "label": "Delay and long wait",
+    "rank": 5,
+    "term": "entrega"
+   },
+   {
+    "topic": 4,
+    "label": "Delay and long wait",
+    "rank": 6,
+    "term": "não recomendo"
+   },
+   {
+    "topic": 4,
+    "label": "Delay and long wait",
+    "rank": 7,
+    "term": "compra"
+   },
+   {
+    "topic": 4,
+    "label": "Delay and long wait",
+    "rank": 8,
+    "term": "aguardando"
+   },
+   {
+    "topic": 4,
+    "label": "Delay and long wait",
+    "rank": 9,
+    "term": "comprei"
+   },
+   {
+    "topic": 4,
+    "label": "Delay and long wait",
+    "rank": 10,
+    "term": "demora"
+   },
+   {
+    "topic": 4,
+    "label": "Delay and long wait",
+    "rank": 11,
+    "term": "nunca"
+   },
+   {
+    "topic": 4,
+    "label": "Delay and long wait",
+    "rank": 12,
+    "term": "vez"
+   },
+   {
+    "topic": 5,
+    "label": "Wrong item, defect or return",
+    "rank": 1,
+    "term": "produto"
+   },
+   {
+    "topic": 5,
+    "label": "Wrong item, defect or return",
+    "rank": 2,
+    "term": "veio"
+   },
+   {
+    "topic": 5,
+    "label": "Wrong item, defect or return",
+    "rank": 3,
+    "term": "comprei"
+   },
+   {
+    "topic": 5,
+    "label": "Wrong item, defect or return",
+    "rank": 4,
+    "term": "contato"
+   },
+   {
+    "topic": 5,
+    "label": "Wrong item, defect or return",
+    "rank": 5,
+    "term": "outro"
+   },
+   {
+    "topic": 5,
+    "label": "Wrong item, defect or return",
+    "rank": 6,
+    "term": "troca"
+   },
+   {
+    "topic": 5,
+    "label": "Wrong item, defect or return",
+    "rank": 7,
+    "term": "errado"
+   },
+   {
+    "topic": 5,
+    "label": "Wrong item, defect or return",
+    "rank": 8,
+    "term": "defeito"
+   },
+   {
+    "topic": 5,
+    "label": "Wrong item, defect or return",
+    "rank": 9,
+    "term": "chegou"
+   },
+   {
+    "topic": 5,
+    "label": "Wrong item, defect or return",
+    "rank": 10,
+    "term": "estou"
+   },
+   {
+    "topic": 5,
+    "label": "Wrong item, defect or return",
+    "rank": 11,
+    "term": "devolução"
+   },
+   {
+    "topic": 5,
+    "label": "Wrong item, defect or return",
+    "rank": 12,
+    "term": "loja"
+   }
+  ]
+ }
+}

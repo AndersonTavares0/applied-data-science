@@ -41,6 +41,34 @@ jobs:
         working-directory: projects/01-retail-analytics/dbt_project
         run: uv run dbt parse --profiles-dir . --no-partial-parse
 
+  # The website is a React app with committed JSON exports. It is built here
+  # from the lockfile, so a broken component, type or export fails CI even
+  # though the analysis jobs never need Node.
+  web:
+    name: web typecheck + build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install dependencies
+        working-directory: web
+        run: npm ci
+
+      - name: Typecheck
+        working-directory: web
+        run: npm run typecheck
+
+      - name: Build
+        working-directory: web
+        run: npm run build
+
   # ---------------------------------------------------------------------------
   # Data pipeline job.
   #
