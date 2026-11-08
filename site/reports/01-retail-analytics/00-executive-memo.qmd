@@ -20,9 +20,10 @@ format:
 ## Bottom line
 
 Late delivery is rare (6.8% of deliveries) and is the strongest signal of
-customer dissatisfaction in this dataset. It is not spread evenly and it is not
-the sellers. **The delay is created in the crossing between São Paulo and Rio,
-which carries two thirds of Rio's orders and is late 14.2% of the time.**
+customer dissatisfaction in this dataset. It is not spread evenly. **The delay is concentrated on the crossing between São
+Paulo and Rio, which carries two thirds of Rio's orders and is late 14.2% of the
+time. The data localise the problem; they do not identify the carrier or the
+cause.**
 
 ## The finding
 
@@ -33,10 +34,10 @@ which carries two thirds of Rio's orders and is late 14.2% of the time.**
   of on-time customers.
 - São Paulo is late on **4.49%** of deliveries, Rio de Janeiro on **12.10%**,
   Bahia on **12.16%** and Ceará on **13.76%**.
-- **The sellers are not the cause.** Sellers dispatch in about three days on lanes with volume. A Rio seller delivering inside Rio is late **4.76%** of the time,
+- **Seller behaviour does not explain the gap.** Sellers dispatch in about three days on lanes with volume. A Rio seller delivering inside Rio is late **4.76%** of the time,
   close to São Paulo's **4.66%**, and 53 of the 65 sellers that ship to both
   states are worse into Rio.
-- **The lane is the cause.** São Paulo to Rio carries **8,129** of Rio's 12,353
+- **The lane is where the problem concentrates.** São Paulo to Rio carries **8,129** of Rio's 12,353
   deliveries and is late **14.17%**. Every intrastate lane with at least 250
   deliveries sits at 4.8% or below.
 
@@ -62,7 +63,7 @@ into profit.
 ## Recommendation
 
 **Work the São Paulo to Rio lane, and stop looking for a bad seller.** The
-sellers dispatch on schedule and Rio's own sellers are punctual, so the delay is
+seller quality is an unlikely sole explanation, but the data cannot rule it out; the delay is
 in the 9 median days the parcel spends between the two, and in the 379 orders
 that arrive more than two weeks after the promise. The question for the carriers
 on that corridor is why the ninetieth percentile is 31 days on a lane whose

@@ -42,7 +42,7 @@ figures are, and `uv run python tasks.py train` rebuilds them.
   does not distinguish them.
 - **The score is roughly calibrated in level but not a reliable probability.**
   Mean prediction is 4.26% against 4.42% observed; the logistic calibration slope
-  is 0.82 with intercept −0.47. The ranking is compressed and the score should
+  is 0.82 with intercept −0.47. The aggregate level is close, but the deciles are not uniform and the score should
   not be read as a probability for an individual order.
 - **Promise length and geography dominate.** Permutation importance ranks
   `promise_days` first, then `customer_state` and `seller_state`. Basket value,
@@ -177,14 +177,14 @@ periods.
 
 ## 4. Calibration
 
-![Calibration on the temporal holdout. The dashed diagonal is perfect calibration.](figures/calibration.png){#fig-cal fig-alt="Calibration plot comparing predicted and observed late-delivery rates in ten score bins. Both models follow the diagonal more closely than in the earlier version, with some compression at the high end." fig-align="center"}
+![Calibration on the temporal holdout. The dashed diagonal is perfect calibration.](figures/calibration.png){#fig-cal fig-alt="Calibration plot comparing predicted and observed late-delivery rates in ten score bins. The tenth decile over-predicts (12.3% predicted, 8.7% observed), while middle and upper-middle deciles under-predict." fig-align="center"}
 
 The holdout's late rate is 4.42%; the selected model predicts 4.26% on average.
 A logistic recalibration fit on the holdout gives an intercept of **−0.47** and a
-slope of **0.82** (logit scale). The slope below one means the scores are
-compressed: high scores are not high enough and low scores are not low enough.
-The level is close, but the probability attached to an individual order is still
-not trustworthy.
+slope of **0.82** (logit scale). The deciles are not uniformly calibrated: the ninth predicts 7.0% and observes
+9.8%, while the top decile predicts 12.3% and observes 8.7%. The aggregate level
+is close, but the probability attached to an individual order is still not
+trustworthy.
 
 The practical reading: **the score is a ranking, not a probability.** If a
 probability is needed for a customer-facing decision, it has to be recalibrated

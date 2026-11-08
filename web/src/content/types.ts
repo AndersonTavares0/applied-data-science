@@ -61,6 +61,7 @@ export interface HomeContent {
   metaTitle: string
   metaDescription: string
   eyebrow: string
+  subtitle: string
   title: string
   lead: string
   thesis: string

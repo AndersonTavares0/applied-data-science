@@ -74,6 +74,7 @@ export function HomePage() {
               <span className="inline-block h-1.5 w-1.5 rounded-full bg-accent" />
               {home.eyebrow}
             </p>
+            <p className="mt-2 font-display text-base italic text-muted">{home.subtitle}</p>
             <h1 className="mt-5 max-w-[18ch] font-display text-[2.55rem] font-semibold leading-[1.04] tracking-[-0.03em] text-ink sm:text-[3.2rem] lg:text-[3.7rem]">
               {home.title}
             </h1>

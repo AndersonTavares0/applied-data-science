@@ -41,7 +41,7 @@ recompra foi incômoda.
   **13.8%**, contra **4.5%** de São Paulo. Mas um vendedor do Rio entregando
   dentro do Rio iguala São Paulo (**4.7%** contra **4.6%**), e 53 dos 65
   vendedores que enviam para os dois estados vão pior para o Rio. O atraso é
-  criado na travessia entre São Paulo e o Rio, que carrega dois terços dos pedidos
+  concentrado na travessia entre São Paulo e o Rio, que carrega dois terços dos pedidos
   do Rio a **14.2%** de atraso.
 - **Esse corredor carrega a promessa mais frágil do conjunto de dados.** De São
   Paulo ao Rio promete-se 27 dias, contra 30.3 do corredor mais distante, de São
@@ -375,7 +375,7 @@ Dois terços das entregas do Rio, 8,129 de 12,353, saem de vendedores de São Pa
 e esse corredor é o pior da tabela, com **14.17%**. Todo corredor interno com pelo
 menos 250 entregas fica em 4.8% ou menos; os dois corredores internos acima disso
 têm 14 e 7 pedidos, amostra pequena demais para sustentar uma taxa. A dificuldade é
-criada na travessia.
+concentrada na travessia.
 
 ### A promessa nesse corredor é a mais frágil
 
@@ -405,7 +405,7 @@ estão correlacionados por construção.
 1. **Conserte o corredor de São Paulo ao Rio, e não os vendedores nele.** Os
    vendedores despacham em cerca de três dias em corredores com volume, os próprios
    vendedores do Rio entregam no prazo dentro do Rio, e 53 dos 65 vendedores que
-   enviam para os dois estados vão pior para o Rio. O atraso é criado na travessia:
+   enviam para os dois estados vão pior para o Rio. O atraso se concentra na travessia:
    8,129 entregas, 14.17% atrasadas, e 379 delas mais de duas semanas atrasadas. A
    pergunta operacional é o que acontece durante os 9 dias de trânsito mediano e
    nos 31 dias do nonagésimo percentil.
@@ -461,7 +461,7 @@ como os números devem ser lidos:
   "São Paulo ao Rio" significa um vendedor em um estado e um cliente no outro, e
   não uma distância ou uma estrada específica.
 - **O conjunto de dados não tem identificador de transportadora.** A descoberta do
-  corredor diz onde o atraso é criado. Ela não pode dizer quem o cria, então
+  corredor diz onde o atraso se concentra. Ele não identifica a transportadora nem a causa, então
   restringi-la a uma transportadora ou a um armazém exige o lado operacional, e
   não outra consulta.
 - **Os números de corredor cobrem 96,411 das 96,476 entregas.** Um pedido cujos
