@@ -10,7 +10,7 @@
 
 services:
   db:
-    image: postgres:18
+    image: postgres:19
     container_name: ds-portfolio-db
     restart: unless-stopped
     environment:
